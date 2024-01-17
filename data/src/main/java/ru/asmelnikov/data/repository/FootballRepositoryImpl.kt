@@ -1,10 +1,14 @@
 package ru.asmelnikov.data.repository
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import retrofit2.Response
 import ru.asmelnikov.data.api.FootballApi
+import ru.asmelnikov.data.local.RealmOptions
 import ru.asmelnikov.data.mappers.toCompetition
+import ru.asmelnikov.data.mappers.toCompetitionEntity
 import ru.asmelnikov.data.models.CompetitionModelDTO
-import ru.asmelnikov.domain.FootballRepository
+import ru.asmelnikov.domain.repository.FootballRepository
 import ru.asmelnikov.domain.models.Competition
 import ru.asmelnikov.utils.ErrorsTypesHttp
 import ru.asmelnikov.utils.Resource
@@ -13,21 +17,28 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 
 class FootballRepositoryImpl(
-    private val footballApi: FootballApi
+    private val footballApi: FootballApi,
+    private val realmOptions: RealmOptions
 ) : FootballRepository {
 
-    override suspend fun getAllCompetitions(): Resource<List<Competition>> {
+    override suspend fun getAllCompetitionsFromRemoteToLocal(): Resource<List<Competition>> {
         return executeSafely {
             val response: Response<CompetitionModelDTO> = footballApi.getAllFootballCompetitions()
             if (response.isSuccessful) {
-                val competitions: List<Competition> = response.body()?.competitions?.map {
-                    it.toCompetition()
+                val competitions = response.body()?.competitions?.map {
+                    it.toCompetitionEntity()
                 } ?: emptyList()
-                Resource.Success(competitions)
+                realmOptions.upsertCompetitionsDataFromRemoteToLocal(competitions)
+                Resource.Success(competitions.map { it.toCompetition() })
             } else {
                 responseFailureHandler(response)
             }
         }
+    }
+
+    override suspend fun getAllCompetitionsFlowFromLocal(): Flow<List<Competition>> {
+        return realmOptions.getCompetitionsFlowFromLocal()
+            .map { comps -> comps.map { comp -> comp.toCompetition() } }
     }
 
 
