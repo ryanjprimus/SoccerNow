@@ -39,7 +39,7 @@ data class AreaDTO(
 
 @JsonClass(generateAdapter = true)
 data class CurrentSeasonDTO(
-    @Json(name = "currentMatchDay") val currentMatchDay: Int?,
+    @Json(name = "currentMatchday") val currentMatchDay: Int?,
     @Json(name = "endDate") val endDate: String?,
     @Json(name = "id") val id: Int?,
     @Json(name = "startDate") val startDate: String?,

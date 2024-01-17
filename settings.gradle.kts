@@ -16,6 +16,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "GoalPulse"
 include(":app")
+include(":utils")
 include(":data")
 include(":domain")
-include(":utils")

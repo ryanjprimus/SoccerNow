@@ -1,14 +1,37 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
-
 plugins {
-    id("java-library")
-    id("org.jetbrains.kotlin.jvm")
-    id("com.google.devtools.ksp")
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
+    id("realm-android")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+android {
+    namespace = "ru.asmelnikov.data"
+    compileSdk = 34
+
+    defaultConfig {
+        minSdk = 26
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 val koinVersion: String by project.extra
@@ -20,8 +43,8 @@ val moshiVersion: String by project.extra
 dependencies {
 
     // module
-    implementation(project(":domain"))
     implementation(project(":utils"))
+    implementation(project(":domain"))
 
     // koin
     implementation("io.insert-koin:koin-core:$koinVersion")
@@ -35,7 +58,7 @@ dependencies {
     api("com.squareup.moshi:moshi:$moshiVersion")
     api("com.squareup.moshi:moshi-adapters:$moshiVersion")
     api("com.squareup.moshi:moshi-kotlin:$moshiVersion")
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion")
-
+    //noinspection KaptUsageInsteadOfKsp
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion")
 
 }
