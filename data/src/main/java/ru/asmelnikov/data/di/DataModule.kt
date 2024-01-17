@@ -7,20 +7,20 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.asmelnikov.data.api.FootballApi
 import ru.asmelnikov.data.repository.FootballRepositoryImpl
-import ru.asmelnikov.domain.FootballRepository
+import ru.asmelnikov.domain.repository.FootballRepository
 
 private const val FOOTBALL_API_URL = "https://api.football-data.org/v4/"
 
 
 val dataModule = module {
 
-    single { okHttp() }
+    single<OkHttpClient> { okHttp() }
 
-    single { moshiConverterFactory() }
+    single<MoshiConverterFactory> { moshiConverterFactory() }
 
-    single { retrofit(get(), get()) }
+    single<Retrofit> { retrofit(get(), get()) }
 
-    single { get<Retrofit>().create(FootballApi::class.java) }
+    single<FootballApi> { get<Retrofit>().create(FootballApi::class.java) }
 
     single<FootballRepository> { FootballRepositoryImpl(footballApi = get()) }
 

@@ -1,4 +1,4 @@
-package ru.asmelnikov.domain
+package ru.asmelnikov.domain.repository
 
 import ru.asmelnikov.domain.models.Competition
 import ru.asmelnikov.domain.models.CompetitionModel

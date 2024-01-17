@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import ru.asmelnikov.domain.FootballRepository
+import ru.asmelnikov.domain.repository.FootballRepository
 import ru.asmelnikov.goalpulse.ui.theme.GoalPulseTheme
 import org.koin.android.ext.android.get
 import ru.asmelnikov.utils.Resource

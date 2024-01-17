@@ -4,7 +4,7 @@ import retrofit2.Response
 import ru.asmelnikov.data.api.FootballApi
 import ru.asmelnikov.data.mappers.toCompetition
 import ru.asmelnikov.data.models.CompetitionModelDTO
-import ru.asmelnikov.domain.FootballRepository
+import ru.asmelnikov.domain.repository.FootballRepository
 import ru.asmelnikov.domain.models.Competition
 import ru.asmelnikov.utils.ErrorsTypesHttp
 import ru.asmelnikov.utils.Resource
