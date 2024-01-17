@@ -10,8 +10,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
 rootProject.name = "GoalPulse"
 include(":app")
+include(":data")
+include(":domain")
+include(":utils")
