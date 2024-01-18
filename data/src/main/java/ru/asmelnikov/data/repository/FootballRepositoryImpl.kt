@@ -1,7 +1,9 @@
 package ru.asmelnikov.data.repository
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import retrofit2.HttpException
 import retrofit2.Response
 import ru.asmelnikov.data.api.FootballApi
 import ru.asmelnikov.data.local.RealmOptions
@@ -12,6 +14,7 @@ import ru.asmelnikov.domain.repository.FootballRepository
 import ru.asmelnikov.domain.models.Competition
 import ru.asmelnikov.utils.ErrorsTypesHttp
 import ru.asmelnikov.utils.Resource
+import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.SocketTimeoutException
@@ -24,7 +27,7 @@ class FootballRepositoryImpl(
     override suspend fun getAllCompetitionsFromRemoteToLocal(): Resource<List<Competition>> {
         return executeSafely {
             val response: Response<CompetitionModelDTO> = footballApi.getAllFootballCompetitions()
-            if (response.isSuccessful) {
+            if (response.isSuccessful && response.code() == 200) {
                 val competitions = response.body()?.competitions?.map {
                     it.toCompetitionEntity()
                 } ?: emptyList()
@@ -42,17 +45,23 @@ class FootballRepositoryImpl(
     }
 
 
-    private suspend fun <T> executeSafely(block: suspend () -> Resource<T>): Resource<T> {
+    private suspend fun <T> executeSafely(
+        block: suspend () -> Resource<T>
+    ): Resource<T> {
         return try {
             block()
         } catch (e: Exception) {
             when (e) {
                 is ConnectException, is SocketException -> {
-                    Resource.Error(httpErrors = ErrorsTypesHttp.MissingConnection)
+                    Resource.Error(httpErrors = ErrorsTypesHttp.MissingConnection())
                 }
 
                 is SocketTimeoutException -> {
-                    Resource.Error(httpErrors = ErrorsTypesHttp.TimeoutException)
+                    Resource.Error(httpErrors = ErrorsTypesHttp.TimeoutException())
+                }
+
+                is IOException -> {
+                    Resource.Error(httpErrors = ErrorsTypesHttp.NetworkError(message = e.message))
                 }
 
                 else -> {
@@ -65,15 +74,23 @@ class FootballRepositoryImpl(
     private fun <T, R> responseFailureHandler(response: Response<T>): Resource.Error<R> {
         return when (response.code()) {
             in 400..499 -> {
-                Resource.Error(httpErrors = ErrorsTypesHttp.Https400Errors)
+                Resource.Error(
+                    httpErrors = ErrorsTypesHttp.Https400Errors(
+                        errorCode = response.code()
+                    )
+                )
             }
 
             in 500..599 -> {
-                Resource.Error(httpErrors = ErrorsTypesHttp.Https500Errors)
+                Resource.Error(
+                    httpErrors = ErrorsTypesHttp.Https500Errors(
+                        errorCode = response.code()
+                    )
+                )
             }
 
             else -> {
-                Resource.Error(httpErrors = ErrorsTypesHttp.UnknownError(response.message()))
+                Resource.Error(httpErrors = ErrorsTypesHttp.UnknownError(message = response.message()))
             }
         }
     }

@@ -16,6 +16,8 @@ allprojects {
         set("okhttpVersion", "4.12.0")
         // Moshi
         set("moshiVersion", "1.14.0")
+        // Orbit
+        set("orbitVersion", "6.1.0")
     }
 }
 
