@@ -43,8 +43,8 @@ val moshiVersion: String by project.extra
 dependencies {
 
     // module
-    implementation(project(":utils"))
     implementation(project(":domain"))
+    implementation(project(":utils"))
 
     // koin
     implementation("io.insert-koin:koin-core:$koinVersion")
@@ -55,10 +55,10 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:$okhttpVersion")
 
     // Moshi
+    //noinspection KaptUsageInsteadOfKsp
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
     api("com.squareup.moshi:moshi:$moshiVersion")
     api("com.squareup.moshi:moshi-adapters:$moshiVersion")
     api("com.squareup.moshi:moshi-kotlin:$moshiVersion")
-    //noinspection KaptUsageInsteadOfKsp
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion")
 
 }

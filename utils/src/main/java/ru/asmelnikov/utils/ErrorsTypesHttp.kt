@@ -1,17 +1,10 @@
 package ru.asmelnikov.utils
 
 sealed class ErrorsTypesHttp(val code: Int? = null, val errorMessage: String? = null) {
-    object Https400Errors : ErrorsTypesHttp()
-    object Https500Errors : ErrorsTypesHttp()
-    object TimeoutException : ErrorsTypesHttp()
-    object MissingConnection : ErrorsTypesHttp()
-    object PhotoUploadError : ErrorsTypesHttp()
-    object FileSizeError : ErrorsTypesHttp()
-    object EmptyFileError : ErrorsTypesHttp()
-    object AlreadyConfirmed : ErrorsTypesHttp()
-    class CloudDatabaseError(code: Int? = null) : ErrorsTypesHttp(code = code)
-    class UnknownError(errorMessage: String? = null) : ErrorsTypesHttp(errorMessage = errorMessage)
-    object VerificationError : ErrorsTypesHttp()
-    object RolesError : ErrorsTypesHttp()
-    object NotFoundInDataBaseError : ErrorsTypesHttp()
+    data class Https400Errors(val errorCode: Int? = null, val message: String? = null) : ErrorsTypesHttp(code = errorCode, errorMessage = message)
+    data class Https500Errors(val errorCode: Int? = null, val message: String? = null) : ErrorsTypesHttp(code = errorCode, errorMessage = message)
+    data class TimeoutException(val message: String? = null) : ErrorsTypesHttp(errorMessage = message)
+    data class MissingConnection(val message: String? = null) : ErrorsTypesHttp(errorMessage = message)
+    data class NetworkError(val message: String? = null) : ErrorsTypesHttp(errorMessage = message)
+    data class UnknownError(val message: String? = null) : ErrorsTypesHttp(errorMessage = message)
 }

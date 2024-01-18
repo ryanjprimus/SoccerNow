@@ -1,25 +1,18 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
-    id("realm-android")
+    id("kotlin-parcelize")
 }
 
 android {
-    namespace = "ru.asmelnikov.goalpulse"
+    namespace = "ru.asmelnikov.competitions_main"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "ru.asmelnikov.goalpulse"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -51,6 +44,7 @@ android {
     }
 }
 
+val orbitVersion: String by project.extra
 val koinVersion: String by project.extra
 
 dependencies {
@@ -63,6 +57,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.32.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -71,19 +66,19 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    // Module
-    implementation(project(":competitions_main"))
-    implementation(project(":data"))
-    implementation(project(":domain"))
-    implementation(project(":utils"))
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+
+    //Orbit MVI
+    implementation("org.orbit-mvi:orbit-core:$orbitVersion")
+    implementation("org.orbit-mvi:orbit-viewmodel:$orbitVersion")
+    implementation("org.orbit-mvi:orbit-compose:$orbitVersion")
 
     // Koin for Android
     implementation("io.insert-koin:koin-androidx-compose:$koinVersion")
     implementation("io.insert-koin:koin-android:$koinVersion")
     implementation("io.insert-koin:koin-core:$koinVersion")
 
-    // Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.6")
-
-
+    implementation(project(":domain"))
+    implementation(project(":utils"))
 }
