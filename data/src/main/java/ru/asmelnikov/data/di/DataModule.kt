@@ -87,4 +87,4 @@ private fun retrofit(
 
 private fun loggingInterceptor() =
     HttpLoggingInterceptor()
-        .setLevel(HttpLoggingInterceptor.Level.BASIC)
+        .setLevel(HttpLoggingInterceptor.Level.BODY)

@@ -30,20 +30,22 @@ class CompetitionsScreenViewModel(
     }
 
     private fun collectCompetitionsFlowFromLocal() = intent(registerIdling = false) {
+        reduce { state.copy(isLoadingLocal = true) }
         repeatOnSubscription {
             footballRepository.getAllCompetitionsFlowFromLocal().collect { comps ->
-                reduce { state.copy(comps = comps) }
+                if (comps.isNotEmpty())
+                    reduce { state.copy(comps = comps, isLoadingLocal = false) }
             }
         }
     }
 
     fun updateCompetitionsFromRemoteToLocal() = intent {
-        reduce { state.copy(isLoading = true) }
+        reduce { state.copy(isLoadingRemote = true) }
         when (val compsFromRemote = footballRepository.getAllCompetitionsFromRemoteToLocal()) {
             is Resource.Success -> {
                 reduce {
                     state.copy(
-                        isLoading = false,
+                        isLoadingRemote = false,
                         comps = compsFromRemote.data ?: emptyList()
                     )
                 }
@@ -56,7 +58,7 @@ class CompetitionsScreenViewModel(
     }
 
     private fun handleError(error: ErrorsTypesHttp) = intent {
-        reduce { state.copy(isLoading = false) }
+        reduce { state.copy(isLoadingRemote = false) }
 
         when (error) {
             is ErrorsTypesHttp.Https400Errors ->

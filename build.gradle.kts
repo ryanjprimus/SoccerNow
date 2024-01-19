@@ -18,6 +18,8 @@ allprojects {
         set("moshiVersion", "1.14.0")
         // Orbit
         set("orbitVersion", "6.1.0")
+        // Coil
+        set("coilVersion",  "2.5.0")
     }
 }
 
