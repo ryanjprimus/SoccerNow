@@ -8,7 +8,8 @@ import ru.asmelnikov.domain.models.Competition
 @Parcelize
 data class CompetitionsScreenState(
     val comps: List<Competition> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoadingRemote: Boolean = false,
+    val isLoadingLocal: Boolean = false
 ) : Parcelable
 
 sealed class CompetitionsScreenSideEffects {

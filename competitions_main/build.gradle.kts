@@ -46,6 +46,7 @@ android {
 
 val orbitVersion: String by project.extra
 val koinVersion: String by project.extra
+val coilVersion: String by project.extra
 
 dependencies {
 
@@ -65,6 +66,14 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // collapsing Toolbar
+    implementation("me.onebone:toolbar-compose:2.3.5")
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:$coilVersion")
+    implementation("io.coil-kt:coil-gif:$coilVersion")
+    implementation("io.coil-kt:coil-svg:$coilVersion")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.6")
