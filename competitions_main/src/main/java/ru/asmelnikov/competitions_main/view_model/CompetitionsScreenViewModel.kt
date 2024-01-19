@@ -2,6 +2,7 @@ package ru.asmelnikov.competitions_main.view_model
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -30,22 +31,22 @@ class CompetitionsScreenViewModel(
     }
 
     private fun collectCompetitionsFlowFromLocal() = intent(registerIdling = false) {
-        reduce { state.copy(isLoadingLocal = true) }
         repeatOnSubscription {
             footballRepository.getAllCompetitionsFlowFromLocal().collect { comps ->
                 if (comps.isNotEmpty())
-                    reduce { state.copy(comps = comps, isLoadingLocal = false) }
+                    reduce { state.copy(comps = comps) }
             }
         }
     }
 
     fun updateCompetitionsFromRemoteToLocal() = intent {
-        reduce { state.copy(isLoadingRemote = true) }
+        reduce { state.copy(isLoading = true) }
+        delay(5000)
         when (val compsFromRemote = footballRepository.getAllCompetitionsFromRemoteToLocal()) {
             is Resource.Success -> {
                 reduce {
                     state.copy(
-                        isLoadingRemote = false,
+                        isLoading = false,
                         comps = compsFromRemote.data ?: emptyList()
                     )
                 }
@@ -58,7 +59,7 @@ class CompetitionsScreenViewModel(
     }
 
     private fun handleError(error: ErrorsTypesHttp) = intent {
-        reduce { state.copy(isLoadingRemote = false) }
+        reduce { state.copy(isLoading = false) }
 
         when (error) {
             is ErrorsTypesHttp.Https400Errors ->
