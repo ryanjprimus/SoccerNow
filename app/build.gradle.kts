@@ -76,6 +76,7 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":domain"))
     implementation(project(":utils"))
+    implementation(project(":competition_standings"))
 
     // Koin for Android
     implementation("io.insert-koin:koin-androidx-compose:$koinVersion")

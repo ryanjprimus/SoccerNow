@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import ru.asmelnikov.data.local.models.CompetitionEntity
 
-interface RealmOptions {
+interface CompetitionsRealmOptions {
 
     suspend fun upsertCompetitionsDataFromRemoteToLocal(competitions: List<CompetitionEntity>)
 
     suspend fun getCompetitionsFlowFromLocal(): Flow<List<CompetitionEntity>>
 
-    class RealmOptionsImpl(private val realmConfig: RealmConfiguration) : RealmOptions {
+    class RealmOptionsImpl(private val realmConfig: RealmConfiguration) : CompetitionsRealmOptions {
 
         override suspend fun upsertCompetitionsDataFromRemoteToLocal(competitions: List<CompetitionEntity>) {
             withContext(Dispatchers.IO) {

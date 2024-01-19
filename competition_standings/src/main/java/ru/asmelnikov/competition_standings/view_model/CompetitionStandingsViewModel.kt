@@ -1,38 +1,43 @@
-package ru.asmelnikov.competitions_main.view_model
+package ru.asmelnikov.competition_standings.view_model
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.syntax.simple.repeatOnSubscription
 import org.orbitmvi.orbit.viewmodel.container
-import ru.asmelnikov.domain.repository.CompetitionsRepository
+import ru.asmelnikov.domain.repository.CompetitionStandingsRepository
 import ru.asmelnikov.utils.ErrorsTypesHttp
+import ru.asmelnikov.utils.R
 import ru.asmelnikov.utils.Resource
 import ru.asmelnikov.utils.StringResourceProvider
-import ru.asmelnikov.utils.R
 
-class CompetitionsScreenViewModel(
-    private val footballRepository: CompetitionsRepository,
+class CompetitionStandingsViewModel(
+    private val standingsRepository: CompetitionStandingsRepository,
     private val stringResourceProvider: StringResourceProvider,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(),
-    ContainerHost<CompetitionsScreenState, CompetitionsScreenSideEffects> {
+    ContainerHost<CompetitionStandingsState, CompetitionStandingSideEffects> {
 
-    override val container = container<CompetitionsScreenState, CompetitionsScreenSideEffects>(
-        initialState = CompetitionsScreenState(),
+    override val container = container<CompetitionStandingsState, CompetitionStandingSideEffects>(
+        initialState = CompetitionStandingsState(),
         savedStateHandle = savedStateHandle
-    ) {
-        collectCompetitionsFlowFromLocal()
-        updateCompetitionsFromRemoteToLocal()
+    )
+
+    fun compIdToState(compId: String) = intent {
+        reduce { state.copy(compId = compId) }
+        collectStandingsFlowFromLocal()
+        updateStandingsFromRemoteToLocal()
     }
 
-    fun updateCompetitionsFromRemoteToLocal() = intent {
+    fun updateStandingsFromRemoteToLocal() = intent {
         reduce { state.copy(isLoading = true) }
-        when (val compsFromRemote = footballRepository.getAllCompetitionsFromRemoteToLocal()) {
+        when (val compsFromRemote =
+            standingsRepository.getCompetitionStandingsFromRemoteToLocalById(
+                state.compId
+            )) {
             is Resource.Success -> {
                 reduce {
                     state.copy(
@@ -47,18 +52,19 @@ class CompetitionsScreenViewModel(
         }
     }
 
-    fun onCompClick(compId: String) = intent {
-        postSideEffect(CompetitionsScreenSideEffects.OnCompetitionNavigate(compId = compId))
-    }
-
-    private fun collectCompetitionsFlowFromLocal() = intent(registerIdling = false) {
+    private fun collectStandingsFlowFromLocal() = intent(registerIdling = false) {
         repeatOnSubscription {
-            footballRepository.getAllCompetitionsFlowFromLocal().collect { comps ->
-                if (comps.isNotEmpty())
-                    reduce { state.copy(comps = comps) }
+            standingsRepository.getStandingsFlowFromLocalById(state.compId).collect { standings ->
+                reduce {
+                    state.copy(
+                        compStandings = standings.standings,
+                        filter = standings.filters.season
+                    )
+                }
             }
         }
     }
+
 
     private fun handleError(error: ErrorsTypesHttp) = intent {
         reduce { state.copy(isLoading = false) }
@@ -66,7 +72,7 @@ class CompetitionsScreenViewModel(
         when (error) {
             is ErrorsTypesHttp.Https400Errors ->
                 postSideEffect(
-                    CompetitionsScreenSideEffects.Snackbar(
+                    CompetitionStandingSideEffects.Snackbar(
                         stringResourceProvider.getString(
                             resourceId = when (error.errorCode) {
                                 429 -> R.string.http_429_errors
@@ -78,7 +84,7 @@ class CompetitionsScreenViewModel(
                 )
 
             is ErrorsTypesHttp.Https500Errors -> postSideEffect(
-                CompetitionsScreenSideEffects.Snackbar(
+                CompetitionStandingSideEffects.Snackbar(
                     stringResourceProvider.getString(
                         resourceId = R.string.http_500_errors,
                         arguments = arrayOf(error.errorMessage ?: "")
@@ -87,7 +93,7 @@ class CompetitionsScreenViewModel(
             )
 
             is ErrorsTypesHttp.TimeoutException -> postSideEffect(
-                CompetitionsScreenSideEffects.Snackbar(
+                CompetitionStandingSideEffects.Snackbar(
                     stringResourceProvider.getString(
                         resourceId = R.string.http_timeout_error
                     )
@@ -95,7 +101,7 @@ class CompetitionsScreenViewModel(
             )
 
             is ErrorsTypesHttp.MissingConnection -> postSideEffect(
-                CompetitionsScreenSideEffects.Snackbar(
+                CompetitionStandingSideEffects.Snackbar(
                     stringResourceProvider.getString(
                         resourceId = R.string.http_missing_error
                     )
@@ -103,7 +109,7 @@ class CompetitionsScreenViewModel(
             )
 
             is ErrorsTypesHttp.NetworkError -> postSideEffect(
-                CompetitionsScreenSideEffects.Snackbar(
+                CompetitionStandingSideEffects.Snackbar(
                     stringResourceProvider.getString(
                         resourceId = R.string.http_network_error,
                         arguments = arrayOf(error.errorMessage ?: "")
@@ -112,7 +118,7 @@ class CompetitionsScreenViewModel(
             )
 
             else -> postSideEffect(
-                CompetitionsScreenSideEffects.Snackbar(
+                CompetitionStandingSideEffects.Snackbar(
                     stringResourceProvider.getString(
                         resourceId = R.string.http_unknown_error,
                         arguments = arrayOf(error.errorMessage ?: "")

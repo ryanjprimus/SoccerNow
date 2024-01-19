@@ -35,15 +35,17 @@ import ru.asmelnikov.utils.R
 
 @Composable
 fun CompetitionItem(
-    competition: Competition
+    competition: Competition,
+    onCompClick: (String) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { },
+            .clickable {
+                onCompClick(competition.id.toString())
+            },
         shape = RoundedCornerShape(0.dp),
     ) {
-
 
         Row(
             modifier = Modifier

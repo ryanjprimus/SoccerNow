@@ -12,5 +12,9 @@ data class CompetitionsScreenState(
 ) : Parcelable
 
 sealed class CompetitionsScreenSideEffects {
-    data class Snackbar(val text: String, val duration: SnackbarDuration = SnackbarDuration.Short) : CompetitionsScreenSideEffects()
+    data class Snackbar(val text: String, val duration: SnackbarDuration = SnackbarDuration.Short) :
+        CompetitionsScreenSideEffects()
+
+    data class OnCompetitionNavigate(val compId: String) :
+        CompetitionsScreenSideEffects()
 }

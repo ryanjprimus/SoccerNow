@@ -41,17 +41,19 @@ import ru.asmelnikov.competitions_main.view_model.CompetitionsScreenSideEffects
 import ru.asmelnikov.competitions_main.view_model.CompetitionsScreenViewModel
 import ru.asmelnikov.domain.models.Competition
 import ru.asmelnikov.utils.MainAppState
+import ru.asmelnikov.utils.Routes
+import ru.asmelnikov.utils.navigateWithArgs
 
 @Composable
 fun CompetitionsScreen(
     appState: MainAppState,
-    viewModel: CompetitionsScreenViewModel = koinViewModel(),
     showSnackbar: (
         String,
         SnackbarDuration,
         String?,
         actionPerformed: () -> Unit
-    ) -> Unit
+    ) -> Unit,
+    viewModel: CompetitionsScreenViewModel = koinViewModel()
 ) {
 
     val state by viewModel.container.stateFlow.collectAsState()
@@ -63,6 +65,10 @@ fun CompetitionsScreen(
                 it.duration,
                 null
             ) {}
+
+            is CompetitionsScreenSideEffects.OnCompetitionNavigate -> {
+                appState.navigateWithArgs(route = Routes.Competition_Standings, args = it.compId)
+            }
         }
     }
 
@@ -74,7 +80,8 @@ fun CompetitionsScreen(
         comps = state.comps,
         updateComps = viewModel::updateCompetitionsFromRemoteToLocal,
         swipeRefreshState = swipeRefreshState,
-        isLoading = state.isLoading
+        isLoading = state.isLoading,
+        onCompClick = viewModel::onCompClick
     )
 
 }
@@ -84,7 +91,8 @@ fun CompetitionsScreenContent(
     comps: List<Competition>,
     updateComps: () -> Unit,
     swipeRefreshState: SwipeRefreshState,
-    isLoading: Boolean
+    isLoading: Boolean,
+    onCompClick: (String) -> Unit
 ) {
 
     val state = rememberCollapsingToolbarScaffoldState()
@@ -154,7 +162,7 @@ fun CompetitionsScreenContent(
                 }
                 if (comps.isNotEmpty()) {
                     items(items = comps, key = { it.id }) { comp ->
-                        CompetitionItem(competition = comp)
+                        CompetitionItem(competition = comp, onCompClick = onCompClick)
                     }
                 } else if (isLoading) {
                     items(10) {

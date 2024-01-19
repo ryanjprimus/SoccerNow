@@ -8,13 +8,53 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.asmelnikov.data.api.FootballApi
-import ru.asmelnikov.data.local.RealmOptions
+import ru.asmelnikov.data.local.CompetitionsRealmOptions
+import ru.asmelnikov.data.local.StandingsRealmOptions
 import ru.asmelnikov.data.local.models.AreaEntity
 import ru.asmelnikov.data.local.models.CompetitionEntity
 import ru.asmelnikov.data.local.models.CurrentSeasonEntity
+import ru.asmelnikov.data.local.models.*
 import ru.asmelnikov.data.local.models.WinnerEntity
-import ru.asmelnikov.data.repository.FootballRepositoryImpl
-import ru.asmelnikov.domain.repository.FootballRepository
+import ru.asmelnikov.data.repository.CompetitionStandingsRepositoryImpl
+import ru.asmelnikov.data.repository.CompetitionsRepositoryImpl
+import ru.asmelnikov.data.retrofit_errors_handler.RetrofitErrorsHandler
+import ru.asmelnikov.domain.repository.CompetitionStandingsRepository
+import ru.asmelnikov.domain.repository.CompetitionsRepository
+
+@RealmModule(library = false, classes = [CompetitionStandingsEntity::class])
+data class CompetitionStandingsDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [CompetitionEmbeddedEntity::class])
+data class CompetitionEmbeddedDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [FiltersEntity::class])
+data class FiltersDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [SeasonEntity::class])
+data class SeasonDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [StandingEntity::class])
+data class StandingDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [TableEntity::class])
+data class TableDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [TeamEntity::class])
+data class TeamDbModule(val placeholder: String) {
+    constructor() : this("")
+}
 
 @RealmModule(library = false, classes = [CompetitionEntity::class])
 data class CompetitionDbModule(val placeholder: String) {
@@ -38,7 +78,6 @@ data class WinnerDbModule(val placeholder: String) {
 
 private const val FOOTBALL_API_URL = "https://api.football-data.org/v4/"
 
-
 val dataModule = module {
 
     single<RealmConfiguration> {
@@ -46,6 +85,13 @@ val dataModule = module {
             .name("goal_pulse.realm")
             .schemaVersion(1L)
             .modules(
+                CompetitionStandingsDbModule(),
+                CompetitionEmbeddedDbModule(),
+                FiltersDbModule(),
+                SeasonDbModule(),
+                StandingDbModule(),
+                TableDbModule(),
+                TeamDbModule(),
                 CompetitionDbModule(),
                 AreaDbModule(),
                 CurrentSeasonDbModule(),
@@ -54,7 +100,11 @@ val dataModule = module {
             .build()
     }
 
-    single<RealmOptions> { RealmOptions.RealmOptionsImpl(realmConfig = get()) }
+    factory<RetrofitErrorsHandler> { RetrofitErrorsHandler.RetrofitErrorsHandlerImpl() }
+
+    single<CompetitionsRealmOptions> { CompetitionsRealmOptions.RealmOptionsImpl(realmConfig = get()) }
+
+    single<StandingsRealmOptions> { StandingsRealmOptions.RealmOptionsImpl(realmConfig = get()) }
 
     single<OkHttpClient> { okHttp() }
 
@@ -64,7 +114,21 @@ val dataModule = module {
 
     single<FootballApi> { get<Retrofit>().create(FootballApi::class.java) }
 
-    single<ru.asmelnikov.domain.repository.FootballRepository> { FootballRepositoryImpl(footballApi = get(), realmOptions = get()) }
+    single<CompetitionsRepository> {
+        CompetitionsRepositoryImpl(
+            footballApi = get(),
+            realmOptions = get(),
+            retrofitErrorsHandler = get()
+        )
+    }
+
+    single<CompetitionStandingsRepository> {
+        CompetitionStandingsRepositoryImpl(
+            footballApi = get(),
+            realmOptions = get(),
+            retrofitErrorsHandler = get()
+        )
+    }
 
 }
 

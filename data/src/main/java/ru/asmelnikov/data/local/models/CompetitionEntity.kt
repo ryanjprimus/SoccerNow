@@ -46,5 +46,6 @@ open class WinnerEntity(
     var name: String = "",
     var shortName: String = "",
     var tla: String = "",
-    var website: String = ""
+    var website: String = "",
+    var venue: String = ""
 ) : RealmObject()

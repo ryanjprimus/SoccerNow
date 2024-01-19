@@ -58,7 +58,8 @@ fun WinnerDTO?.toWinnerEntity(): WinnerEntity {
         name = this?.name ?: "",
         shortName = this?.shortName ?: "",
         tla = this?.tla ?: "",
-        website = this?.website ?: ""
+        website = this?.website ?: "",
+        venue = this?.venue ?: ""
     )
 }
 
@@ -107,6 +108,7 @@ fun WinnerEntity?.toWinner(): Winner {
         name = this?.name ?: "",
         shortName = this?.shortName ?: "",
         tla = this?.tla ?: "",
-        website = this?.website ?: ""
+        website = this?.website ?: "",
+        venue = this?.venue ?: ""
     )
 }
