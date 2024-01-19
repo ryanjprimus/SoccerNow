@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.asmelnikov.domain.models.Competition
 import ru.asmelnikov.utils.Resource
 
-interface FootballRepository {
+interface CompetitionsRepository {
 
     suspend fun getAllCompetitionsFromRemoteToLocal(): Resource<List<Competition>>
 

@@ -26,7 +26,8 @@ data class CompetitionDTO(
 
 @JsonClass(generateAdapter = true)
 data class FiltersDTO(
-    @Json(name = "client") val client: String?
+    @Json(name = "client") val client: String?,
+    @Json(name = "season") val season: String?
 )
 
 @JsonClass(generateAdapter = true)
@@ -57,5 +58,6 @@ data class WinnerDTO(
     @Json(name = "name") val name: String?,
     @Json(name = "shortName") val shortName: String?,
     @Json(name = "tla") val tla: String?,
-    @Json(name = "website") val website: String?
+    @Json(name = "website") val website: String?,
+    @Json(name = "venue") val venue: String?
 )

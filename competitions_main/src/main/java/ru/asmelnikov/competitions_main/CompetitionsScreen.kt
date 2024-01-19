@@ -2,11 +2,9 @@
 
 package ru.asmelnikov.competitions_main
 
-import android.os.Build.VERSION.SDK_INT
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,9 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,20 +20,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.ImageLoader
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
-import coil.size.Size
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -47,23 +34,26 @@ import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
 import ru.asmelnikov.competitions_main.components.CompetitionItem
+import ru.asmelnikov.competitions_main.components.EmptyContent
 import ru.asmelnikov.competitions_main.components.GifImage
+import ru.asmelnikov.competitions_main.components.ShimmerListItem
 import ru.asmelnikov.competitions_main.view_model.CompetitionsScreenSideEffects
 import ru.asmelnikov.competitions_main.view_model.CompetitionsScreenViewModel
 import ru.asmelnikov.domain.models.Competition
 import ru.asmelnikov.utils.MainAppState
-import ru.asmelnikov.utils.R
+import ru.asmelnikov.utils.Routes
+import ru.asmelnikov.utils.navigateWithArgs
 
 @Composable
 fun CompetitionsScreen(
     appState: MainAppState,
-    viewModel: CompetitionsScreenViewModel = koinViewModel(),
     showSnackbar: (
         String,
         SnackbarDuration,
         String?,
         actionPerformed: () -> Unit
-    ) -> Unit
+    ) -> Unit,
+    viewModel: CompetitionsScreenViewModel = koinViewModel()
 ) {
 
     val state by viewModel.container.stateFlow.collectAsState()
@@ -75,18 +65,23 @@ fun CompetitionsScreen(
                 it.duration,
                 null
             ) {}
+
+            is CompetitionsScreenSideEffects.OnCompetitionNavigate -> {
+                appState.navigateWithArgs(route = Routes.Competition_Standings, args = it.compId)
+            }
         }
     }
 
     val swipeRefreshState = rememberSwipeRefreshState(
-        isRefreshing = state.isLoadingRemote
+        isRefreshing = state.isLoading
     )
 
     CompetitionsScreenContent(
         comps = state.comps,
         updateComps = viewModel::updateCompetitionsFromRemoteToLocal,
         swipeRefreshState = swipeRefreshState,
-        isLocalLoading = state.isLoadingLocal
+        isLoading = state.isLoading,
+        onCompClick = viewModel::onCompClick
     )
 
 }
@@ -96,7 +91,8 @@ fun CompetitionsScreenContent(
     comps: List<Competition>,
     updateComps: () -> Unit,
     swipeRefreshState: SwipeRefreshState,
-    isLocalLoading: Boolean
+    isLoading: Boolean,
+    onCompClick: (String) -> Unit
 ) {
 
     val state = rememberCollapsingToolbarScaffoldState()
@@ -119,6 +115,24 @@ fun CompetitionsScreenContent(
             GifImage(
                 modifier = Modifier.fillMaxWidth(),
                 alpha = state.toolbarState.progress
+            )
+
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                MaterialTheme.colorScheme.background
+                            )
+                        )
+                    )
+                    .road(
+                        whenCollapsed = Alignment.BottomCenter,
+                        whenExpanded = Alignment.BottomCenter
+                    )
             )
 
             Text(
@@ -146,11 +160,22 @@ fun CompetitionsScreenContent(
                 item {
                     Spacer(modifier = Modifier.height(0.dp))
                 }
-                items(items = comps, key = { it.id }) { comp ->
-                    CompetitionItem(competition = comp)
+                if (comps.isNotEmpty()) {
+                    items(items = comps, key = { it.id }) { comp ->
+                        CompetitionItem(competition = comp, onCompClick = onCompClick)
+                    }
+                } else if (isLoading) {
+                    items(10) {
+                        ShimmerListItem()
+                    }
+                } else {
+                    item {
+                        EmptyContent(
+                            onReloadClick = updateComps
+                        )
+                    }
                 }
             }
         }
-
     }
 }

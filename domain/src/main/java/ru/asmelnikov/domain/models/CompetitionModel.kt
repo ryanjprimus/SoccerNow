@@ -3,12 +3,6 @@ package ru.asmelnikov.domain.models
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-data class CompetitionModel(
-    val competitions: List<Competition>,
-    val count: Int,
-    val filters: Filters
-)
-
 @Parcelize
 data class Competition(
     val area: Area,
@@ -23,17 +17,13 @@ data class Competition(
     val type: String
 ) : Parcelable
 
-data class Filters(
-    val client: String
-)
-
 @Parcelize
 data class Area(
     val code: String,
     val flag: String,
     val id: Int,
     val name: String
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class CurrentSeason(
@@ -55,5 +45,6 @@ data class Winner(
     val name: String,
     val shortName: String,
     val tla: String,
-    val website: String
-): Parcelable
+    val website: String,
+    val venue: String
+) : Parcelable
