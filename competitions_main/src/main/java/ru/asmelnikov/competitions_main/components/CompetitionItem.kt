@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -30,8 +31,13 @@ import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
+import com.mxalbert.sharedelements.FadeMode
+import com.mxalbert.sharedelements.MaterialContainerTransformSpec
+import com.mxalbert.sharedelements.SharedMaterialContainer
 import ru.asmelnikov.domain.models.Competition
 import ru.asmelnikov.utils.R
+import ru.asmelnikov.utils.composables.SubComposeAsyncImageCommon
+import ru.asmelnikov.utils.navigation.Routes
 
 @Composable
 fun CompetitionItem(
@@ -55,36 +61,23 @@ fun CompetitionItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            SubcomposeAsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(
-                        if (competition.emblem == competition.area.flag) {
-                            competition.area.flag
-                        } else {
-                            competition.emblem
-                        }
+            SharedMaterialContainer(
+                key = competition.emblem,
+                screenKey = Routes.Competitions_Main,
+                color = Color.Transparent,
+                transitionSpec = MaterialContainerTransformSpec(
+                    durationMillis = 1000,
+                    fadeMode = FadeMode.Out
+                )
+            ) {
+                SubComposeAsyncImageCommon(
+                    imageUri = competition.emblem,
+                    shape = if (competition.emblem == competition.area.flag) CircleShape else RoundedCornerShape(
+                        0.dp
                     )
-                    .crossfade(true)
-                    .decoderFactory(SvgDecoder.Factory())
-                    .build(),
-                loading = {
-                    CircularProgressIndicator()
-                },
-                error = {
-                    painterResource(R.drawable.placeholder_photo)
-                },
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(
-                        if (competition.emblem == competition.area.flag) {
-                            CircleShape
-                        } else {
-                            RoundedCornerShape(0.dp)
-                        }
-                    )
-            )
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -97,23 +90,11 @@ fun CompetitionItem(
                         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    SubcomposeAsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(competition.area.flag.ifBlank { R.drawable.unknown_flag })
-                            .crossfade(true)
-                            .decoderFactory(SvgDecoder.Factory())
-                            .build(),
-                        loading = {
-                            CircularProgressIndicator()
-                        },
-                        error = {
-                            painterResource(R.drawable.placeholder_photo)
-                        },
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clip(CircleShape)
+
+                    SubComposeAsyncImageCommon(
+                        imageUri = competition.area.flag.ifBlank { R.drawable.unknown_flag },
+                        shape = CircleShape,
+                        size = 24.dp
                     )
                 }
 

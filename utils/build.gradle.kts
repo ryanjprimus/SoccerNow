@@ -44,6 +44,7 @@ android {
 }
 
 val koinVersion: String by project.extra
+val coilVersion: String by project.extra
 
 dependencies {
 
@@ -63,9 +64,14 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // Coil
+    implementation("io.coil-kt:coil-compose:$coilVersion")
+    implementation("io.coil-kt:coil-gif:$coilVersion")
+    implementation("io.coil-kt:coil-svg:$coilVersion")
+
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.6")
 
-    // koin
+    // Koin
     implementation("io.insert-koin:koin-core:$koinVersion")
 }

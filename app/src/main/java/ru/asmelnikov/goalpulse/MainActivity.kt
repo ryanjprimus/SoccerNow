@@ -9,9 +9,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.ui.Modifier
+import com.mxalbert.sharedelements.SharedElementsRoot
 import ru.asmelnikov.goalpulse.navigation.NavGraph
 import ru.asmelnikov.goalpulse.ui.theme.GoalPulseTheme
-import ru.asmelnikov.utils.rememberAppState
+import ru.asmelnikov.utils.composables.rememberAppState
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -29,19 +30,20 @@ class MainActivity : ComponentActivity() {
                         SnackbarHost(appState.snackbarState)
                     }
                 ) {
-
-                    NavGraph(
-                        appState = appState,
-                        paddingValues = it,
-                        showSnackbar = { message, duration, label, action ->
-                            appState.showSnackbar(
-                                message = message,
-                                duration = duration,
-                                actionLabel = label,
-                                actionPerformed = action
-                            )
-                        }
-                    )
+                    SharedElementsRoot{
+                        NavGraph(
+                            appState = appState,
+                            paddingValues = it,
+                            showSnackbar = { message, duration, label, action ->
+                                appState.showSnackbar(
+                                    message = message,
+                                    duration = duration,
+                                    actionLabel = label,
+                                    actionPerformed = action
+                                )
+                            }
+                        )
+                    }
                 }
             }
         }

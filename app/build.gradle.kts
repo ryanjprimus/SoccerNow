@@ -71,12 +71,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    // Module
-    implementation(project(":competitions_main"))
-    implementation(project(":data"))
-    implementation(project(":domain"))
-    implementation(project(":utils"))
-    implementation(project(":competition_standings"))
+    // Shared Elements Transition
+    implementation("com.mxalbert.sharedelements:shared-elements:0.1.0-SNAPSHOT")
 
     // Koin for Android
     implementation("io.insert-koin:koin-androidx-compose:$koinVersion")
@@ -86,5 +82,10 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.6")
 
-
+    // Module
+    implementation(project(":competitions_main"))
+    implementation(project(":data"))
+    implementation(project(":domain"))
+    implementation(project(":utils"))
+    implementation(project(":competition_standings"))
 }

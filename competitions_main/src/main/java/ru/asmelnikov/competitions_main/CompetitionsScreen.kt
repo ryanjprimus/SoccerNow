@@ -2,6 +2,7 @@
 
 package ru.asmelnikov.competitions_main
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,9 +41,9 @@ import ru.asmelnikov.competitions_main.components.ShimmerListItem
 import ru.asmelnikov.competitions_main.view_model.CompetitionsScreenSideEffects
 import ru.asmelnikov.competitions_main.view_model.CompetitionsScreenViewModel
 import ru.asmelnikov.domain.models.Competition
-import ru.asmelnikov.utils.MainAppState
-import ru.asmelnikov.utils.Routes
-import ru.asmelnikov.utils.navigateWithArgs
+import ru.asmelnikov.utils.composables.MainAppState
+import ru.asmelnikov.utils.navigation.Routes
+import ru.asmelnikov.utils.navigation.navigateWithArgs
 
 @Composable
 fun CompetitionsScreen(

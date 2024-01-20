@@ -5,11 +5,9 @@ import io.realm.RealmConfiguration
 import io.realm.RealmObjectChangeListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import ru.asmelnikov.data.local.models.CompetitionStandingsEntity
 
@@ -32,7 +30,6 @@ interface StandingsRealmOptions {
         }
 
         override suspend fun getStandingsFlowById(compId: String): Flow<CompetitionStandingsEntity> {
-            // todo
             return callbackFlow {
                 val realm = Realm.getInstance(realmConfig)
                 val competition: CompetitionStandingsEntity? =
@@ -59,20 +56,8 @@ interface StandingsRealmOptions {
                         realm.close()
                     }
                 } else {
-                    while (isActive) {
-                        delay(1000)
-                        val updatedCompetition: CompetitionStandingsEntity? =
-                            realm.where(CompetitionStandingsEntity::class.java)
-                                .equalTo("id", compId)
-                                .findFirst()
-
-                        if (updatedCompetition != null) {
-                            val updatedCompEntity: CompetitionStandingsEntity =
-                                realm.copyFromRealm(updatedCompetition)
-                            send(updatedCompEntity)
-                            close()
-                        }
-                    }
+                    send(CompetitionStandingsEntity())
+                    close()
                     realm.close()
                 }
             }.flowOn(Dispatchers.Main)

@@ -41,8 +41,15 @@ class CompetitionStandingsViewModel(
             is Resource.Success -> {
                 reduce {
                     state.copy(
-                        isLoading = false
+                        isLoading = false,
                     )
+                }
+                if (state.competitionStandings?.standings.isNullOrEmpty()) {
+                    reduce {
+                        state.copy(
+                            competitionStandings = compsFromRemote.data
+                        )
+                    }
                 }
             }
 
@@ -57,8 +64,7 @@ class CompetitionStandingsViewModel(
             standingsRepository.getStandingsFlowFromLocalById(state.compId).collect { standings ->
                 reduce {
                     state.copy(
-                        compStandings = standings.standings,
-                        filter = standings.filters.season
+                        competitionStandings = standings
                     )
                 }
             }

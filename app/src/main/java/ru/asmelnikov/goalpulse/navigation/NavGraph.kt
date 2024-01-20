@@ -11,8 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.asmelnikov.competition_standings.CompetitionStandingsScreen
 import ru.asmelnikov.competitions_main.CompetitionsScreen
-import ru.asmelnikov.utils.MainAppState
-import ru.asmelnikov.utils.Routes
+import ru.asmelnikov.utils.composables.MainAppState
+import ru.asmelnikov.utils.navigation.Routes
 
 @Composable
 fun NavGraph(

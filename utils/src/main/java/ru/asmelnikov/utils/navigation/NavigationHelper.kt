@@ -1,4 +1,6 @@
-package ru.asmelnikov.utils
+package ru.asmelnikov.utils.navigation
+
+import ru.asmelnikov.utils.composables.MainAppState
 
 fun MainAppState.popUp() {
     navController.popBackStack()

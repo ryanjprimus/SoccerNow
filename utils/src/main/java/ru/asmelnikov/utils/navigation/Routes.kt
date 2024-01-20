@@ -1,4 +1,4 @@
-package ru.asmelnikov.utils
+package ru.asmelnikov.utils.navigation
 
 object Routes {
 
