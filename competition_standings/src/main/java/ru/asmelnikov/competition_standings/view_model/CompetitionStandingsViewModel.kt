@@ -41,8 +41,15 @@ class CompetitionStandingsViewModel(
             is Resource.Success -> {
                 reduce {
                     state.copy(
-                        isLoading = false
+                        isLoading = false,
                     )
+                }
+                if (state.compStandings.isEmpty()) {
+                    reduce {
+                        state.copy(
+                            compStandings = compsFromRemote.data?.standings ?: emptyList()
+                        )
+                    }
                 }
             }
 
