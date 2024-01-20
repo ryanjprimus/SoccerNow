@@ -10,8 +10,7 @@ import ru.asmelnikov.domain.models.Standing
 @Parcelize
 data class CompetitionStandingsState(
     val compId: String = "",
-    val filter: String = "",
-    val compStandings: List<Standing> = emptyList(),
+    val competitionStandings: CompetitionStandings? = null,
     val isLoading: Boolean = false
 ) : Parcelable
 

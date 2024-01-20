@@ -67,7 +67,10 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    // collapsing Toolbar
+    // Shared Elements Transition
+    implementation("com.mxalbert.sharedelements:shared-elements:0.1.0-SNAPSHOT")
+
+    // Collapsing Toolbar
     implementation("me.onebone:toolbar-compose:2.3.5")
 
     // Coil

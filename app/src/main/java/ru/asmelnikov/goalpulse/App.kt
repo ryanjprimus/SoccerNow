@@ -9,7 +9,7 @@ import org.koin.core.logger.Level
 import ru.asmelnikov.competition_standings.di.competitionStandingsModule
 import ru.asmelnikov.competitions_main.di.competitionsScreenModule
 import ru.asmelnikov.data.di.dataModule
-import ru.asmelnikov.utils.utilsModule
+import ru.asmelnikov.utils.di.utilsModule
 
 class App : Application() {
 

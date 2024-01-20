@@ -1,22 +1,14 @@
 package ru.asmelnikov.data.local
 
-import android.util.Log
 import io.realm.Realm
-import io.realm.RealmChangeListener
 import io.realm.RealmConfiguration
 import io.realm.RealmObjectChangeListener
-import io.realm.RealmResults
-import io.realm.kotlin.toFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
-import ru.asmelnikov.data.local.models.CompetitionEntity
 import ru.asmelnikov.data.local.models.CompetitionStandingsEntity
 
 

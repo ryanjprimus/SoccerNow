@@ -1,4 +1,4 @@
-package ru.asmelnikov.utils
+package ru.asmelnikov.utils.composables
 
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api

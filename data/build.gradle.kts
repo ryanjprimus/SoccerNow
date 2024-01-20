@@ -42,14 +42,10 @@ val moshiVersion: String by project.extra
 
 dependencies {
 
-    // module
-    implementation(project(":domain"))
-    implementation(project(":utils"))
-
-    // koin
+    // Koin
     implementation("io.insert-koin:koin-core:$koinVersion")
 
-    // network
+    // Network
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-moshi:$retrofitVersion")
     implementation("com.squareup.okhttp3:logging-interceptor:$okhttpVersion")
@@ -61,4 +57,7 @@ dependencies {
     api("com.squareup.moshi:moshi-adapters:$moshiVersion")
     api("com.squareup.moshi:moshi-kotlin:$moshiVersion")
 
+    // module
+    implementation(project(":domain"))
+    implementation(project(":utils"))
 }
