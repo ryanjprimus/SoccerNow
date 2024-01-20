@@ -114,7 +114,7 @@ fun CompetitionsScreenContent(
             )
 
             GifImage(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().parallax(),
                 alpha = state.toolbarState.progress
             )
 

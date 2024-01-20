@@ -1,11 +1,7 @@
 package ru.asmelnikov.competition_standings
 
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,13 +36,15 @@ import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
+import ru.asmelnikov.competition_standings.components.StandingItem
+import ru.asmelnikov.competition_standings.components.StandingTopItem
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingSideEffects
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingsViewModel
 import ru.asmelnikov.domain.models.CompetitionStandings
-import ru.asmelnikov.domain.models.Standing
 import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.composables.SubComposeAsyncImageCommon
 import ru.asmelnikov.utils.navigation.Routes
+import ru.asmelnikov.utils.navigation.popUp
 
 @Composable
 fun CompetitionStandingsScreen(
@@ -73,14 +77,18 @@ fun CompetitionStandingsScreen(
     }
 
     CompetitionStandingsContent(
-        competitionStandings = state.competitionStandings
+        competitionStandings = state.competitionStandings,
+        onBackClick = {
+            appState.popUp()
+        }
     )
 
 }
 
 @Composable
 fun CompetitionStandingsContent(
-    competitionStandings: CompetitionStandings?
+    competitionStandings: CompetitionStandings?,
+    onBackClick: () -> Unit
 ) {
 
     val state = rememberCollapsingToolbarScaffoldState()
@@ -90,8 +98,9 @@ fun CompetitionStandingsContent(
         state = state,
         scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
         toolbar = {
-
-            val textSize = (18 + (30 - 12) * state.toolbarState.progress).sp
+            val progress = state.toolbarState.progress
+            val textSize = (18 + (30 - 12) * progress).sp
+            val mainImageStartPadding = (40 - (40 * progress)).dp
 
             SubComposeAsyncImageCommon(
                 imageUri = competitionStandings?.area?.flag ?: "",
@@ -99,19 +108,23 @@ fun CompetitionStandingsContent(
                 size = 240.dp,
                 alpha = state.toolbarState.progress,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth().parallax()
             )
 
             Box(
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(
+                        start = mainImageStartPadding,
+                        top = 8.dp,
+                        bottom = 8.dp
+                    )
                     .road(
                         whenCollapsed = Alignment.TopStart,
                         whenExpanded = Alignment.Center
                     )
             ) {
-                val progress = state.toolbarState.progress
-                val imgSize = 40 + (100 * progress)
+
+                val imgSize = (40 + (100 * progress)).dp
 
                 SharedMaterialContainer(
                     key = competitionStandings?.competition?.emblem ?: "",
@@ -125,9 +138,13 @@ fun CompetitionStandingsContent(
                     SubComposeAsyncImageCommon(
                         imageUri = competitionStandings?.competition?.emblem ?: "",
                         shape = RoundedCornerShape(0.dp),
-                        size = imgSize.dp
+                        size = imgSize
                     )
                 }
+            }
+
+            IconButton(onClick = onBackClick) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
             }
 
             Text(
@@ -143,16 +160,17 @@ fun CompetitionStandingsContent(
         }) {
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier.fillMaxSize()
         ) {
             competitionStandings?.standings?.forEach { standing ->
-                items(standing.table) { table ->
-                    Row {
-                        Text(text = table.position.toString())
-                        Text(text = table.team.name)
-                        Text(text = table.points.toString())
-                    }
+                item {
+                    Divider(color = MaterialTheme.colorScheme.primary)
+                    StandingTopItem()
+                    Divider(color = MaterialTheme.colorScheme.primary)
+                }
+                items(items = standing.table, key = { it.team.id }) { table ->
+                    StandingItem(table = table)
+                    Divider(color = MaterialTheme.colorScheme.primary)
                 }
             }
         }
