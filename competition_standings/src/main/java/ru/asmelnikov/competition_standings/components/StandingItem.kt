@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -158,7 +157,8 @@ fun StandingItem(
 fun StandingTopItem(
     modifier: Modifier = Modifier,
     tableName: String = "Team",
-    dataWeight: Float = 0.08f
+    dataWeight: Float = 0.08f,
+    orientation: String
 ) {
     Row(
         modifier = modifier
@@ -183,11 +183,13 @@ fun StandingTopItem(
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(0.47f)
+                .weight(if (orientation == "PORTRAIT") 0.47f else 0.415f)
                 .rightBorder(strokeWidth = 1.dp, color = MaterialTheme.colorScheme.primary)
         ) {
             Text(
-                modifier = Modifier.align(Alignment.CenterStart).padding(start = 8.dp),
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 8.dp),
                 text = tableName,
                 textAlign = TextAlign.Center,
                 style = TextStyle(fontWeight = FontWeight.Bold)

@@ -14,7 +14,8 @@ data class Competition(
     val name: String,
     val numberOfAvailableSeasons: Int,
     val plan: String,
-    val type: String
+    val type: String,
+    val seasons: List<Season>
 ) : Parcelable
 
 @Parcelize
@@ -28,6 +29,7 @@ data class Area(
 @Parcelize
 data class CurrentSeason(
     val currentMatchDay: Int,
+    val startDateEndDate: String, // example - 2022/2023
     val endDate: String,
     val id: Int,
     val startDate: String,

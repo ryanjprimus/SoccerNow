@@ -22,6 +22,7 @@ data class Filters(
 data class Season(
     val currentMatchday: Int,
     val endDate: String,
+    val startDateEndDate: String, // example - 2022/2023
     val id: Int,
     val startDate: String,
     val winner: Winner

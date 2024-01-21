@@ -126,7 +126,8 @@ val dataModule = module {
         CompetitionStandingsRepositoryImpl(
             footballApi = get(),
             realmOptions = get(),
-            retrofitErrorsHandler = get()
+            retrofitErrorsHandler = get(),
+            realmCompetitionOptions = get()
         )
     }
 

@@ -21,7 +21,8 @@ data class CompetitionDTO(
     @Json(name = "name") val name: String?,
     @Json(name = "numberOfAvailableSeasons") val numberOfAvailableSeasons: Int?,
     @Json(name = "plan") val plan: String?,
-    @Json(name = "type") val type: String?
+    @Json(name = "type") val type: String?,
+    @Json(name = "seasons") val seasons: List<SeasonDTO>?
 )
 
 @JsonClass(generateAdapter = true)
