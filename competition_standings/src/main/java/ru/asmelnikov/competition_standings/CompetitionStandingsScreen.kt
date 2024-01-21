@@ -1,11 +1,11 @@
 package ru.asmelnikov.competition_standings
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -91,88 +91,90 @@ fun CompetitionStandingsContent(
     onBackClick: () -> Unit
 ) {
 
-    val state = rememberCollapsingToolbarScaffoldState()
+    Box {
 
-    CollapsingToolbarScaffold(
-        modifier = Modifier,
-        state = state,
-        scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
-        toolbar = {
-            val progress = state.toolbarState.progress
-            val textSize = (18 + (30 - 12) * progress).sp
-            val mainImageStartPadding = (40 - (40 * progress)).dp
+        val state = rememberCollapsingToolbarScaffoldState()
 
-            SubComposeAsyncImageCommon(
-                imageUri = competitionStandings?.area?.flag ?: "",
-                shape = RoundedCornerShape(0.dp),
-                size = 240.dp,
-                alpha = state.toolbarState.progress,
-                modifier = Modifier
-                    .fillMaxWidth().parallax()
-            )
+        CollapsingToolbarScaffold(
+            modifier = Modifier.fillMaxSize(),
+            state = state,
+            scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
+            toolbar = {
+                val progress = state.toolbarState.progress
+                val textSize = (16 + (18 * progress)).sp
 
-            Box(
-                modifier = Modifier
-                    .padding(
-                        start = mainImageStartPadding,
-                        top = 8.dp,
-                        bottom = 8.dp
-                    )
-                    .road(
-                        whenCollapsed = Alignment.TopStart,
-                        whenExpanded = Alignment.Center
-                    )
-            ) {
+                SubComposeAsyncImageCommon(
+                    imageUri = competitionStandings?.area?.flag ?: "",
+                    shape = RoundedCornerShape(0.dp),
+                    size = 240.dp,
+                    alpha = state.toolbarState.progress,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .parallax()
+                        .pin()
+                )
 
-                val imgSize = (40 + (100 * progress)).dp
-
-                SharedMaterialContainer(
-                    key = competitionStandings?.competition?.emblem ?: "",
-                    screenKey = Routes.Competition_Standings,
-                    color = Color.Transparent,
-                    transitionSpec = MaterialContainerTransformSpec(
-                        durationMillis = 1000,
-                        fadeMode = FadeMode.Out
-                    )
+                Box(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .road(
+                            whenCollapsed = Alignment.TopEnd,
+                            whenExpanded = Alignment.Center
+                        )
                 ) {
-                    SubComposeAsyncImageCommon(
-                        imageUri = competitionStandings?.competition?.emblem ?: "",
-                        shape = RoundedCornerShape(0.dp),
-                        size = imgSize
-                    )
+
+                    val imgSize = (40 + (100 * progress)).dp
+
+                    SharedMaterialContainer(
+                        key = competitionStandings?.competition?.emblem ?: "",
+                        screenKey = Routes.Competition_Standings,
+                        color = Color.Transparent,
+                        transitionSpec = MaterialContainerTransformSpec(
+                            durationMillis = 1000,
+                            fadeMode = FadeMode.Out
+                        )
+                    ) {
+                        SubComposeAsyncImageCommon(
+                            imageUri = competitionStandings?.competition?.emblem ?: "",
+                            shape = RoundedCornerShape(0.dp),
+                            size = imgSize
+                        )
+                    }
+                }
+
+                Text(
+                    text = competitionStandings?.competition?.name ?: "",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = textSize,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .road(
+                            whenCollapsed = Alignment.TopCenter,
+                            whenExpanded = Alignment.BottomCenter
+                        )
+                )
+
+            }) {
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                competitionStandings?.standings?.forEach { standing ->
+                    item {
+                        Divider(color = MaterialTheme.colorScheme.primary)
+                        StandingTopItem(tableName = standing.group.ifEmpty { "Team" })
+                        Divider(color = MaterialTheme.colorScheme.primary)
+                    }
+                    items(items = standing.table) { table ->
+                        StandingItem(table = table)
+                        Divider(color = MaterialTheme.colorScheme.primary)
+                    }
                 }
             }
-
-            IconButton(onClick = onBackClick) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
-            }
-
-            Text(
-                text = competitionStandings?.competition?.name ?: "",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = TextStyle(color = Color.Black, fontSize = textSize),
-                modifier = Modifier
-                    .padding(16.dp)
-                    .road(whenCollapsed = Alignment.TopCenter, whenExpanded = Alignment.BottomEnd)
-            )
-
-        }) {
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            competitionStandings?.standings?.forEach { standing ->
-                item {
-                    Divider(color = MaterialTheme.colorScheme.primary)
-                    StandingTopItem()
-                    Divider(color = MaterialTheme.colorScheme.primary)
-                }
-                items(items = standing.table, key = { it.team.id }) { table ->
-                    StandingItem(table = table)
-                    Divider(color = MaterialTheme.colorScheme.primary)
-                }
-            }
+        }
+        IconButton(modifier = Modifier.align(Alignment.TopStart), onClick = onBackClick) {
+            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
         }
     }
 }

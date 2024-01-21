@@ -157,6 +157,7 @@ fun StandingItem(
 @Composable
 fun StandingTopItem(
     modifier: Modifier = Modifier,
+    tableName: String = "Team",
     dataWeight: Float = 0.08f
 ) {
     Row(
@@ -187,7 +188,7 @@ fun StandingTopItem(
         ) {
             Text(
                 modifier = Modifier.align(Alignment.CenterStart).padding(start = 8.dp),
-                text = "Team",
+                text = tableName,
                 textAlign = TextAlign.Center,
                 style = TextStyle(fontWeight = FontWeight.Bold)
             )
