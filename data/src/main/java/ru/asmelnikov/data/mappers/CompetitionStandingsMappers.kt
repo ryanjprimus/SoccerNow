@@ -15,6 +15,7 @@ import ru.asmelnikov.domain.models.*
 fun CompetitionStandingsModelDTO.toCompetitionStandingsEntity(): CompetitionStandingsEntity {
     val standings: RealmList<StandingEntity> = RealmList()
     this@toCompetitionStandingsEntity.standings?.map { it.toStandingEntity() }
+        ?.filter { it.type == "TOTAL" }
         ?.let { standings.addAll(it) }
     return CompetitionStandingsEntity(
         id = this.competition?.id.toString(),
@@ -27,6 +28,10 @@ fun CompetitionStandingsModelDTO.toCompetitionStandingsEntity(): CompetitionStan
 }
 
 fun CompetitionDTO.toCompetitionEmbeddedEntity(): CompetitionEmbeddedEntity {
+    val seasons: RealmList<SeasonEntity> = RealmList()
+    this@toCompetitionEmbeddedEntity.seasons?.map {
+        it.toSeasonEntity()
+    }?.take(4)?.let { seasons.addAll(it) }
     return CompetitionEmbeddedEntity(
         area = area.toAreaEntity(),
         code = code ?: "",
@@ -37,7 +42,8 @@ fun CompetitionDTO.toCompetitionEmbeddedEntity(): CompetitionEmbeddedEntity {
         name = name ?: "",
         numberOfAvailableSeasons = numberOfAvailableSeasons ?: -1,
         plan = plan ?: "",
-        type = type ?: ""
+        type = type ?: "",
+        seasons = seasons
     )
 }
 
@@ -116,7 +122,8 @@ fun CompetitionEmbeddedEntity?.toCompetition(): Competition {
         name = this?.name ?: "",
         numberOfAvailableSeasons = this?.numberOfAvailableSeasons ?: -1,
         plan = this?.plan ?: "",
-        type = this?.type ?: ""
+        type = this?.type ?: "",
+        seasons = this?.seasons?.map { it.toSeason() } ?: emptyList()
     )
 }
 
@@ -129,6 +136,7 @@ fun FiltersEntity?.toFilters(): Filters {
 fun SeasonEntity?.toSeason(): Season {
     return Season(
         currentMatchday = this?.currentMatchday ?: -1,
+        startDateEndDate = createYearRange(this?.startDate ?: "", this?.endDate ?: ""),
         endDate = this?.endDate ?: "",
         id = this?.id ?: -1,
         startDate = this?.startDate ?: "",

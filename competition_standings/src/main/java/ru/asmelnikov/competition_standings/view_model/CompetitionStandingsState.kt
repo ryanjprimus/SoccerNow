@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.compose.material3.SnackbarDuration
 import kotlinx.parcelize.Parcelize
 import ru.asmelnikov.domain.models.CompetitionStandings
+import ru.asmelnikov.domain.models.Season
 import ru.asmelnikov.domain.models.Standing
 
 
@@ -11,11 +12,15 @@ import ru.asmelnikov.domain.models.Standing
 data class CompetitionStandingsState(
     val compId: String = "",
     val competitionStandings: CompetitionStandings? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val seasons: List<Season> = emptyList(),
+    val currentSeason: String = ""
 ) : Parcelable
 
 sealed class CompetitionStandingSideEffects {
     data class Snackbar(val text: String, val duration: SnackbarDuration = SnackbarDuration.Short) :
         CompetitionStandingSideEffects()
+
+    object BackClick : CompetitionStandingSideEffects()
 
 }

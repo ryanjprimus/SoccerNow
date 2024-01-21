@@ -1,11 +1,8 @@
 package ru.asmelnikov.competition_standings
 
-import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,17 +34,21 @@ import com.mxalbert.sharedelements.FadeMode
 import com.mxalbert.sharedelements.MaterialContainerTransformSpec
 import com.mxalbert.sharedelements.SharedMaterialContainer
 import me.onebone.toolbar.CollapsingToolbarScaffold
+import me.onebone.toolbar.ExperimentalToolbarApi
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
+import ru.asmelnikov.competition_standings.components.SeasonDropDown
+import ru.asmelnikov.competition_standings.components.StandingItem
+import ru.asmelnikov.competition_standings.components.StandingTopItem
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingSideEffects
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingsViewModel
 import ru.asmelnikov.domain.models.CompetitionStandings
-import ru.asmelnikov.domain.models.Standing
 import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.composables.SubComposeAsyncImageCommon
 import ru.asmelnikov.utils.navigation.Routes
+import ru.asmelnikov.utils.navigation.popUp
 
 @Composable
 fun CompetitionStandingsScreen(
@@ -69,92 +77,147 @@ fun CompetitionStandingsScreen(
                 null
             ) {}
 
+            is CompetitionStandingSideEffects.BackClick -> appState.popUp()
+
         }
     }
 
     CompetitionStandingsContent(
-        competitionStandings = state.competitionStandings
+        competitionStandings = state.competitionStandings,
+        seasons = state.seasons.map { it.startDateEndDate },
+        currentSeason = state.currentSeason,
+        onSeasonUpdate = viewModel::getStandingsBySeason,
+        onBackClick = viewModel::onBackClick,
+        isLoading = state.isLoading
     )
 
 }
 
+@OptIn(ExperimentalToolbarApi::class)
 @Composable
 fun CompetitionStandingsContent(
-    competitionStandings: CompetitionStandings?
+    competitionStandings: CompetitionStandings?,
+    seasons: List<String>,
+    onBackClick: () -> Unit,
+    currentSeason: String,
+    onSeasonUpdate: (String) -> Unit,
+    isLoading: Boolean
 ) {
 
-    val state = rememberCollapsingToolbarScaffoldState()
+    val configuration = LocalConfiguration.current
+    val orientation = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "LANDSCAPE" else "PORTRAIT"
 
-    CollapsingToolbarScaffold(
-        modifier = Modifier,
-        state = state,
-        scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
-        toolbar = {
+    Box {
 
-            val textSize = (18 + (30 - 12) * state.toolbarState.progress).sp
+        val state = rememberCollapsingToolbarScaffoldState()
 
-            SubComposeAsyncImageCommon(
-                imageUri = competitionStandings?.area?.flag ?: "",
-                shape = RoundedCornerShape(0.dp),
-                size = 240.dp,
-                alpha = state.toolbarState.progress,
-                modifier = Modifier
-                    .fillMaxSize()
-            )
+        LaunchedEffect(key1 = orientation) {
+            if (orientation == "LANDSCAPE")
+                state.toolbarState.collapse()
+        }
 
-            Box(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .road(
-                        whenCollapsed = Alignment.TopStart,
-                        whenExpanded = Alignment.Center
-                    )
-            ) {
+        CollapsingToolbarScaffold(
+            modifier = Modifier.fillMaxSize(),
+            state = state,
+            enabled = orientation == "PORTRAIT",
+            scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
+            toolbar = {
                 val progress = state.toolbarState.progress
-                val imgSize = 40 + (100 * progress)
+                val textSize = (16 + (18 * progress)).sp
 
-                SharedMaterialContainer(
-                    key = competitionStandings?.competition?.emblem ?: "",
-                    screenKey = Routes.Competition_Standings,
-                    color = Color.Transparent,
-                    transitionSpec = MaterialContainerTransformSpec(
-                        durationMillis = 1000,
-                        fadeMode = FadeMode.Out
-                    )
+                SubComposeAsyncImageCommon(
+                    imageUri = competitionStandings?.area?.flag ?: "",
+                    shape = RoundedCornerShape(0.dp),
+                    size = 240.dp,
+                    alpha = state.toolbarState.progress,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .parallax()
+                        .pin()
+                )
+
+                Box(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .road(
+                            whenCollapsed = Alignment.TopEnd,
+                            whenExpanded = Alignment.Center
+                        )
                 ) {
-                    SubComposeAsyncImageCommon(
-                        imageUri = competitionStandings?.competition?.emblem ?: "",
-                        shape = RoundedCornerShape(0.dp),
-                        size = imgSize.dp
+
+                    val imgSize = (40 + (100 * progress)).dp
+
+                    SharedMaterialContainer(
+                        key = competitionStandings?.competition?.emblem ?: "",
+                        screenKey = Routes.Competition_Standings,
+                        color = Color.Transparent,
+                        transitionSpec = MaterialContainerTransformSpec(
+                            durationMillis = 1000,
+                            fadeMode = FadeMode.Out
+                        )
+                    ) {
+                        SubComposeAsyncImageCommon(
+                            imageUri = competitionStandings?.competition?.emblem ?: "",
+                            shape = RoundedCornerShape(0.dp),
+                            size = imgSize
+                        )
+                    }
+                }
+
+                Text(
+                    text = competitionStandings?.competition?.name ?: "",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = textSize,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .road(
+                            whenCollapsed = Alignment.TopCenter,
+                            whenExpanded = Alignment.BottomCenter
+                        )
+                )
+
+            }) {
+
+            Column(modifier = Modifier.fillMaxSize()) {
+                SeasonDropDown(
+                    modifier = Modifier.fillMaxWidth(0.5f),
+                    onItemChanged = onSeasonUpdate,
+                    items = seasons,
+                    selectedItem = currentSeason
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp)
+                ) {
+                    if (isLoading) LinearProgressIndicator(
+                        modifier = Modifier.fillMaxSize(),
+                        color = Color.Red
                     )
                 }
-            }
 
-            Text(
-                text = competitionStandings?.competition?.name ?: "",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = TextStyle(color = Color.Black, fontSize = textSize),
-                modifier = Modifier
-                    .padding(16.dp)
-                    .road(whenCollapsed = Alignment.TopCenter, whenExpanded = Alignment.BottomEnd)
-            )
-
-        }) {
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            competitionStandings?.standings?.forEach { standing ->
-                items(standing.table) { table ->
-                    Row {
-                        Text(text = table.position.toString())
-                        Text(text = table.team.name)
-                        Text(text = table.points.toString())
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    competitionStandings?.standings?.forEach { standing ->
+                        item {
+                            Divider(color = MaterialTheme.colorScheme.primary)
+                            StandingTopItem(tableName = standing.group.ifEmpty { "Team" }, orientation = orientation)
+                            Divider(color = MaterialTheme.colorScheme.primary)
+                        }
+                        items(items = standing.table) { table ->
+                            StandingItem(table = table)
+                            Divider(color = MaterialTheme.colorScheme.primary)
+                        }
                     }
                 }
             }
+
+        }
+        IconButton(modifier = Modifier.align(Alignment.TopStart), onClick = onBackClick) {
+            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
         }
     }
 }

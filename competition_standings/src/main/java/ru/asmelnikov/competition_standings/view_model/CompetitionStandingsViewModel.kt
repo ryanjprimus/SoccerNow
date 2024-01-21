@@ -26,13 +26,36 @@ class CompetitionStandingsViewModel(
         savedStateHandle = savedStateHandle
     )
 
+    fun onBackClick() = intent {
+        postSideEffect(CompetitionStandingSideEffects.BackClick)
+    }
+
     fun compIdToState(compId: String) = intent {
         reduce { state.copy(compId = compId) }
         collectStandingsFlowFromLocal()
         updateStandingsFromRemoteToLocal()
     }
 
-    fun updateStandingsFromRemoteToLocal() = intent {
+    fun getStandingsBySeason(season: String) = intent {
+        reduce { state.copy(isLoading = true) }
+        when (val standings = standingsRepository.getStandingsBySeason(state.compId, season)) {
+            is Resource.Success -> {
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        competitionStandings = standings.data,
+                        currentSeason = season
+                    )
+                }
+            }
+
+            is Resource.Error -> {
+                handleError(standings.httpErrors ?: ErrorsTypesHttp.UnknownError())
+            }
+        }
+    }
+
+    private fun updateStandingsFromRemoteToLocal() = intent {
         reduce { state.copy(isLoading = true) }
         when (val compsFromRemote =
             standingsRepository.getCompetitionStandingsFromRemoteToLocalById(
@@ -51,10 +74,36 @@ class CompetitionStandingsViewModel(
                         )
                     }
                 }
+                if (state.currentSeason.isEmpty()) {
+                    reduce {
+                        state.copy(
+                            currentSeason = compsFromRemote.data?.season?.startDateEndDate
+                                ?: ""
+                        )
+                    }
+                }
+                getSeasons()
             }
 
             is Resource.Error -> {
                 handleError(compsFromRemote.httpErrors ?: ErrorsTypesHttp.UnknownError())
+            }
+        }
+
+    }
+
+    private fun getSeasons() = intent {
+        when (val seasons = standingsRepository.getCompetitionSeasonsById(state.compId)) {
+            is Resource.Success -> {
+                reduce {
+                    state.copy(
+                        seasons = seasons.data ?: emptyList()
+                    )
+                }
+            }
+
+            is Resource.Error -> {
+                handleError(seasons.httpErrors ?: ErrorsTypesHttp.UnknownError())
             }
         }
     }
@@ -64,7 +113,8 @@ class CompetitionStandingsViewModel(
             standingsRepository.getStandingsFlowFromLocalById(state.compId).collect { standings ->
                 reduce {
                     state.copy(
-                        competitionStandings = standings
+                        competitionStandings = standings,
+                        currentSeason = standings.season.startDateEndDate
                     )
                 }
             }

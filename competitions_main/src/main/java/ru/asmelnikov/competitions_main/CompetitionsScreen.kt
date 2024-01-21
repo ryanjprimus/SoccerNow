@@ -99,7 +99,7 @@ fun CompetitionsScreenContent(
     val state = rememberCollapsingToolbarScaffoldState()
 
     CollapsingToolbarScaffold(
-        modifier = Modifier,
+        modifier = Modifier.fillMaxSize(),
         state = state,
         scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
         toolbar = {
@@ -114,7 +114,7 @@ fun CompetitionsScreenContent(
             )
 
             GifImage(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().parallax(),
                 alpha = state.toolbarState.progress
             )
 
@@ -175,6 +175,9 @@ fun CompetitionsScreenContent(
                             onReloadClick = updateComps
                         )
                     }
+                }
+                item {
+                    Spacer(modifier = Modifier.height(40.dp))
                 }
             }
         }

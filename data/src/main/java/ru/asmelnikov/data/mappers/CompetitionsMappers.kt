@@ -1,8 +1,10 @@
 package ru.asmelnikov.data.mappers
 
+import io.realm.RealmList
 import ru.asmelnikov.data.local.models.AreaEntity
 import ru.asmelnikov.data.local.models.CompetitionEntity
 import ru.asmelnikov.data.local.models.CurrentSeasonEntity
+import ru.asmelnikov.data.local.models.SeasonEntity
 import ru.asmelnikov.data.local.models.WinnerEntity
 import ru.asmelnikov.data.models.AreaDTO
 import ru.asmelnikov.data.models.CompetitionDTO
@@ -14,6 +16,10 @@ import ru.asmelnikov.domain.models.CurrentSeason
 import ru.asmelnikov.domain.models.Winner
 
 fun CompetitionDTO.toCompetitionEntity(): CompetitionEntity {
+    val seasons: RealmList<SeasonEntity> = RealmList()
+    this@toCompetitionEntity.seasons?.map {
+        it.toSeasonEntity()
+    }?.take(4)?.let { seasons.addAll(it) }
     return CompetitionEntity(
         area = area.toAreaEntity(),
         code = code ?: "",
@@ -24,7 +30,8 @@ fun CompetitionDTO.toCompetitionEntity(): CompetitionEntity {
         name = name ?: "",
         numberOfAvailableSeasons = numberOfAvailableSeasons ?: -1,
         plan = plan ?: "",
-        type = type ?: ""
+        type = type ?: "",
+        seasons = seasons
     )
 }
 
@@ -74,7 +81,8 @@ fun CompetitionEntity.toCompetition(): Competition {
         name = name,
         numberOfAvailableSeasons = numberOfAvailableSeasons,
         plan = plan,
-        type = type
+        type = type,
+        seasons = this.seasons?.map { it.toSeason() } ?: emptyList()
     )
 }
 
@@ -90,6 +98,7 @@ fun AreaEntity?.toArea(): Area {
 fun CurrentSeasonEntity?.toCurrentSeason(): CurrentSeason {
     return CurrentSeason(
         currentMatchDay = this?.currentMatchDay ?: -1,
+        startDateEndDate = createYearRange(this?.startDate ?: "", this?.endDate ?: ""),
         endDate = this?.endDate ?: "",
         id = this?.id ?: -1,
         startDate = this?.startDate ?: "",

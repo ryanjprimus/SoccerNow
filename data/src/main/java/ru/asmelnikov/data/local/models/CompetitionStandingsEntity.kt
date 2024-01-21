@@ -26,7 +26,8 @@ open class CompetitionEmbeddedEntity(
     var name: String = "",
     var numberOfAvailableSeasons: Int = -1,
     var plan: String = "",
-    var type: String = ""
+    var type: String = "",
+    var seasons: RealmList<SeasonEntity>? = null
 ) : RealmObject()
 
 @RealmClass(embedded = true)

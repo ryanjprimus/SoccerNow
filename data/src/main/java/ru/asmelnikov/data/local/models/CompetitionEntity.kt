@@ -1,8 +1,10 @@
 package ru.asmelnikov.data.local.models
 
+import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
+import ru.asmelnikov.data.models.SeasonDTO
 
 open class CompetitionEntity(
     @PrimaryKey
@@ -15,7 +17,8 @@ open class CompetitionEntity(
     var name: String = "",
     var numberOfAvailableSeasons: Int = -1,
     var plan: String = "",
-    var type: String = ""
+    var type: String = "",
+    var seasons: RealmList<SeasonEntity>? = null
 ) : RealmObject()
 
 @RealmClass(embedded = true)
