@@ -71,6 +71,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     // Shared Elements Transition
     implementation("com.mxalbert.sharedelements:shared-elements:0.1.0-SNAPSHOT")
 
