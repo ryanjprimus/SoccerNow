@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/splash_logo">
+
+    <target
+        android:name="animationGroupStripes"
+        android:animation="@animator/logo_stripes_animator" />
+    <target
+        android:name="animationGroupBall"
+        android:animation="@animator/logo_ball_animator" />
+
+</animated-vector>

@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -22,11 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
+import ru.asmelnikov.utils.ui.theme.dimens
 
 @Composable
 fun SeasonDropDown(
@@ -70,7 +68,6 @@ fun SeasonDropDown(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
                 disabledContainerColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
             )
         )
@@ -78,7 +75,7 @@ fun SeasonDropDown(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .border(
-                    1.dp,
+                    MaterialTheme.dimens.borderSize,
                     MaterialTheme.colorScheme.onSurface,
                     MaterialTheme.shapes.medium
                 ),
@@ -96,6 +93,7 @@ fun SeasonDropDown(
                             text = label,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.labelSmall
                         )
                     }
                 )

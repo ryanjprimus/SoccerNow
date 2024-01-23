@@ -2,6 +2,7 @@ package ru.asmelnikov.utils.composables
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -15,6 +16,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import ru.asmelnikov.utils.R
+import ru.asmelnikov.utils.ui.theme.dimens
 
 @Composable
 fun SubComposeAsyncImageCommon(
@@ -22,7 +24,7 @@ fun SubComposeAsyncImageCommon(
     imageUri: Any,
     shape: Shape,
     alpha: Float = 1f,
-    size: Dp = 80.dp,
+    size: Dp = MaterialTheme.dimens.champLogoDefaultSize,
     contentDescription: String? = null,
     errorPlaceHolder: Int = R.drawable.placeholder_photo
 ) {
