@@ -202,7 +202,7 @@ fun CompetitionStandingsContent(
                 ) {
                     if (isLoading) LinearProgressIndicator(
                         modifier = Modifier.fillMaxSize(),
-                        color = Color.Red
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
 
