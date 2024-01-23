@@ -20,6 +20,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ru.asmelnikov.domain.models.Table
@@ -33,6 +34,19 @@ fun StandingItem(
     dataWeight: Float = 0.08f,
     firstBoxColor: Color = Color.Transparent
 ) {
+
+    val itemsRow = listOf(
+        table.position.toString(),
+        "",
+        table.playedGames.toString(),
+        table.won.toString(),
+        table.draw.toString(),
+        table.lost.toString(),
+        table.goalsFor.toString(),
+        table.goalsAgainst.toString(),
+        table.points.toString()
+    )
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -40,155 +54,64 @@ fun StandingItem(
             .clickable { },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .background(firstBoxColor)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = table.position.toString(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
+        itemsRow.forEachIndexed { index, item ->
+            when (index) {
+                1 -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.37f)
+                            .rightBorder(
+                                strokeWidth = MaterialTheme.dimens.borderSize,
+                                color = MaterialTheme.colorScheme.primary
+                            ),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Row {
+                            SubComposeAsyncImageCommon(
+                                modifier = Modifier.padding(horizontal = MaterialTheme.dimens.small1),
+                                imageUri = table.team.crest,
+                                shape = RoundedCornerShape(0.dp),
+                                size = MaterialTheme.dimens.medium2
+                            )
 
+                            Text(
+                                text = table.team.shortName,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.labelMedium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
 
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(0.37f)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                ),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            Row {
-                SubComposeAsyncImageCommon(
-                    modifier = Modifier.padding(horizontal = MaterialTheme.dimens.small1),
-                    imageUri = table.team.crest,
-                    shape = RoundedCornerShape(0.dp),
-                    size = MaterialTheme.dimens.medium2
-                )
+                    }
+                }
 
-                Text(
-                    text = table.team.shortName,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.labelMedium
-                )
+                else -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(dataWeight)
+                            .background(firstBoxColor)
+                            .rightBorder(
+                                strokeWidth = MaterialTheme.dimens.borderSize,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = item,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                }
             }
-
         }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = table.playedGames.toString(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = table.won.toString(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = table.draw.toString(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = table.lost.toString(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = table.goalsFor.toString(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = table.goalsAgainst.toString(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
-        Text(
-            modifier = Modifier.weight(dataWeight),
-            text = table.points.toString(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.labelMedium
-        )
     }
 }
+
+private val topListRow = listOf("№", "Team", "M", "W", "D", "L", "GF", "GA", "P")
 
 @Composable
 fun StandingTopItem(
@@ -196,150 +119,81 @@ fun StandingTopItem(
     tableName: String = "Team",
     dataWeight: Float = 0.08f
 ) {
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(MaterialTheme.dimens.medium4),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = "№",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
+        topListRow.forEachIndexed { index, item ->
+            when (index) {
+                1 -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.37f)
+                            .rightBorder(
+                                strokeWidth = MaterialTheme.dimens.borderSize,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .padding(start = MaterialTheme.dimens.small1),
+                            text = tableName,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+                }
 
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(0.37f)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(start = MaterialTheme.dimens.small1),
-                text = tableName,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelLarge
-            )
+                else -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(dataWeight)
+                            .rightBorder(
+                                strokeWidth = MaterialTheme.dimens.borderSize,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                    ) {
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = item,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+                }
+            }
+
         }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = "M",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = "W",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = "D",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = "L",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = "GF",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(dataWeight)
-                .rightBorder(
-                    strokeWidth = MaterialTheme.dimens.borderSize,
-                    color = MaterialTheme.colorScheme.primary
-                )
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = "GA",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
-        Text(
-            modifier = Modifier.weight(dataWeight),
-            text = "P",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.labelLarge
-        )
     }
+}
+
+@Composable
+fun BottomStandingItem() {
+    Text(
+        text = topListRow.drop(2).mapIndexed { index, route ->
+            val secondRoute: String = when (index) {
+                0 -> " - matches, "
+                1 -> " - wins, "
+                2 -> " - draws, "
+                3 -> " - loses, "
+                4 -> " - goals for, "
+                5 -> " - goals against, "
+                6 -> " - points."
+                else -> ""
+            }
+            "$route $secondRoute"
+        }.joinToString(" "),
+        modifier = Modifier.padding(MaterialTheme.dimens.small1),
+        textAlign = TextAlign.Start,
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.secondary
+    )
 }
 
 fun Modifier.rightBorder(strokeWidth: Dp, color: Color) =

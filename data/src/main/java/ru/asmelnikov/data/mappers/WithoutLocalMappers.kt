@@ -5,6 +5,8 @@ import ru.asmelnikov.data.models.CompetitionDTO
 import ru.asmelnikov.data.models.CompetitionStandingsModelDTO
 import ru.asmelnikov.data.models.CurrentSeasonDTO
 import ru.asmelnikov.data.models.FiltersDTO
+import ru.asmelnikov.data.models.PlayerDTO
+import ru.asmelnikov.data.models.ScorerDTO
 import ru.asmelnikov.data.models.SeasonDTO
 import ru.asmelnikov.data.models.StandingDTO
 import ru.asmelnikov.data.models.TableDTO
@@ -15,6 +17,8 @@ import ru.asmelnikov.domain.models.Competition
 import ru.asmelnikov.domain.models.CompetitionStandings
 import ru.asmelnikov.domain.models.CurrentSeason
 import ru.asmelnikov.domain.models.Filters
+import ru.asmelnikov.domain.models.Player
+import ru.asmelnikov.domain.models.Scorer
 import ru.asmelnikov.domain.models.Season
 import ru.asmelnikov.domain.models.Standing
 import ru.asmelnikov.domain.models.Table
@@ -28,7 +32,34 @@ fun CompetitionStandingsModelDTO.toCompetitionStandings(): CompetitionStandings 
         competition = this.competition.toCompetition(),
         filters = filters.toFilters(),
         season = season.toSeason(),
-        standings = standings?.map { it.toStanding() }?.filter { it.type == "TOTAL" } ?: emptyList()
+        standings = standings?.map { it.toStanding() }?.filter { it.type == "TOTAL" }
+            ?: emptyList()
+    )
+}
+
+fun ScorerDTO.toScorer(): Scorer {
+    return Scorer(
+        assists = assists ?: -1,
+        goals = goals ?: -1,
+        penalties = penalties ?: -1,
+        playedMatches = playedMatches ?: -1,
+        player = this.player.toPlayer(),
+        team = this.team.toTeam(),
+    )
+}
+
+fun PlayerDTO?.toPlayer(): Player {
+    return Player(
+        dateOfBirth = this?.dateOfBirth ?: "",
+        firstName = this?.firstName ?: "",
+        id = this?.id ?: -1,
+        lastName = this?.lastName ?: "",
+        lastUpdated = this?.lastUpdated ?: "",
+        name = this?.name ?: "",
+        nationality = this?.nationality ?: "",
+        position = this?.position ?: "",
+        section = this?.section ?: "",
+        shirtNumber = this?.shirtNumber ?: -1
     )
 }
 
@@ -88,7 +119,7 @@ fun CompetitionDTO?.toCompetition(): Competition {
         numberOfAvailableSeasons = this?.numberOfAvailableSeasons ?: -1,
         plan = this?.plan ?: "",
         type = this?.type ?: "",
-        seasons = this?.seasons?.map { it.toSeason() } ?: emptyList()
+        seasons = this?.seasons?.map { it.toSeason() }?.take(4) ?: emptyList()
     )
 }
 

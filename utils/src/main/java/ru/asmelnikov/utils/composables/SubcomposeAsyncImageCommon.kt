@@ -12,7 +12,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageScope
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import ru.asmelnikov.utils.R
@@ -26,7 +28,10 @@ fun SubComposeAsyncImageCommon(
     alpha: Float = 1f,
     size: Dp = MaterialTheme.dimens.champLogoDefaultSize,
     contentDescription: String? = null,
-    errorPlaceHolder: Int = R.drawable.placeholder_photo
+    errorPlaceHolder: Int = R.drawable.placeholder_photo,
+    loading: @Composable (SubcomposeAsyncImageScope.(AsyncImagePainter.State.Loading) -> Unit)? = {
+        CircularProgressIndicator()
+    }
 ) {
     SubcomposeAsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -34,9 +39,7 @@ fun SubComposeAsyncImageCommon(
             .crossfade(true)
             .decoderFactory(SvgDecoder.Factory())
             .build(),
-        loading = {
-            CircularProgressIndicator()
-        },
+        loading = loading,
         error = {
             painterResource(errorPlaceHolder)
         },
