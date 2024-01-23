@@ -1,21 +1,22 @@
 package ru.asmelnikov.competition_standings
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Divider
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
@@ -23,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,18 +35,20 @@ import androidx.compose.ui.unit.sp
 import com.mxalbert.sharedelements.FadeMode
 import com.mxalbert.sharedelements.MaterialContainerTransformSpec
 import com.mxalbert.sharedelements.SharedMaterialContainer
+import kotlinx.coroutines.launch
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ExperimentalToolbarApi
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
-import ru.asmelnikov.competition_standings.components.SeasonDropDown
-import ru.asmelnikov.competition_standings.components.StandingItem
-import ru.asmelnikov.competition_standings.components.StandingTopItem
+import ru.asmelnikov.competition_standings.components.FirstPagerScreenStandings
+import ru.asmelnikov.competition_standings.components.PagerTabRow
+import ru.asmelnikov.competition_standings.components.SecondPagerScreenScorers
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingSideEffects
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingsViewModel
 import ru.asmelnikov.domain.models.CompetitionStandings
+import ru.asmelnikov.domain.models.Scorer
 import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.composables.SubComposeAsyncImageCommon
 import ru.asmelnikov.utils.navigation.Routes
@@ -86,26 +90,42 @@ fun CompetitionStandingsScreen(
     CompetitionStandingsContent(
         competitionStandings = state.competitionStandings,
         seasons = state.seasons.map { it.startDateEndDate },
-        currentSeason = state.currentSeason,
-        onSeasonUpdate = viewModel::getStandingsBySeason,
+        currentSeasonStandings = state.currentSeasonStandings,
+        onSeasonStandingsUpdate = viewModel::updateStandingsFromRemoteToLocal,
         onBackClick = viewModel::onBackClick,
-        isLoading = state.isLoading
+        isLoadingStandings = state.isLoadingStandings,
+        currentSeasonScorers = state.currentSeasonScorers,
+        onSeasonScorersUpdate = viewModel::updateScorersFromRemoteToLocal,
+        isLoadingScorers = state.isLoadingScorers,
+        scorers = state.scorers
     )
 
 }
 
-@OptIn(ExperimentalToolbarApi::class)
+@OptIn(ExperimentalToolbarApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun CompetitionStandingsContent(
     competitionStandings: CompetitionStandings?,
     seasons: List<String>,
     onBackClick: () -> Unit,
-    currentSeason: String,
-    onSeasonUpdate: (String) -> Unit,
-    isLoading: Boolean
+    currentSeasonStandings: String,
+    onSeasonStandingsUpdate: (String) -> Unit,
+    isLoadingStandings: Boolean,
+    scorers: List<Scorer>,
+    currentSeasonScorers: String,
+    onSeasonScorersUpdate: (String) -> Unit,
+    isLoadingScorers: Boolean
 ) {
 
     val configuration = LocalConfiguration.current
+
+    val scope = rememberCoroutineScope()
+
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+    ) {
+        2
+    }
     val orientation =
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "LANDSCAPE" else "PORTRAIT"
 
@@ -135,7 +155,18 @@ fun CompetitionStandingsContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .parallax()
-                        .pin()
+                        .pin(),
+                    loading = {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(MaterialTheme.dimens.large)
+                            )
+                        }
+                    }
                 )
 
                 Box(
@@ -188,43 +219,44 @@ fun CompetitionStandingsContent(
             }) {
 
             Column(modifier = Modifier.fillMaxSize()) {
-                SeasonDropDown(
-                    modifier = Modifier.fillMaxWidth(0.5f),
-                    onItemChanged = onSeasonUpdate,
-                    items = seasons,
-                    selectedItem = currentSeason
+
+                PagerTabRow(
+                    tabTitles = listOf("Standings", "Scorers"),
+                    selectedIndex = pagerState.currentPage,
+                    modifier = Modifier.fillMaxWidth(),
+                    onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } }
                 )
 
-                Box(
+                HorizontalPager(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(MaterialTheme.dimens.extraSmall1)
-                ) {
-                    if (isLoading) LinearProgressIndicator(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    competitionStandings?.standings?.forEach { standing ->
-                        item {
-                            Divider(color = MaterialTheme.colorScheme.primary)
-                            StandingTopItem(
-                                tableName = standing.group.ifEmpty { "Team" }
+                        .fillMaxSize(),
+                    state = pagerState,
+                    beyondBoundsPageCount = 2,
+                    verticalAlignment = Alignment.Top
+                ) { page ->
+                    when (page) {
+                        0 -> {
+                            FirstPagerScreenStandings(
+                                competitionStandings = competitionStandings,
+                                seasons = seasons,
+                                currentSeason = currentSeasonStandings,
+                                onSeasonUpdate = onSeasonStandingsUpdate,
+                                isLoading = isLoadingStandings
                             )
-                            Divider(color = MaterialTheme.colorScheme.primary)
                         }
-                        items(items = standing.table) { table ->
-                            StandingItem(table = table)
-                            Divider(color = MaterialTheme.colorScheme.primary)
+
+                        1 -> {
+                            SecondPagerScreenScorers(
+                                scorers = scorers,
+                                seasons = seasons,
+                                currentSeasonScorers = currentSeasonScorers,
+                                onSeasonScorersUpdate = onSeasonScorersUpdate,
+                                isLoadingScorers = isLoadingScorers
+                            )
                         }
                     }
                 }
             }
-
         }
         IconButton(
             modifier = Modifier

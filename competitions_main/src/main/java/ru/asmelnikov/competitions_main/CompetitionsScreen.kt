@@ -171,19 +171,24 @@ fun CompetitionsScreenContent(
                 item {
                     Spacer(modifier = Modifier.height(0.dp))
                 }
-                if (comps.isNotEmpty()) {
-                    items(items = comps, key = { it.id }) { comp ->
-                        CompetitionItem(competition = comp, onCompClick = onCompClick)
+
+                when {
+                    comps.isEmpty() && isLoading -> {
+                        items(10) {
+                            ShimmerListItem()
+                        }
                     }
-                } else if (isLoading) {
-                    items(10) {
-                        ShimmerListItem()
+                    comps.isEmpty() -> {
+                        item {
+                            EmptyContent(
+                                onReloadClick = updateComps
+                            )
+                        }
                     }
-                } else {
-                    item {
-                        EmptyContent(
-                            onReloadClick = updateComps
-                        )
+                    else -> {
+                        items(items = comps, key = { it.id }) { comp ->
+                            CompetitionItem(competition = comp, onCompClick = onCompClick)
+                        }
                     }
                 }
                 item {

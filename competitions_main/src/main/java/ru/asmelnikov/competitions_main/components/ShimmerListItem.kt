@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -44,7 +45,7 @@ fun ShimmerListItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(140.dp)
             .shimmerEffect(),
         shape = RoundedCornerShape(0.dp),
     ) {
@@ -59,8 +60,9 @@ fun ShimmerListItem(
 
             Box(
                 modifier = Modifier
-                    .size(MaterialTheme.dimens.champLogoDefaultSize)
                     .clip(CircleShape)
+                    .size(MaterialTheme.dimens.champLogoDefaultSize)
+                    .aspectRatio(1f)
                     .shimmerEffect()
             )
 

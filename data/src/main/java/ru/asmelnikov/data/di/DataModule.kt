@@ -21,61 +21,6 @@ import ru.asmelnikov.data.retrofit_errors_handler.RetrofitErrorsHandler
 import ru.asmelnikov.domain.repository.CompetitionStandingsRepository
 import ru.asmelnikov.domain.repository.CompetitionsRepository
 
-@RealmModule(library = false, classes = [CompetitionStandingsEntity::class])
-data class CompetitionStandingsDbModule(val placeholder: String) {
-    constructor() : this("")
-}
-
-@RealmModule(library = false, classes = [CompetitionEmbeddedEntity::class])
-data class CompetitionEmbeddedDbModule(val placeholder: String) {
-    constructor() : this("")
-}
-
-@RealmModule(library = false, classes = [FiltersEntity::class])
-data class FiltersDbModule(val placeholder: String) {
-    constructor() : this("")
-}
-
-@RealmModule(library = false, classes = [SeasonEntity::class])
-data class SeasonDbModule(val placeholder: String) {
-    constructor() : this("")
-}
-
-@RealmModule(library = false, classes = [StandingEntity::class])
-data class StandingDbModule(val placeholder: String) {
-    constructor() : this("")
-}
-
-@RealmModule(library = false, classes = [TableEntity::class])
-data class TableDbModule(val placeholder: String) {
-    constructor() : this("")
-}
-
-@RealmModule(library = false, classes = [TeamEntity::class])
-data class TeamDbModule(val placeholder: String) {
-    constructor() : this("")
-}
-
-@RealmModule(library = false, classes = [CompetitionEntity::class])
-data class CompetitionDbModule(val placeholder: String) {
-    constructor() : this("")
-}
-
-@RealmModule(library = false, classes = [AreaEntity::class])
-data class AreaDbModule(val placeholder: String) {
-    constructor() : this("")
-}
-
-@RealmModule(library = false, classes = [CurrentSeasonEntity::class])
-data class CurrentSeasonDbModule(val placeholder: String) {
-    constructor() : this("")
-}
-
-@RealmModule(library = false, classes = [WinnerEntity::class])
-data class WinnerDbModule(val placeholder: String) {
-    constructor() : this("")
-}
-
 private const val FOOTBALL_API_URL = "https://api.football-data.org/v4/"
 
 val dataModule = module {
@@ -85,6 +30,9 @@ val dataModule = module {
             .name("goal_pulse.realm")
             .schemaVersion(1L)
             .modules(
+                CompetitionScorersDbModule(),
+                ScorerDbModule(),
+                PlayerDbModule(),
                 CompetitionStandingsDbModule(),
                 CompetitionEmbeddedDbModule(),
                 FiltersDbModule(),
@@ -126,8 +74,7 @@ val dataModule = module {
         CompetitionStandingsRepositoryImpl(
             footballApi = get(),
             realmOptions = get(),
-            retrofitErrorsHandler = get(),
-            realmCompetitionOptions = get()
+            retrofitErrorsHandler = get()
         )
     }
 

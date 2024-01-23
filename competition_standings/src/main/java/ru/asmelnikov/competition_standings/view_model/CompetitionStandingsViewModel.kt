@@ -33,63 +33,74 @@ class CompetitionStandingsViewModel(
     fun compIdToState(compId: String) = intent {
         reduce { state.copy(compId = compId) }
         collectStandingsFlowFromLocal()
+        collectScorersFlowFromLocal()
         updateStandingsFromRemoteToLocal()
+        updateScorersFromRemoteToLocal()
+        getSeasons()
     }
 
-    fun getStandingsBySeason(season: String) = intent {
-        reduce { state.copy(isLoading = true) }
-        when (val standings = standingsRepository.getStandingsBySeason(state.compId, season)) {
-            is Resource.Success -> {
-                reduce {
-                    state.copy(
-                        isLoading = false,
-                        competitionStandings = standings.data,
-                        currentSeason = season
-                    )
-                }
-            }
-
-            is Resource.Error -> {
-                handleError(standings.httpErrors ?: ErrorsTypesHttp.UnknownError())
-            }
-        }
-    }
-
-    private fun updateStandingsFromRemoteToLocal() = intent {
-        reduce { state.copy(isLoading = true) }
+    fun updateScorersFromRemoteToLocal(season: String? = null) = intent {
+        reduce { state.copy(isLoadingScorers = true) }
         when (val compsFromRemote =
-            standingsRepository.getCompetitionStandingsFromRemoteToLocalById(
-                state.compId
+            standingsRepository.getCompetitionTopScorersBySeason(
+                state.compId,
+                season
             )) {
             is Resource.Success -> {
                 reduce {
                     state.copy(
-                        isLoading = false,
+                        isLoadingScorers = false,
                     )
                 }
-                if (state.competitionStandings?.standings.isNullOrEmpty()) {
-                    reduce {
-                        state.copy(
-                            competitionStandings = compsFromRemote.data
-                        )
-                    }
+                reduce {
+                    state.copy(
+                        scorers = compsFromRemote.data?.scorers ?: emptyList()
+                    )
                 }
-                if (state.currentSeason.isEmpty()) {
-                    reduce {
-                        state.copy(
-                            currentSeason = compsFromRemote.data?.season?.startDateEndDate
-                                ?: ""
-                        )
-                    }
+                reduce {
+                    state.copy(
+                        currentSeasonScorers = compsFromRemote.data?.season?.startDateEndDate
+                            ?: ""
+                    )
                 }
-                getSeasons()
             }
 
             is Resource.Error -> {
                 handleError(compsFromRemote.httpErrors ?: ErrorsTypesHttp.UnknownError())
             }
         }
+    }
 
+    fun updateStandingsFromRemoteToLocal(season: String? = null) = intent {
+        reduce { state.copy(isLoadingStandings = true) }
+        when (val compsFromRemote =
+            standingsRepository.getCompetitionStandingsFromRemoteToLocalById(
+                state.compId,
+                season
+            )) {
+            is Resource.Success -> {
+                reduce {
+                    state.copy(
+                        isLoadingStandings = false,
+                    )
+                }
+                reduce {
+                    state.copy(
+                        competitionStandings = compsFromRemote.data
+                    )
+                }
+                reduce {
+                    state.copy(
+                        currentSeasonStandings = compsFromRemote.data?.season?.startDateEndDate
+                            ?: ""
+                    )
+                }
+            }
+
+            is Resource.Error -> {
+                handleError(compsFromRemote.httpErrors ?: ErrorsTypesHttp.UnknownError())
+            }
+        }
     }
 
     private fun getSeasons() = intent {
@@ -114,16 +125,28 @@ class CompetitionStandingsViewModel(
                 reduce {
                     state.copy(
                         competitionStandings = standings,
-                        currentSeason = standings.season.startDateEndDate
+                        currentSeasonStandings = standings.season.startDateEndDate
                     )
                 }
             }
         }
     }
 
+    private fun collectScorersFlowFromLocal() = intent(registerIdling = false) {
+        repeatOnSubscription {
+            standingsRepository.getScorersFlowFromLocal(state.compId).collect { scorers ->
+                reduce {
+                    state.copy(
+                        scorers = scorers.scorers,
+                        currentSeasonScorers = scorers.season.startDateEndDate
+                    )
+                }
+            }
+        }
+    }
 
     private fun handleError(error: ErrorsTypesHttp) = intent {
-        reduce { state.copy(isLoading = false) }
+        reduce { state.copy(isLoadingStandings = false, isLoadingScorers = false) }
 
         when (error) {
             is ErrorsTypesHttp.Https400Errors ->

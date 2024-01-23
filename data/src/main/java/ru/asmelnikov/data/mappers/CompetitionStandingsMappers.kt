@@ -1,7 +1,13 @@
 package ru.asmelnikov.data.mappers
 
 import io.realm.RealmList
-import ru.asmelnikov.data.local.models.*
+import ru.asmelnikov.data.local.models.CompetitionEmbeddedEntity
+import ru.asmelnikov.data.local.models.CompetitionStandingsEntity
+import ru.asmelnikov.data.local.models.FiltersEntity
+import ru.asmelnikov.data.local.models.SeasonEntity
+import ru.asmelnikov.data.local.models.StandingEntity
+import ru.asmelnikov.data.local.models.TableEntity
+import ru.asmelnikov.data.local.models.TeamEntity
 import ru.asmelnikov.data.models.CompetitionDTO
 import ru.asmelnikov.data.models.CompetitionStandingsModelDTO
 import ru.asmelnikov.data.models.FiltersDTO
@@ -9,8 +15,14 @@ import ru.asmelnikov.data.models.SeasonDTO
 import ru.asmelnikov.data.models.StandingDTO
 import ru.asmelnikov.data.models.TableDTO
 import ru.asmelnikov.data.models.TeamDTO
-import ru.asmelnikov.domain.models.*
-
+import ru.asmelnikov.domain.models.Competition
+import ru.asmelnikov.domain.models.CompetitionStandings
+import ru.asmelnikov.domain.models.Filters
+import ru.asmelnikov.domain.models.Season
+import ru.asmelnikov.domain.models.Standing
+import ru.asmelnikov.domain.models.Table
+import ru.asmelnikov.domain.models.Team
+import kotlin.random.Random
 
 fun CompetitionStandingsModelDTO.toCompetitionStandingsEntity(): CompetitionStandingsEntity {
     val standings: RealmList<StandingEntity> = RealmList()
@@ -93,7 +105,7 @@ fun TableDTO?.toTableEntity(): TableEntity {
 fun TeamDTO.toTeamEntity(): TeamEntity {
     return TeamEntity(
         crest = crest ?: "",
-        id = id ?: -1,
+        id = id ?: Random.nextInt(100, 1000),
         name = name ?: "",
         shortName = shortName ?: "",
         tla = tla ?: ""
@@ -110,6 +122,7 @@ fun CompetitionStandingsEntity?.toCompetitionStandings(): CompetitionStandings {
         standings = this?.standings?.map { it.toStanding() } ?: emptyList()
     )
 }
+
 
 fun CompetitionEmbeddedEntity?.toCompetition(): Competition {
     return Competition(
