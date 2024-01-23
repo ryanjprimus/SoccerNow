@@ -3,13 +3,16 @@ package ru.asmelnikov.goalpulse
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import com.mxalbert.sharedelements.SharedElementsRoot
 import ru.asmelnikov.goalpulse.navigation.NavGraph
 import ru.asmelnikov.goalpulse.ui.theme.GoalPulseTheme
@@ -21,13 +24,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
-
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
 
             val appState = rememberAppState()
 
             GoalPulseTheme {
                 Scaffold(
+                    contentWindowInsets = WindowInsets.navigationBars,
                     modifier = Modifier.fillMaxSize(),
                     containerColor = MaterialTheme.colorScheme.background,
                     snackbarHost = {

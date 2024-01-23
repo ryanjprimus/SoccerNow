@@ -8,29 +8,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil.compose.SubcomposeAsyncImage
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
 import com.mxalbert.sharedelements.FadeMode
 import com.mxalbert.sharedelements.MaterialContainerTransformSpec
 import com.mxalbert.sharedelements.SharedMaterialContainer
@@ -38,6 +26,7 @@ import ru.asmelnikov.domain.models.Competition
 import ru.asmelnikov.utils.R
 import ru.asmelnikov.utils.composables.SubComposeAsyncImageCommon
 import ru.asmelnikov.utils.navigation.Routes
+import ru.asmelnikov.utils.ui.theme.dimens
 
 @Composable
 fun CompetitionItem(
@@ -56,7 +45,7 @@ fun CompetitionItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(MaterialTheme.dimens.medium1),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -87,28 +76,28 @@ fun CompetitionItem(
                 Row {
                     Text(
                         text = competition.name,
-                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        style = MaterialTheme.typography.titleMedium
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(MaterialTheme.dimens.small1))
 
                     SubComposeAsyncImageCommon(
                         imageUri = competition.area.flag.ifBlank { R.drawable.unknown_flag },
                         shape = CircleShape,
-                        size = 24.dp
+                        size = MaterialTheme.dimens.medium2
                     )
                 }
 
                 Text(
                     text = "current match day - ${competition.currentSeason.currentMatchDay}",
-                    style = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp)
+                    style = MaterialTheme.typography.labelSmall
                 )
                 Text(
                     text = "start date - ${competition.currentSeason.startDate}",
-                    style = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp)
+                    style = MaterialTheme.typography.labelSmall
                 )
                 Text(
                     text = "end date - ${competition.currentSeason.endDate}",
-                    style = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp)
+                    style = MaterialTheme.typography.labelSmall
                 )
             }
         }

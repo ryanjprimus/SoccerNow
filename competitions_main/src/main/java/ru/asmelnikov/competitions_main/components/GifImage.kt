@@ -23,6 +23,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import coil.size.Size
 import ru.asmelnikov.utils.R
+import ru.asmelnikov.utils.ui.theme.dimens
 
 @Composable
 fun GifImage(
@@ -48,7 +49,7 @@ fun GifImage(
         ),
         contentDescription = null,
         modifier = modifier
-            .height(280.dp)
+            .height(MaterialTheme.dimens.mainGifHeight)
             .fillMaxWidth(),
         contentScale = ContentScale.FillWidth,
         alpha = alpha

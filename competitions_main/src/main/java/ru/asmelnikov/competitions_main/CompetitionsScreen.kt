@@ -2,7 +2,6 @@
 
 package ru.asmelnikov.competitions_main
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +43,7 @@ import ru.asmelnikov.domain.models.Competition
 import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.navigation.Routes
 import ru.asmelnikov.utils.navigation.navigateWithArgs
+import ru.asmelnikov.utils.ui.theme.dimens
 
 @Composable
 fun CompetitionsScreen(
@@ -114,14 +114,16 @@ fun CompetitionsScreenContent(
             )
 
             GifImage(
-                modifier = Modifier.fillMaxWidth().parallax(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .parallax(),
                 alpha = state.toolbarState.progress
             )
 
             Spacer(
                 Modifier
                     .fillMaxWidth()
-                    .height(64.dp)
+                    .height(MaterialTheme.dimens.large)
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
@@ -141,9 +143,17 @@ fun CompetitionsScreenContent(
                     0f -> "Available competitions"
                     else -> "Goal pulse!"
                 },
-                style = TextStyle(color = Color.Black, fontSize = textSize),
+                style = TextStyle(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontSize = textSize
+                ),
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(
+                        bottom = MaterialTheme.dimens.small3,
+                        top = MaterialTheme.dimens.medium3,
+                        start = MaterialTheme.dimens.small3,
+                        end = MaterialTheme.dimens.small3
+                    )
                     .road(whenCollapsed = Alignment.TopStart, whenExpanded = Alignment.BottomEnd)
             )
 
@@ -156,7 +166,7 @@ fun CompetitionsScreenContent(
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.small3)
             ) {
                 item {
                     Spacer(modifier = Modifier.height(0.dp))
@@ -177,7 +187,7 @@ fun CompetitionsScreenContent(
                     }
                 }
                 item {
-                    Spacer(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.height(MaterialTheme.dimens.medium4))
                 }
             }
         }

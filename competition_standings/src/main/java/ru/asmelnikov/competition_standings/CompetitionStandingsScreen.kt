@@ -49,6 +49,7 @@ import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.composables.SubComposeAsyncImageCommon
 import ru.asmelnikov.utils.navigation.Routes
 import ru.asmelnikov.utils.navigation.popUp
+import ru.asmelnikov.utils.ui.theme.dimens
 
 @Composable
 fun CompetitionStandingsScreen(
@@ -105,7 +106,8 @@ fun CompetitionStandingsContent(
 ) {
 
     val configuration = LocalConfiguration.current
-    val orientation = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "LANDSCAPE" else "PORTRAIT"
+    val orientation =
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "LANDSCAPE" else "PORTRAIT"
 
     Box {
 
@@ -123,12 +125,12 @@ fun CompetitionStandingsContent(
             scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
             toolbar = {
                 val progress = state.toolbarState.progress
-                val textSize = (16 + (18 * progress)).sp
+                val textSize = (18 + (18 * progress)).sp
 
                 SubComposeAsyncImageCommon(
                     imageUri = competitionStandings?.area?.flag ?: "",
                     shape = RoundedCornerShape(0.dp),
-                    size = 240.dp,
+                    size = MaterialTheme.dimens.emptyContentImageSize,
                     alpha = state.toolbarState.progress,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -138,7 +140,10 @@ fun CompetitionStandingsContent(
 
                 Box(
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(
+                            horizontal = MaterialTheme.dimens.small1,
+                            vertical = MaterialTheme.dimens.medium2
+                        )
                         .road(
                             whenCollapsed = Alignment.TopEnd,
                             whenExpanded = Alignment.Center
@@ -170,7 +175,10 @@ fun CompetitionStandingsContent(
                     overflow = TextOverflow.Ellipsis,
                     fontSize = textSize,
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(
+                            bottom = MaterialTheme.dimens.medium1,
+                            top = MaterialTheme.dimens.medium3
+                        )
                         .road(
                             whenCollapsed = Alignment.TopCenter,
                             whenExpanded = Alignment.BottomCenter
@@ -190,7 +198,7 @@ fun CompetitionStandingsContent(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(4.dp)
+                        .height(MaterialTheme.dimens.extraSmall1)
                 ) {
                     if (isLoading) LinearProgressIndicator(
                         modifier = Modifier.fillMaxSize(),
@@ -204,7 +212,9 @@ fun CompetitionStandingsContent(
                     competitionStandings?.standings?.forEach { standing ->
                         item {
                             Divider(color = MaterialTheme.colorScheme.primary)
-                            StandingTopItem(tableName = standing.group.ifEmpty { "Team" }, orientation = orientation)
+                            StandingTopItem(
+                                tableName = standing.group.ifEmpty { "Team" }
+                            )
                             Divider(color = MaterialTheme.colorScheme.primary)
                         }
                         items(items = standing.table) { table ->
@@ -216,8 +226,16 @@ fun CompetitionStandingsContent(
             }
 
         }
-        IconButton(modifier = Modifier.align(Alignment.TopStart), onClick = onBackClick) {
-            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+        IconButton(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(top = MaterialTheme.dimens.medium1), onClick = onBackClick
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }
