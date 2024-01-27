@@ -35,16 +35,15 @@ fun NavGraph(
             CompetitionsScreen(appState = appState, showSnackbar = showSnackbar)
         }
         composable(
-            route = "${Routes.Competition_Standings}/{value}",
+            route = "${Routes.Competition_Standings}/{compId}",
             arguments = listOf(
-                navArgument("value") {
+                navArgument("compId") {
                     type = NavType.StringType
-                    defaultValue = "Default"
+                    defaultValue = ""
                 }
-            )) { backStackEntry ->
+            )) {
             CompetitionStandingsScreen(
                 appState = appState,
-                compId = backStackEntry.arguments?.getString("value") ?: "",
                 showSnackbar = showSnackbar
             )
         }

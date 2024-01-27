@@ -7,13 +7,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Divider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ru.asmelnikov.domain.models.CompetitionStandings
+import ru.asmelnikov.utils.getCompColor
 import ru.asmelnikov.utils.ui.theme.dimens
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -44,11 +45,10 @@ fun FirstPagerScreenStandings(
                 color = MaterialTheme.colorScheme.primary
             )
         }
-
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            competitionStandings?.standings?.forEach { standing ->
+            competitionStandings?.standings?.forEachIndexed { standingIndex, standing ->
                 item {
                     Divider(color = MaterialTheme.colorScheme.primary)
                     StandingTopItem(
@@ -56,12 +56,24 @@ fun FirstPagerScreenStandings(
                     )
                     Divider(color = MaterialTheme.colorScheme.primary)
                 }
-                items(items = standing.table, key = { it.team.id }) { table ->
-                    StandingItem(modifier = Modifier.animateItemPlacement(), table = table)
+                itemsIndexed(
+                    items = standing.table,
+                    key = { _, table -> table.team.id }) { tableIndex, table ->
+                    val color = competitionStandings.competition.code.getCompColor(
+                        tableIndex,
+                        standing.table.size
+                    )
+                    StandingItem(
+                        modifier = Modifier.animateItemPlacement(),
+                        table = table,
+                        firstBoxColor = color
+                    )
                     Divider(color = MaterialTheme.colorScheme.primary)
                 }
-                item {
-                    BottomStandingItem()
+                if (standingIndex == competitionStandings.standings.size - 1) {
+                    item {
+                        BottomStandingItem()
+                    }
                 }
             }
         }

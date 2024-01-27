@@ -13,6 +13,7 @@ import ru.asmelnikov.utils.ErrorsTypesHttp
 import ru.asmelnikov.utils.R
 import ru.asmelnikov.utils.Resource
 import ru.asmelnikov.utils.StringResourceProvider
+import ru.asmelnikov.utils.getErrorMessage
 
 class CompetitionStandingsViewModel(
     private val standingsRepository: CompetitionStandingsRepository,
@@ -24,19 +25,18 @@ class CompetitionStandingsViewModel(
     override val container = container<CompetitionStandingsState, CompetitionStandingSideEffects>(
         initialState = CompetitionStandingsState(),
         savedStateHandle = savedStateHandle
-    )
-
-    fun onBackClick() = intent {
-        postSideEffect(CompetitionStandingSideEffects.BackClick)
-    }
-
-    fun compIdToState(compId: String) = intent {
-        reduce { state.copy(compId = compId) }
+    ) {
+        val compId = savedStateHandle.get<String>("compId")
+        reduce { state.copy(compId = compId ?: "") }
         collectStandingsFlowFromLocal()
         collectScorersFlowFromLocal()
         updateStandingsFromRemoteToLocal()
         updateScorersFromRemoteToLocal()
         getSeasons()
+    }
+
+    fun onBackClick() = intent {
+        postSideEffect(CompetitionStandingSideEffects.BackClick)
     }
 
     fun updateScorersFromRemoteToLocal(season: String? = null) = intent {
@@ -148,63 +148,12 @@ class CompetitionStandingsViewModel(
     private fun handleError(error: ErrorsTypesHttp) = intent {
         reduce { state.copy(isLoadingStandings = false, isLoadingScorers = false) }
 
-        when (error) {
-            is ErrorsTypesHttp.Https400Errors ->
-                postSideEffect(
-                    CompetitionStandingSideEffects.Snackbar(
-                        stringResourceProvider.getString(
-                            resourceId = when (error.errorCode) {
-                                429 -> R.string.http_429_errors
-                                else -> R.string.http_400_errors
-                            },
-                            arguments = arrayOf(error.code ?: "")
-                        )
-                    )
-                )
-
-            is ErrorsTypesHttp.Https500Errors -> postSideEffect(
-                CompetitionStandingSideEffects.Snackbar(
-                    stringResourceProvider.getString(
-                        resourceId = R.string.http_500_errors,
-                        arguments = arrayOf(error.errorMessage ?: "")
-                    )
+        postSideEffect(
+            CompetitionStandingSideEffects.Snackbar(
+                error.getErrorMessage(
+                    stringResourceProvider
                 )
             )
-
-            is ErrorsTypesHttp.TimeoutException -> postSideEffect(
-                CompetitionStandingSideEffects.Snackbar(
-                    stringResourceProvider.getString(
-                        resourceId = R.string.http_timeout_error
-                    )
-                )
-            )
-
-            is ErrorsTypesHttp.MissingConnection -> postSideEffect(
-                CompetitionStandingSideEffects.Snackbar(
-                    stringResourceProvider.getString(
-                        resourceId = R.string.http_missing_error
-                    )
-                )
-            )
-
-            is ErrorsTypesHttp.NetworkError -> postSideEffect(
-                CompetitionStandingSideEffects.Snackbar(
-                    stringResourceProvider.getString(
-                        resourceId = R.string.http_network_error,
-                        arguments = arrayOf(error.errorMessage ?: "")
-                    )
-                )
-            )
-
-            else -> postSideEffect(
-                CompetitionStandingSideEffects.Snackbar(
-                    stringResourceProvider.getString(
-                        resourceId = R.string.http_unknown_error,
-                        arguments = arrayOf(error.errorMessage ?: "")
-                    )
-                )
-            )
-
-        }
+        )
     }
 }

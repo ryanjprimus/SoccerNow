@@ -1,6 +1,5 @@
 package ru.asmelnikov.competition_standings.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -17,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
@@ -92,7 +92,7 @@ fun StandingItem(
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(dataWeight)
-                            .background(firstBoxColor)
+                            .leftRoundedBorder(color = if (index == 0) firstBoxColor else Color.Transparent)
                             .rightBorder(
                                 strokeWidth = MaterialTheme.dimens.borderSize,
                                 color = MaterialTheme.colorScheme.primary
@@ -217,3 +217,33 @@ fun Modifier.rightBorder(strokeWidth: Dp, color: Color) =
             }
         )
     }
+
+
+fun Modifier.leftRoundedBorder(
+    strokeWidth: Dp = 6.dp,
+    color: Color
+) = composed {
+    composed(
+        factory = {
+            val density = LocalDensity.current
+            val strokeWidthPx = density.run { strokeWidth.toPx() }
+
+            Modifier.drawBehind {
+                val width = size.width - strokeWidthPx / 2
+                val height = size.height
+
+                drawRoundRect(
+                    color = color,
+                    topLeft = Offset(0f, 0f),
+                    size = Size(strokeWidthPx, height)
+                )
+
+                drawRect(
+                    color = Color.Transparent,
+                    topLeft = Offset(strokeWidthPx, 0f),
+                    size = Size(width - strokeWidthPx, height)
+                )
+            }
+        }
+    )
+}

@@ -58,7 +58,6 @@ import ru.asmelnikov.utils.ui.theme.dimens
 @Composable
 fun CompetitionStandingsScreen(
     appState: MainAppState,
-    compId: String,
     showSnackbar: (
         String,
         SnackbarDuration,
@@ -67,10 +66,6 @@ fun CompetitionStandingsScreen(
     ) -> Unit,
     viewModel: CompetitionStandingsViewModel = koinViewModel()
 ) {
-
-    LaunchedEffect(key1 = compId) {
-        viewModel.compIdToState(compId)
-    }
 
     val state by viewModel.container.stateFlow.collectAsState()
 
