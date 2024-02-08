@@ -8,9 +8,9 @@ import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.syntax.simple.repeatOnSubscription
 import org.orbitmvi.orbit.viewmodel.container
+import ru.asmelnikov.domain.models.MatchesByTour
 import ru.asmelnikov.domain.repository.CompetitionStandingsRepository
 import ru.asmelnikov.utils.ErrorsTypesHttp
-import ru.asmelnikov.utils.R
 import ru.asmelnikov.utils.Resource
 import ru.asmelnikov.utils.StringResourceProvider
 import ru.asmelnikov.utils.getErrorMessage
@@ -30,8 +30,10 @@ class CompetitionStandingsViewModel(
         reduce { state.copy(compId = compId ?: "") }
         collectStandingsFlowFromLocal()
         collectScorersFlowFromLocal()
+        collectMatchesFlowFromLocal()
         updateStandingsFromRemoteToLocal()
         updateScorersFromRemoteToLocal()
+        updateMatchesFromRemoteToLocal()
         getSeasons()
     }
 
@@ -103,6 +105,40 @@ class CompetitionStandingsViewModel(
         }
     }
 
+    fun updateMatchesFromRemoteToLocal(season: String? = null) = intent {
+        reduce { state.copy(isLoadingMatches = true) }
+        when (val matchesFromRemote =
+            standingsRepository.getAllMatchesFromRemoteToLocal(
+                state.compId,
+                season
+            )) {
+            is Resource.Success -> {
+                reduce {
+                    state.copy(
+                        isLoadingMatches = false,
+                    )
+                }
+
+                reduce {
+                    state.copy(
+                        matchesCompleted = matchesFromRemote.data?.matchesByTourCompleted
+                            ?: emptyList(),
+                        matchesAhead = matchesFromRemote.data?.matchesByTourAhead ?: emptyList()
+                    )
+                }
+                reduce {
+                    state.copy(
+                        currentSeasonMatches = matchesFromRemote.data?.season ?: ""
+                    )
+                }
+            }
+
+            is Resource.Error -> {
+                handleError(matchesFromRemote.httpErrors ?: ErrorsTypesHttp.UnknownError())
+            }
+        }
+    }
+
     private fun getSeasons() = intent {
         when (val seasons = standingsRepository.getCompetitionSeasonsById(state.compId)) {
             is Resource.Success -> {
@@ -145,8 +181,28 @@ class CompetitionStandingsViewModel(
         }
     }
 
+    private fun collectMatchesFlowFromLocal() = intent(registerIdling = false) {
+        repeatOnSubscription {
+            standingsRepository.getAllMatchesFlowFromLocal(state.compId).collect { matches ->
+                reduce {
+                    state.copy(
+                        matchesCompleted = matches.matchesByTourCompleted,
+                        matchesAhead = matches.matchesByTourAhead,
+                        currentSeasonMatches = matches.season
+                    )
+                }
+            }
+        }
+    }
+
     private fun handleError(error: ErrorsTypesHttp) = intent {
-        reduce { state.copy(isLoadingStandings = false, isLoadingScorers = false) }
+        reduce {
+            state.copy(
+                isLoadingStandings = false,
+                isLoadingScorers = false,
+                isLoadingMatches = false
+            )
+        }
 
         postSideEffect(
             CompetitionStandingSideEffects.Snackbar(

@@ -45,9 +45,12 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 import ru.asmelnikov.competition_standings.components.FirstPagerScreenStandings
 import ru.asmelnikov.competition_standings.components.PagerTabRow
 import ru.asmelnikov.competition_standings.components.SecondPagerScreenScorers
+import ru.asmelnikov.competition_standings.components.ThirdPagerScreenMatches
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingSideEffects
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingsViewModel
+import ru.asmelnikov.domain.models.CompetitionMatches
 import ru.asmelnikov.domain.models.CompetitionStandings
+import ru.asmelnikov.domain.models.MatchesByTour
 import ru.asmelnikov.domain.models.Scorer
 import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.composables.SubComposeAsyncImageCommon
@@ -92,7 +95,12 @@ fun CompetitionStandingsScreen(
         currentSeasonScorers = state.currentSeasonScorers,
         onSeasonScorersUpdate = viewModel::updateScorersFromRemoteToLocal,
         isLoadingScorers = state.isLoadingScorers,
-        scorers = state.scorers
+        scorers = state.scorers,
+        matchesCompleted = state.matchesCompleted,
+        matchesAhead = state.matchesAhead,
+        currentSeasonMatches = state.currentSeasonMatches,
+        onSeasonMatchesUpdate = viewModel::updateMatchesFromRemoteToLocal,
+        isLoadingMatches = state.isLoadingMatches
     )
 
 }
@@ -109,7 +117,12 @@ fun CompetitionStandingsContent(
     scorers: List<Scorer>,
     currentSeasonScorers: String,
     onSeasonScorersUpdate: (String) -> Unit,
-    isLoadingScorers: Boolean
+    isLoadingScorers: Boolean,
+    matchesCompleted: List<MatchesByTour>,
+    matchesAhead: List<MatchesByTour>,
+    currentSeasonMatches: String,
+    onSeasonMatchesUpdate: (String) -> Unit,
+    isLoadingMatches: Boolean
 ) {
 
     val configuration = LocalConfiguration.current
@@ -119,7 +132,7 @@ fun CompetitionStandingsContent(
     val pagerState = rememberPagerState(
         initialPage = 0,
     ) {
-        2
+        3
     }
     val orientation =
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "LANDSCAPE" else "PORTRAIT"
@@ -216,7 +229,7 @@ fun CompetitionStandingsContent(
             Column(modifier = Modifier.fillMaxSize()) {
 
                 PagerTabRow(
-                    tabTitles = listOf("Standings", "Scorers"),
+                    tabTitles = listOf("Standings", "Scorers", "Matches"),
                     selectedIndex = pagerState.currentPage,
                     modifier = Modifier.fillMaxWidth(),
                     onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } }
@@ -247,6 +260,17 @@ fun CompetitionStandingsContent(
                                 currentSeasonScorers = currentSeasonScorers,
                                 onSeasonScorersUpdate = onSeasonScorersUpdate,
                                 isLoadingScorers = isLoadingScorers
+                            )
+                        }
+
+                        2 -> {
+                            ThirdPagerScreenMatches(
+                                matchesCompleted = matchesCompleted,
+                                matchesAhead = matchesAhead,
+                                seasons = seasons,
+                                currentSeasonMatches = currentSeasonMatches,
+                                onSeasonMatchesUpdate = onSeasonMatchesUpdate,
+                                isLoadingMatches = isLoadingMatches
                             )
                         }
                     }

@@ -4,14 +4,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.asmelnikov.data.api.FootballApi
 import ru.asmelnikov.data.local.StandingsRealmOptions
+import ru.asmelnikov.data.local.models.CompetitionMatchesEntity
 import ru.asmelnikov.data.local.models.CompetitionScorersEntity
 import ru.asmelnikov.data.local.models.CompetitionStandingsEntity
 import ru.asmelnikov.data.mappers.toCompetition
+import ru.asmelnikov.data.mappers.toCompetitionMatches
+import ru.asmelnikov.data.mappers.toCompetitionMatchesEntity
 import ru.asmelnikov.data.mappers.toCompetitionScorers
 import ru.asmelnikov.data.mappers.toCompetitionScorersEntity
 import ru.asmelnikov.data.mappers.toCompetitionStandings
 import ru.asmelnikov.data.mappers.toCompetitionStandingsEntity
 import ru.asmelnikov.data.retrofit_errors_handler.RetrofitErrorsHandler
+import ru.asmelnikov.domain.models.CompetitionMatches
 import ru.asmelnikov.domain.models.CompetitionScorers
 import ru.asmelnikov.domain.models.CompetitionStandings
 import ru.asmelnikov.domain.models.Season
@@ -84,5 +88,28 @@ class CompetitionStandingsRepositoryImpl(
         return realmOptions.getScorersFlowById(compId).map {
             it.toCompetitionScorers()
         }
+    }
+
+    override suspend fun getAllMatchesFromRemoteToLocal(
+        compId: String,
+        season: String?
+    ): Resource<CompetitionMatches> {
+        return retrofitErrorsHandler.executeSafely {
+            val response =
+                footballApi.getCompetitionMatchesBySeason(compId, season?.substring(0, 4))
+            if (response.isSuccessful && response.code() == 200) {
+                val matches = response.body()?.toCompetitionMatchesEntity()
+                realmOptions.upsertMatchesFromRemoteToLocal(
+                    matches ?: CompetitionMatchesEntity()
+                )
+                Resource.Success(matches?.toCompetitionMatches() ?: CompetitionMatches())
+            } else {
+                retrofitErrorsHandler.responseFailureHandler(response)
+            }
+        }
+    }
+
+    override suspend fun getAllMatchesFlowFromLocal(compId: String): Flow<CompetitionMatches> {
+        return realmOptions.getMatchesFlowById(compId).map { it.toCompetitionMatches() }
     }
 }

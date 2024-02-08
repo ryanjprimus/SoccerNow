@@ -4,22 +4,23 @@ fun ErrorsTypesHttp.getErrorMessage(stringResourceProvider: StringResourceProvid
     return when (this) {
         is ErrorsTypesHttp.Https400Errors -> {
             when (this.errorCode) {
+                403 -> stringResourceProvider.getString(
+                    R.string.http_403_errors
+                )
+
                 429 -> stringResourceProvider.getString(
-                    R.string.http_429_errors,
-                    arrayOf(this.code ?: "")
+                    R.string.http_429_errors
                 )
 
                 else -> stringResourceProvider.getString(
-                    R.string.http_400_errors,
-                    arrayOf(this.code ?: "")
+                    R.string.http_400_errors
                 )
             }
         }
 
         is ErrorsTypesHttp.Https500Errors -> {
             stringResourceProvider.getString(
-                R.string.http_500_errors,
-                arrayOf(this.errorMessage ?: "")
+                R.string.http_500_errors
             )
         }
 
@@ -33,15 +34,13 @@ fun ErrorsTypesHttp.getErrorMessage(stringResourceProvider: StringResourceProvid
 
         is ErrorsTypesHttp.NetworkError -> {
             stringResourceProvider.getString(
-                R.string.http_network_error,
-                arrayOf(this.errorMessage ?: "")
+                R.string.http_network_error
             )
         }
 
         else -> {
             stringResourceProvider.getString(
-                R.string.http_unknown_error,
-                arrayOf(this.errorMessage ?: "")
+                R.string.http_unknown_error
             )
         }
     }

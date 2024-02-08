@@ -6,6 +6,7 @@ import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.asmelnikov.data.models.CompetitionDTO
+import ru.asmelnikov.data.models.CompetitionMatchesDTO
 import ru.asmelnikov.data.models.CompetitionModelDTO
 import ru.asmelnikov.data.models.CompetitionScorersModelDTO
 import ru.asmelnikov.data.models.CompetitionStandingsModelDTO
@@ -35,4 +36,11 @@ interface FootballApi {
         @Query("season") season: String?,
         @Query("limit") limit: Int = 20
     ): Response<CompetitionScorersModelDTO>
+
+    @GET("competitions/{competitionId}/matches")
+    @Headers("X-Auth-Token: $API_KEY")
+    suspend fun getCompetitionMatchesBySeason(
+        @Path("competitionId") competitionId: String,
+        @Query("season") season: String?
+    ): Response<CompetitionMatchesDTO>
 }

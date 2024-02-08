@@ -3,7 +3,9 @@ package ru.asmelnikov.competition_standings.view_model
 import android.os.Parcelable
 import androidx.compose.material3.SnackbarDuration
 import kotlinx.parcelize.Parcelize
+import ru.asmelnikov.domain.models.CompetitionMatches
 import ru.asmelnikov.domain.models.CompetitionStandings
+import ru.asmelnikov.domain.models.MatchesByTour
 import ru.asmelnikov.domain.models.Scorer
 import ru.asmelnikov.domain.models.Season
 
@@ -12,10 +14,14 @@ import ru.asmelnikov.domain.models.Season
 data class CompetitionStandingsState(
     val compId: String = "",
     val competitionStandings: CompetitionStandings? = null,
+    val matchesCompleted: List<MatchesByTour> = emptyList(),
+    val matchesAhead: List<MatchesByTour> = emptyList(),
     val isLoadingStandings: Boolean = false,
     val isLoadingScorers: Boolean = false,
+    val isLoadingMatches: Boolean = false,
     val seasons: List<Season> = emptyList(),
     val currentSeasonStandings: String = "",
+    val currentSeasonMatches: String = "",
     val scorers: List<Scorer> = emptyList(),
     val currentSeasonScorers: String = ""
 ) : Parcelable

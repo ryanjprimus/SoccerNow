@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import ru.asmelnikov.data.local.models.CompetitionMatchesEntity
 import ru.asmelnikov.data.local.models.CompetitionScorersEntity
 import ru.asmelnikov.data.local.models.CompetitionStandingsEntity
-import ru.asmelnikov.data.local.models.ScorerEntity
 
 interface StandingsRealmOptions {
 
@@ -22,6 +22,10 @@ interface StandingsRealmOptions {
     suspend fun upsertScorersFromRemoteToLocal(comp: CompetitionScorersEntity)
 
     suspend fun getScorersFlowById(compId: String): Flow<CompetitionScorersEntity>
+
+    suspend fun upsertMatchesFromRemoteToLocal(comp: CompetitionMatchesEntity)
+
+    suspend fun getMatchesFlowById(compId: String): Flow<CompetitionMatchesEntity>
 
     class RealmOptionsImpl(private val realmConfig: RealmConfiguration) : StandingsRealmOptions {
         override suspend fun upsertStandingsFromRemoteToLocal(standings: CompetitionStandingsEntity) {
@@ -106,6 +110,50 @@ interface StandingsRealmOptions {
                     }
                 } else {
                     send(CompetitionScorersEntity())
+                    close()
+                    realm.close()
+                }
+            }.flowOn(Dispatchers.Main)
+        }
+
+        override suspend fun upsertMatchesFromRemoteToLocal(comp: CompetitionMatchesEntity) {
+            withContext(Dispatchers.IO) {
+                val realm = Realm.getInstance(realmConfig)
+                realm.executeTransaction { transition ->
+                    transition.insertOrUpdate(comp)
+                }
+                realm.close()
+            }
+        }
+
+        override suspend fun getMatchesFlowById(compId: String): Flow<CompetitionMatchesEntity> {
+            return callbackFlow {
+                val realm = Realm.getInstance(realmConfig)
+                val matches: CompetitionMatchesEntity? =
+                    realm.where(CompetitionMatchesEntity::class.java)
+                        .equalTo("id", compId)
+                        .findFirst()
+
+                if (matches != null) {
+                    val matchEntity: CompetitionMatchesEntity =
+                        realm.copyFromRealm(matches)
+
+                    trySend(matchEntity)
+
+                    val listener =
+                        RealmObjectChangeListener<CompetitionMatchesEntity> { updatedEntity, _ ->
+                            val updateMatch = realm.copyFromRealm(updatedEntity)
+                            trySend(updateMatch)
+                        }
+
+                    matches.addChangeListener(listener)
+
+                    awaitClose {
+                        matches.removeChangeListener(listener)
+                        realm.close()
+                    }
+                } else {
+                    send(CompetitionMatchesEntity())
                     close()
                     realm.close()
                 }

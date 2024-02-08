@@ -1,9 +1,9 @@
 package ru.asmelnikov.domain.repository
 
 import kotlinx.coroutines.flow.Flow
+import ru.asmelnikov.domain.models.CompetitionMatches
 import ru.asmelnikov.domain.models.CompetitionScorers
 import ru.asmelnikov.domain.models.CompetitionStandings
-import ru.asmelnikov.domain.models.Scorer
 import ru.asmelnikov.domain.models.Season
 import ru.asmelnikov.utils.Resource
 
@@ -24,4 +24,13 @@ interface CompetitionStandingsRepository {
     ): Resource<CompetitionScorers?>
 
     suspend fun getScorersFlowFromLocal(compId: String): Flow<CompetitionScorers>
+
+    suspend fun getAllMatchesFromRemoteToLocal(
+        compId: String,
+        season: String?
+    ): Resource<CompetitionMatches>
+
+    suspend fun getAllMatchesFlowFromLocal(
+        compId: String,
+    ): Flow<CompetitionMatches>
 }

@@ -43,7 +43,16 @@ val dataModule = module {
                 CompetitionDbModule(),
                 AreaDbModule(),
                 CurrentSeasonDbModule(),
-                WinnerDbModule()
+                WinnerDbModule(),
+                CompetitionMatchesDbModule(),
+                MatchDbModule(),
+                AwayTeamDbModule(),
+                HomeTeamDbModule(),
+                RefereeDbModule(),
+                ScoreDbModule(),
+                FullTimeDbModule(),
+                HalfTimeDbModule(),
+                MatchesByTourDbModule()
             )
             .build()
     }
