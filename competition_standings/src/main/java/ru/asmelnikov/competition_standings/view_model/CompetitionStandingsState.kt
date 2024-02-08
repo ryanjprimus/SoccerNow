@@ -5,6 +5,7 @@ import androidx.compose.material3.SnackbarDuration
 import kotlinx.parcelize.Parcelize
 import ru.asmelnikov.domain.models.CompetitionMatches
 import ru.asmelnikov.domain.models.CompetitionStandings
+import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.models.MatchesByTour
 import ru.asmelnikov.domain.models.Scorer
 import ru.asmelnikov.domain.models.Season
@@ -23,7 +24,10 @@ data class CompetitionStandingsState(
     val currentSeasonStandings: String = "",
     val currentSeasonMatches: String = "",
     val scorers: List<Scorer> = emptyList(),
-    val currentSeasonScorers: String = ""
+    val currentSeasonScorers: String = "",
+    val expandedItem: Int = -1,
+    val head2head: Head2head = Head2head(),
+    val isHead2headLoading: Boolean = false
 ) : Parcelable
 
 sealed class CompetitionStandingSideEffects {

@@ -48,7 +48,8 @@ fun CompetitionMatchesDTO.toCompetitionMatchesEntity(): CompetitionMatchesEntity
 }
 
 fun groupMatchesByStageAndTourCompletedDTO(matches: List<MatchDTO>): RealmList<MatchesByTourEntity> {
-    val filteredMatches = matches.filter { it.status == "FINISHED" && it.homeTeam?.id != null && it.awayTeam?.id != null }
+    val filteredMatches =
+        matches.filter { it.status == "FINISHED" && it.homeTeam?.id != null && it.awayTeam?.id != null }
 
     val groupedMatches = filteredMatches.groupBy { it.stage }
 
@@ -85,7 +86,7 @@ fun groupMatchesByStageAndTourAheadDTO(matches: List<MatchDTO>): RealmList<Match
     val result = RealmList<MatchesByTourEntity>()
     groupedMatches.forEach { (stage, matchesByStage) ->
         val matchesByTourEntities = matchesByStage.groupBy { it.matchday }
-        matchesByTourEntities.forEach { (matchday, matchesByMatchday) ->
+        matchesByTourEntities.entries.sortedBy { it.key }.forEach { (matchday, matchesByMatchday) ->
             val matchesByTourEntity =
                 MatchesByTourEntity(
                     stage = getDescription(stage),

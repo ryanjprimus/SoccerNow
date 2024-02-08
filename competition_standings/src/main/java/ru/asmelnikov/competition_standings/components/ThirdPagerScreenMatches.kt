@@ -7,11 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -19,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
+import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.models.MatchesByTour
 import ru.asmelnikov.utils.ui.theme.dimens
 
@@ -30,7 +28,11 @@ fun ThirdPagerScreenMatches(
     seasons: List<String>,
     currentSeasonMatches: String,
     onSeasonMatchesUpdate: (String) -> Unit,
-    isLoadingMatches: Boolean
+    isLoadingMatches: Boolean,
+    expandedItemId: Int,
+    onMatchItemClick: (Int) -> Unit,
+    head2head: Head2head = Head2head(),
+    isHead2headLoading: Boolean = false
 ) {
 
     val scope = rememberCoroutineScope()
@@ -66,7 +68,11 @@ fun ThirdPagerScreenMatches(
             MatchList(
                 matchesCompleted,
                 matchesAhead,
-                isAhead = false
+                isAhead = false,
+                expandedItemId = expandedItemId,
+                onMatchItemClick = onMatchItemClick,
+                head2head = head2head,
+                isHead2headLoading = isHead2headLoading
             )
         }
         AnimatedVisibility(
@@ -75,7 +81,11 @@ fun ThirdPagerScreenMatches(
             MatchList(
                 matchesCompleted,
                 matchesAhead,
-                isAhead = true
+                isAhead = true,
+                expandedItemId = expandedItemId,
+                onMatchItemClick = onMatchItemClick,
+                head2head = head2head,
+                isHead2headLoading = isHead2headLoading
             )
         }
         AnimatedVisibility(
@@ -101,7 +111,11 @@ fun ThirdPagerScreenMatches(
                             MatchList(
                                 matchesCompleted,
                                 matchesAhead,
-                                isAhead = false
+                                isAhead = false,
+                                expandedItemId = expandedItemId,
+                                onMatchItemClick = onMatchItemClick,
+                                head2head = head2head,
+                                isHead2headLoading = isHead2headLoading
                             )
                         }
 
@@ -109,7 +123,11 @@ fun ThirdPagerScreenMatches(
                             MatchList(
                                 matchesCompleted,
                                 matchesAhead,
-                                isAhead = true
+                                isAhead = true,
+                                expandedItemId = expandedItemId,
+                                onMatchItemClick = onMatchItemClick,
+                                head2head = head2head,
+                                isHead2headLoading = isHead2headLoading
                             )
                         }
                     }

@@ -27,6 +27,7 @@ val dataModule = module {
 
     single<RealmConfiguration> {
         RealmConfiguration.Builder()
+            .deleteRealmIfMigrationNeeded()
             .name("goal_pulse.realm")
             .schemaVersion(1L)
             .modules(

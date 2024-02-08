@@ -14,10 +14,12 @@ import ru.asmelnikov.data.mappers.toCompetitionScorers
 import ru.asmelnikov.data.mappers.toCompetitionScorersEntity
 import ru.asmelnikov.data.mappers.toCompetitionStandings
 import ru.asmelnikov.data.mappers.toCompetitionStandingsEntity
+import ru.asmelnikov.data.mappers.toHead2head
 import ru.asmelnikov.data.retrofit_errors_handler.RetrofitErrorsHandler
 import ru.asmelnikov.domain.models.CompetitionMatches
 import ru.asmelnikov.domain.models.CompetitionScorers
 import ru.asmelnikov.domain.models.CompetitionStandings
+import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.models.Season
 import ru.asmelnikov.domain.repository.CompetitionStandingsRepository
 import ru.asmelnikov.utils.Resource
@@ -111,5 +113,18 @@ class CompetitionStandingsRepositoryImpl(
 
     override suspend fun getAllMatchesFlowFromLocal(compId: String): Flow<CompetitionMatches> {
         return realmOptions.getMatchesFlowById(compId).map { it.toCompetitionMatches() }
+    }
+
+    override suspend fun getHead2headById(matchId: Int): Resource<Head2head> {
+        return retrofitErrorsHandler.executeSafely {
+            val response =
+                footballApi.getHead2headById(matchId.toString())
+            if (response.isSuccessful && response.code() == 200) {
+                val head2head = response.body()?.toHead2head(matchId)
+                Resource.Success(head2head ?: Head2head())
+            } else {
+                retrofitErrorsHandler.responseFailureHandler(response)
+            }
+        }
     }
 }

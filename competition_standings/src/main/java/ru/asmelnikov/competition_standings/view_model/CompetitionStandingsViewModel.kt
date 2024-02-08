@@ -8,7 +8,7 @@ import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.syntax.simple.repeatOnSubscription
 import org.orbitmvi.orbit.viewmodel.container
-import ru.asmelnikov.domain.models.MatchesByTour
+import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.repository.CompetitionStandingsRepository
 import ru.asmelnikov.utils.ErrorsTypesHttp
 import ru.asmelnikov.utils.Resource
@@ -37,6 +37,34 @@ class CompetitionStandingsViewModel(
         getSeasons()
     }
 
+    fun matchItemClick(itemId: Int) = intent {
+        if (state.expandedItem == itemId) {
+            reduce { state.copy(expandedItem = -1) }
+            return@intent
+        }
+        if (state.head2head.id == itemId) {
+            reduce { state.copy(expandedItem = itemId) }
+            return@intent
+        }
+        reduce { state.copy(expandedItem = itemId, isHead2headLoading = true) }
+        when (val head2head =
+            standingsRepository.getHead2headById(
+                itemId
+            )) {
+            is Resource.Success -> {
+                reduce {
+                    state.copy(
+                        head2head = head2head.data ?: Head2head(),
+                        isHead2headLoading = false,
+                    )
+                }
+            }
+            is Resource.Error -> {
+                handleError(head2head.httpErrors ?: ErrorsTypesHttp.UnknownError())
+            }
+        }
+    }
+
     fun onBackClick() = intent {
         postSideEffect(CompetitionStandingSideEffects.BackClick)
     }
@@ -52,15 +80,7 @@ class CompetitionStandingsViewModel(
                 reduce {
                     state.copy(
                         isLoadingScorers = false,
-                    )
-                }
-                reduce {
-                    state.copy(
-                        scorers = compsFromRemote.data?.scorers ?: emptyList()
-                    )
-                }
-                reduce {
-                    state.copy(
+                        scorers = compsFromRemote.data?.scorers ?: emptyList(),
                         currentSeasonScorers = compsFromRemote.data?.season?.startDateEndDate
                             ?: ""
                     )
@@ -84,15 +104,7 @@ class CompetitionStandingsViewModel(
                 reduce {
                     state.copy(
                         isLoadingStandings = false,
-                    )
-                }
-                reduce {
-                    state.copy(
-                        competitionStandings = compsFromRemote.data
-                    )
-                }
-                reduce {
-                    state.copy(
+                        competitionStandings = compsFromRemote.data,
                         currentSeasonStandings = compsFromRemote.data?.season?.startDateEndDate
                             ?: ""
                     )
@@ -116,18 +128,9 @@ class CompetitionStandingsViewModel(
                 reduce {
                     state.copy(
                         isLoadingMatches = false,
-                    )
-                }
-
-                reduce {
-                    state.copy(
                         matchesCompleted = matchesFromRemote.data?.matchesByTourCompleted
                             ?: emptyList(),
-                        matchesAhead = matchesFromRemote.data?.matchesByTourAhead ?: emptyList()
-                    )
-                }
-                reduce {
-                    state.copy(
+                        matchesAhead = matchesFromRemote.data?.matchesByTourAhead ?: emptyList(),
                         currentSeasonMatches = matchesFromRemote.data?.season ?: ""
                     )
                 }
@@ -200,7 +203,8 @@ class CompetitionStandingsViewModel(
             state.copy(
                 isLoadingStandings = false,
                 isLoadingScorers = false,
-                isLoadingMatches = false
+                isLoadingMatches = false,
+                isHead2headLoading = false
             )
         }
 

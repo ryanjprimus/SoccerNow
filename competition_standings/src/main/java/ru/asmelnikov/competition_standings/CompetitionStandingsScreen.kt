@@ -50,6 +50,7 @@ import ru.asmelnikov.competition_standings.view_model.CompetitionStandingSideEff
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingsViewModel
 import ru.asmelnikov.domain.models.CompetitionMatches
 import ru.asmelnikov.domain.models.CompetitionStandings
+import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.models.MatchesByTour
 import ru.asmelnikov.domain.models.Scorer
 import ru.asmelnikov.utils.composables.MainAppState
@@ -100,9 +101,12 @@ fun CompetitionStandingsScreen(
         matchesAhead = state.matchesAhead,
         currentSeasonMatches = state.currentSeasonMatches,
         onSeasonMatchesUpdate = viewModel::updateMatchesFromRemoteToLocal,
-        isLoadingMatches = state.isLoadingMatches
+        isLoadingMatches = state.isLoadingMatches,
+        expandedItemId = state.expandedItem,
+        onMatchItemClick = viewModel::matchItemClick,
+        head2head = state.head2head,
+        isHead2headLoading = state.isHead2headLoading
     )
-
 }
 
 @OptIn(ExperimentalToolbarApi::class, ExperimentalFoundationApi::class)
@@ -122,7 +126,11 @@ fun CompetitionStandingsContent(
     matchesAhead: List<MatchesByTour>,
     currentSeasonMatches: String,
     onSeasonMatchesUpdate: (String) -> Unit,
-    isLoadingMatches: Boolean
+    isLoadingMatches: Boolean,
+    expandedItemId: Int,
+    onMatchItemClick: (Int) -> Unit,
+    head2head: Head2head = Head2head(),
+    isHead2headLoading: Boolean = false
 ) {
 
     val configuration = LocalConfiguration.current
@@ -270,7 +278,11 @@ fun CompetitionStandingsContent(
                                 seasons = seasons,
                                 currentSeasonMatches = currentSeasonMatches,
                                 onSeasonMatchesUpdate = onSeasonMatchesUpdate,
-                                isLoadingMatches = isLoadingMatches
+                                isLoadingMatches = isLoadingMatches,
+                                expandedItemId = expandedItemId,
+                                onMatchItemClick = onMatchItemClick,
+                                head2head = head2head,
+                                isHead2headLoading = isHead2headLoading
                             )
                         }
                     }

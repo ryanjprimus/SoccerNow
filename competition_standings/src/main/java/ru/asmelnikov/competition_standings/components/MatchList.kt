@@ -8,6 +8,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.models.MatchesByTour
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -15,7 +16,11 @@ import ru.asmelnikov.domain.models.MatchesByTour
 fun MatchList(
     matchesCompleted: List<MatchesByTour>,
     matchesAhead: List<MatchesByTour>,
-    isAhead: Boolean
+    isAhead: Boolean,
+    expandedItemId: Int,
+    onMatchItemClick: (Int) -> Unit,
+    head2head: Head2head,
+    isHead2headLoading: Boolean
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -32,7 +37,11 @@ fun MatchList(
                 MatchItem(
                     modifier = Modifier.animateItemPlacement(),
                     match = match,
-                    isAhead = isAhead
+                    isAhead = isAhead,
+                    expandedItemId = expandedItemId,
+                    onMatchItemClick = onMatchItemClick,
+                    head2head = head2head,
+                    isHead2headLoading = isHead2headLoading
                 )
                 if (index < matchesByTour.matches.size - 1) {
                     Divider(color = MaterialTheme.colorScheme.primary)
