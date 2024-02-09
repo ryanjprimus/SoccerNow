@@ -32,7 +32,8 @@ fun StandingItem(
     modifier: Modifier = Modifier,
     table: Table,
     dataWeight: Float = 0.08f,
-    firstBoxColor: Color = Color.Transparent
+    firstBoxColor: Color = Color.Transparent,
+    onTeamClick: (Int) -> Unit
 ) {
 
     val itemsRow = listOf(
@@ -51,7 +52,9 @@ fun StandingItem(
         modifier = modifier
             .fillMaxWidth()
             .height(MaterialTheme.dimens.medium4)
-            .clickable { },
+            .clickable {
+                onTeamClick(table.team.id)
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         itemsRow.forEachIndexed { index, item ->

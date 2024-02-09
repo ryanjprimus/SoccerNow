@@ -3,11 +3,13 @@ package ru.asmelnikov.data.di
 import io.realm.annotations.RealmModule
 import ru.asmelnikov.data.local.models.AreaEntity
 import ru.asmelnikov.data.local.models.AwayTeamEntity
+import ru.asmelnikov.data.local.models.CoachEntity
 import ru.asmelnikov.data.local.models.CompetitionEmbeddedEntity
 import ru.asmelnikov.data.local.models.CompetitionEntity
 import ru.asmelnikov.data.local.models.CompetitionMatchesEntity
 import ru.asmelnikov.data.local.models.CompetitionScorersEntity
 import ru.asmelnikov.data.local.models.CompetitionStandingsEntity
+import ru.asmelnikov.data.local.models.ContractEntity
 import ru.asmelnikov.data.local.models.CurrentSeasonEntity
 import ru.asmelnikov.data.local.models.FiltersEntity
 import ru.asmelnikov.data.local.models.FullTimeEntity
@@ -20,9 +22,12 @@ import ru.asmelnikov.data.local.models.RefereeEntity
 import ru.asmelnikov.data.local.models.ScoreEntity
 import ru.asmelnikov.data.local.models.ScorerEntity
 import ru.asmelnikov.data.local.models.SeasonEntity
+import ru.asmelnikov.data.local.models.SquadByPositionEntity
+import ru.asmelnikov.data.local.models.SquadEntity
 import ru.asmelnikov.data.local.models.StandingEntity
 import ru.asmelnikov.data.local.models.TableEntity
 import ru.asmelnikov.data.local.models.TeamEntity
+import ru.asmelnikov.data.local.models.TeamInfoEntity
 import ru.asmelnikov.data.local.models.WinnerEntity
 
 @RealmModule(library = false, classes = [CompetitionScorersEntity::class])
@@ -137,5 +142,30 @@ data class HalfTimeDbModule(val placeholder: String) {
 
 @RealmModule(library = false, classes = [MatchesByTourEntity::class])
 data class MatchesByTourDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [TeamInfoEntity::class])
+data class TeamInfoDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [CoachEntity::class])
+data class CoachDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [SquadByPositionEntity::class])
+data class SquadByPositionDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [SquadEntity::class])
+data class SquadDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [ContractEntity::class])
+data class ContractDbModule(val placeholder: String) {
     constructor() : this("")
 }

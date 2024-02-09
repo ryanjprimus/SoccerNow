@@ -96,7 +96,8 @@ fun ThirdPagerScreenMatches(
                     modifier = Modifier.fillMaxWidth(),
                     tabTitles = listOf("Completed", "Ahead"),
                     selectedIndex = pagerState.currentPage,
-                    onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } }
+                    onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
+                    pagerState = pagerState
                 )
 
                 HorizontalPager(

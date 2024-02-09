@@ -10,6 +10,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.asmelnikov.data.api.FootballApi
 import ru.asmelnikov.data.local.CompetitionsRealmOptions
 import ru.asmelnikov.data.local.StandingsRealmOptions
+import ru.asmelnikov.data.local.TeamInfoRealmOptions
 import ru.asmelnikov.data.local.models.AreaEntity
 import ru.asmelnikov.data.local.models.CompetitionEntity
 import ru.asmelnikov.data.local.models.CurrentSeasonEntity
@@ -17,9 +18,11 @@ import ru.asmelnikov.data.local.models.*
 import ru.asmelnikov.data.local.models.WinnerEntity
 import ru.asmelnikov.data.repository.CompetitionStandingsRepositoryImpl
 import ru.asmelnikov.data.repository.CompetitionsRepositoryImpl
+import ru.asmelnikov.data.repository.TeamInfoRepositoryImpl
 import ru.asmelnikov.data.retrofit_errors_handler.RetrofitErrorsHandler
 import ru.asmelnikov.domain.repository.CompetitionStandingsRepository
 import ru.asmelnikov.domain.repository.CompetitionsRepository
+import ru.asmelnikov.domain.repository.TeamInfoRepository
 
 private const val FOOTBALL_API_URL = "https://api.football-data.org/v4/"
 
@@ -53,7 +56,12 @@ val dataModule = module {
                 ScoreDbModule(),
                 FullTimeDbModule(),
                 HalfTimeDbModule(),
-                MatchesByTourDbModule()
+                MatchesByTourDbModule(),
+                TeamInfoDbModule(),
+                CoachDbModule(),
+                SquadByPositionDbModule(),
+                SquadDbModule(),
+                ContractDbModule()
             )
             .build()
     }
@@ -63,6 +71,8 @@ val dataModule = module {
     single<CompetitionsRealmOptions> { CompetitionsRealmOptions.RealmOptionsImpl(realmConfig = get()) }
 
     single<StandingsRealmOptions> { StandingsRealmOptions.RealmOptionsImpl(realmConfig = get()) }
+
+    single<TeamInfoRealmOptions> { TeamInfoRealmOptions.RealmOptionsImpl(realmConfig = get()) }
 
     single<OkHttpClient> { okHttp() }
 
@@ -82,6 +92,14 @@ val dataModule = module {
 
     single<CompetitionStandingsRepository> {
         CompetitionStandingsRepositoryImpl(
+            footballApi = get(),
+            realmOptions = get(),
+            retrofitErrorsHandler = get()
+        )
+    }
+
+    single<TeamInfoRepository> {
+        TeamInfoRepositoryImpl(
             footballApi = get(),
             realmOptions = get(),
             retrofitErrorsHandler = get()

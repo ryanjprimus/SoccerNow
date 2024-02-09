@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.asmelnikov.competition_standings.CompetitionStandingsScreen
 import ru.asmelnikov.competitions_main.CompetitionsScreen
+import ru.asmelnikov.team_info.TeamInfoScreen
 import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.navigation.Routes
 
@@ -43,6 +44,19 @@ fun NavGraph(
                 }
             )) {
             CompetitionStandingsScreen(
+                appState = appState,
+                showSnackbar = showSnackbar
+            )
+        }
+        composable(
+            route = "${Routes.Team_Info}/{teamId}",
+            arguments = listOf(
+                navArgument("teamId") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            )) {
+            TeamInfoScreen(
                 appState = appState,
                 showSnackbar = showSnackbar
             )

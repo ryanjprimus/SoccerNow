@@ -1,8 +1,10 @@
 package ru.asmelnikov.competition_standings.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -28,13 +31,15 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerTabRow(
     tabTitles: List<String>,
     selectedIndex: Int,
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.background,
-    onTabSelected: (Int) -> Unit
+    onTabSelected: (Int) -> Unit,
+    pagerState: PagerState
 ) {
     val density = LocalDensity.current
     val tabWidths = remember {
@@ -51,9 +56,17 @@ fun PagerTabRow(
         containerColor = containerColor,
         indicator = { tabPositions ->
             Box(
-                modifier = Modifier.myTabIndicatorOffset(tabPositions[selectedIndex], tabWidth = tabWidths[selectedIndex])
+                modifier = Modifier
+                    .myTabIndicatorOffset(
+                        tabPositions[selectedIndex],
+                        tabWidth = tabWidths[selectedIndex],
+                        pagerState = pagerState
+                    )
                     .height(3.dp)
-                    .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
+                    )
             )
         }
     ) {
@@ -65,7 +78,7 @@ fun PagerTabRow(
                 text = {
                     Text(
                         text = title,
-                        color = if(selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.titleSmall,
                         onTextLayout = { textLayoutResult ->
                             tabWidths[index] = with(density) { textLayoutResult.size.width.toDp() }
@@ -79,16 +92,30 @@ fun PagerTabRow(
     }
 }
 
-private fun Modifier.myTabIndicatorOffset(currentTabPosition: TabPosition, tabWidth: Dp): Modifier = composed {
+@OptIn(ExperimentalFoundationApi::class)
+private fun Modifier.myTabIndicatorOffset(
+    currentTabPosition: TabPosition,
+    tabWidth: Dp,
+    pagerState: PagerState
+): Modifier = composed {
     val currentTabWidth by animateDpAsState(
         targetValue = tabWidth,
-        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing), label = ""
+        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing), label = ""
     )
 
+    val tabCenter = currentTabPosition.left + (currentTabPosition.width / 2)
+    val currentPageOffsetFraction = pagerState.currentPageOffsetFraction
+    val tabOffset = tabWidth * currentPageOffsetFraction
+    val indicatorCenter = tabCenter + tabOffset * 2
     val indicatorOffset by animateDpAsState(
-        targetValue = ((currentTabPosition.left + currentTabPosition.right - tabWidth) / 2),
-        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing), label = ""
+        targetValue = indicatorCenter - (currentTabWidth / 2),
+        animationSpec = tween(durationMillis = 100, easing = LinearEasing), label = ""
     )
 
-    fillMaxWidth().wrapContentSize(Alignment.BottomStart).offset(x = indicatorOffset).width(currentTabWidth)
+    fillMaxWidth()
+        .wrapContentSize(Alignment.BottomStart)
+        .offset(x = indicatorOffset)
+        .width(currentTabWidth)
 }
+
+

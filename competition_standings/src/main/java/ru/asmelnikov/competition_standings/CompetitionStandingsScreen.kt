@@ -56,6 +56,7 @@ import ru.asmelnikov.domain.models.Scorer
 import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.composables.SubComposeAsyncImageCommon
 import ru.asmelnikov.utils.navigation.Routes
+import ru.asmelnikov.utils.navigation.navigateWithArgs
 import ru.asmelnikov.utils.navigation.popUp
 import ru.asmelnikov.utils.ui.theme.dimens
 
@@ -83,6 +84,9 @@ fun CompetitionStandingsScreen(
 
             is CompetitionStandingSideEffects.BackClick -> appState.popUp()
 
+            is CompetitionStandingSideEffects.OnTeamInfoNavigate -> {
+                appState.navigateWithArgs(route = Routes.Team_Info, args = it.teamId)
+            }
         }
     }
 
@@ -105,7 +109,8 @@ fun CompetitionStandingsScreen(
         expandedItemId = state.expandedItem,
         onMatchItemClick = viewModel::matchItemClick,
         head2head = state.head2head,
-        isHead2headLoading = state.isHead2headLoading
+        isHead2headLoading = state.isHead2headLoading,
+        onTeamClick = viewModel::onTeamClick
     )
 }
 
@@ -130,7 +135,8 @@ fun CompetitionStandingsContent(
     expandedItemId: Int,
     onMatchItemClick: (Int) -> Unit,
     head2head: Head2head = Head2head(),
-    isHead2headLoading: Boolean = false
+    isHead2headLoading: Boolean = false,
+    onTeamClick: (Int) -> Unit
 ) {
 
     val configuration = LocalConfiguration.current
@@ -240,7 +246,8 @@ fun CompetitionStandingsContent(
                     tabTitles = listOf("Standings", "Scorers", "Matches"),
                     selectedIndex = pagerState.currentPage,
                     modifier = Modifier.fillMaxWidth(),
-                    onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } }
+                    onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
+                    pagerState = pagerState
                 )
 
                 HorizontalPager(
@@ -257,7 +264,8 @@ fun CompetitionStandingsContent(
                                 seasons = seasons,
                                 currentSeason = currentSeasonStandings,
                                 onSeasonUpdate = onSeasonStandingsUpdate,
-                                isLoading = isLoadingStandings
+                                isLoading = isLoadingStandings,
+                                onTeamClick = onTeamClick
                             )
                         }
 

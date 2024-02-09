@@ -24,7 +24,8 @@ fun FirstPagerScreenStandings(
     seasons: List<String>,
     currentSeason: String,
     onSeasonUpdate: (String) -> Unit,
-    isLoading: Boolean
+    isLoading: Boolean,
+    onTeamClick: (Int) -> Unit
 ) {
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -66,7 +67,8 @@ fun FirstPagerScreenStandings(
                     StandingItem(
                         modifier = Modifier.animateItemPlacement(),
                         table = table,
-                        firstBoxColor = color
+                        firstBoxColor = color,
+                        onTeamClick = onTeamClick
                     )
                     Divider(color = MaterialTheme.colorScheme.primary)
                 }

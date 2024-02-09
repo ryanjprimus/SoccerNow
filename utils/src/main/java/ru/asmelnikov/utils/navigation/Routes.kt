@@ -6,4 +6,6 @@ object Routes {
 
     const val Competition_Standings = "competition_standings?compId={compId}"
 
+    const val Team_Info = "team_info?teamId={teamId}"
+
 }

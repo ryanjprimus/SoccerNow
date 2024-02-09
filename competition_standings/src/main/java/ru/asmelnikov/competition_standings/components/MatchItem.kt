@@ -109,7 +109,7 @@ fun MatchItem(
                 LinearProgressIndicator(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(MaterialTheme.dimens.small1),
+                        .height(MaterialTheme.dimens.extraSmall1),
                     color = MaterialTheme.colorScheme.primary
                 )
             }

@@ -3,7 +3,6 @@ package ru.asmelnikov.competition_standings.view_model
 import android.os.Parcelable
 import androidx.compose.material3.SnackbarDuration
 import kotlinx.parcelize.Parcelize
-import ru.asmelnikov.domain.models.CompetitionMatches
 import ru.asmelnikov.domain.models.CompetitionStandings
 import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.models.MatchesByTour
@@ -35,5 +34,8 @@ sealed class CompetitionStandingSideEffects {
         CompetitionStandingSideEffects()
 
     object BackClick : CompetitionStandingSideEffects()
+
+    data class OnTeamInfoNavigate(val teamId: String) :
+        CompetitionStandingSideEffects()
 
 }

@@ -59,6 +59,7 @@ class CompetitionStandingsViewModel(
                     )
                 }
             }
+
             is Resource.Error -> {
                 handleError(head2head.httpErrors ?: ErrorsTypesHttp.UnknownError())
             }
@@ -140,6 +141,10 @@ class CompetitionStandingsViewModel(
                 handleError(matchesFromRemote.httpErrors ?: ErrorsTypesHttp.UnknownError())
             }
         }
+    }
+
+    fun onTeamClick(teamId: Int) = intent {
+        postSideEffect(CompetitionStandingSideEffects.OnTeamInfoNavigate(teamId = teamId.toString()))
     }
 
     private fun getSeasons() = intent {
