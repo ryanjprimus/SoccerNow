@@ -18,6 +18,9 @@ import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
 import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.models.MatchesByTour
+import ru.asmelnikov.utils.composables.EmptyContent
+import ru.asmelnikov.utils.composables.LoadingGif
+import ru.asmelnikov.utils.composables.PagerTabRow
 import ru.asmelnikov.utils.ui.theme.dimens
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -32,7 +35,8 @@ fun ThirdPagerScreenMatches(
     expandedItemId: Int,
     onMatchItemClick: (Int) -> Unit,
     head2head: Head2head = Head2head(),
-    isHead2headLoading: Boolean = false
+    isHead2headLoading: Boolean = false,
+    onReloadClick: () -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -61,75 +65,81 @@ fun ThirdPagerScreenMatches(
                 color = MaterialTheme.colorScheme.primary
             )
         }
+        when {
+            isLoadingMatches && matchesCompleted.isEmpty() && matchesAhead.isEmpty() -> LoadingGif()
+            !isLoadingMatches && matchesCompleted.isEmpty() && matchesAhead.isEmpty() -> EmptyContent(onReloadClick = onReloadClick)
+            else -> {
 
-        AnimatedVisibility(
-            visible = matchesAhead.isEmpty() && matchesCompleted.isNotEmpty(),
-        ) {
-            MatchList(
-                matchesCompleted,
-                matchesAhead,
-                isAhead = false,
-                expandedItemId = expandedItemId,
-                onMatchItemClick = onMatchItemClick,
-                head2head = head2head,
-                isHead2headLoading = isHead2headLoading
-            )
-        }
-        AnimatedVisibility(
-            visible = matchesAhead.isNotEmpty() && matchesCompleted.isEmpty(),
-        ) {
-            MatchList(
-                matchesCompleted,
-                matchesAhead,
-                isAhead = true,
-                expandedItemId = expandedItemId,
-                onMatchItemClick = onMatchItemClick,
-                head2head = head2head,
-                isHead2headLoading = isHead2headLoading
-            )
-        }
-        AnimatedVisibility(
-            visible = matchesAhead.isNotEmpty() && matchesCompleted.isNotEmpty(),
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                PagerTabRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    tabTitles = listOf("Completed", "Ahead"),
-                    selectedIndex = pagerState.currentPage,
-                    onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
-                    pagerState = pagerState
-                )
+                AnimatedVisibility(
+                    visible = matchesAhead.isEmpty() && matchesCompleted.isNotEmpty(),
+                ) {
+                    MatchList(
+                        matchesCompleted,
+                        matchesAhead,
+                        isAhead = false,
+                        expandedItemId = expandedItemId,
+                        onMatchItemClick = onMatchItemClick,
+                        head2head = head2head,
+                        isHead2headLoading = isHead2headLoading
+                    )
+                }
+                AnimatedVisibility(
+                    visible = matchesAhead.isNotEmpty() && matchesCompleted.isEmpty(),
+                ) {
+                    MatchList(
+                        matchesCompleted,
+                        matchesAhead,
+                        isAhead = true,
+                        expandedItemId = expandedItemId,
+                        onMatchItemClick = onMatchItemClick,
+                        head2head = head2head,
+                        isHead2headLoading = isHead2headLoading
+                    )
+                }
+                AnimatedVisibility(
+                    visible = matchesAhead.isNotEmpty() && matchesCompleted.isNotEmpty(),
+                ) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        PagerTabRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            tabTitles = listOf("Completed", "Ahead"),
+                            selectedIndex = pagerState.currentPage,
+                            onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
+                            pagerState = pagerState
+                        )
 
-                HorizontalPager(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    state = pagerState,
-                    beyondBoundsPageCount = 2,
-                    verticalAlignment = Alignment.Top
-                ) { page ->
-                    when (page) {
-                        0 -> {
-                            MatchList(
-                                matchesCompleted,
-                                matchesAhead,
-                                isAhead = false,
-                                expandedItemId = expandedItemId,
-                                onMatchItemClick = onMatchItemClick,
-                                head2head = head2head,
-                                isHead2headLoading = isHead2headLoading
-                            )
-                        }
+                        HorizontalPager(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            state = pagerState,
+                            beyondBoundsPageCount = 2,
+                            verticalAlignment = Alignment.Top
+                        ) { page ->
+                            when (page) {
+                                0 -> {
+                                    MatchList(
+                                        matchesCompleted,
+                                        matchesAhead,
+                                        isAhead = false,
+                                        expandedItemId = expandedItemId,
+                                        onMatchItemClick = onMatchItemClick,
+                                        head2head = head2head,
+                                        isHead2headLoading = isHead2headLoading
+                                    )
+                                }
 
-                        1 -> {
-                            MatchList(
-                                matchesCompleted,
-                                matchesAhead,
-                                isAhead = true,
-                                expandedItemId = expandedItemId,
-                                onMatchItemClick = onMatchItemClick,
-                                head2head = head2head,
-                                isHead2headLoading = isHead2headLoading
-                            )
+                                1 -> {
+                                    MatchList(
+                                        matchesCompleted,
+                                        matchesAhead,
+                                        isAhead = true,
+                                        expandedItemId = expandedItemId,
+                                        onMatchItemClick = onMatchItemClick,
+                                        head2head = head2head,
+                                        isHead2headLoading = isHead2headLoading
+                                    )
+                                }
+                            }
                         }
                     }
                 }

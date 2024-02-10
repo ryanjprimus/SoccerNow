@@ -43,17 +43,16 @@ import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
 import ru.asmelnikov.competition_standings.components.FirstPagerScreenStandings
-import ru.asmelnikov.competition_standings.components.PagerTabRow
 import ru.asmelnikov.competition_standings.components.SecondPagerScreenScorers
 import ru.asmelnikov.competition_standings.components.ThirdPagerScreenMatches
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingSideEffects
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingsViewModel
-import ru.asmelnikov.domain.models.CompetitionMatches
 import ru.asmelnikov.domain.models.CompetitionStandings
 import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.models.MatchesByTour
 import ru.asmelnikov.domain.models.Scorer
 import ru.asmelnikov.utils.composables.MainAppState
+import ru.asmelnikov.utils.composables.PagerTabRow
 import ru.asmelnikov.utils.composables.SubComposeAsyncImageCommon
 import ru.asmelnikov.utils.navigation.Routes
 import ru.asmelnikov.utils.navigation.navigateWithArgs
@@ -110,7 +109,10 @@ fun CompetitionStandingsScreen(
         onMatchItemClick = viewModel::matchItemClick,
         head2head = state.head2head,
         isHead2headLoading = state.isHead2headLoading,
-        onTeamClick = viewModel::onTeamClick
+        onTeamClick = viewModel::onTeamClick,
+        onReloadStandingsClick = viewModel::updateStandingsFromRemoteToLocal,
+        onReloadMatchesClick = viewModel::updateMatchesFromRemoteToLocal,
+        onReloadScorersClick = viewModel::updateScorersFromRemoteToLocal
     )
 }
 
@@ -136,7 +138,10 @@ fun CompetitionStandingsContent(
     onMatchItemClick: (Int) -> Unit,
     head2head: Head2head = Head2head(),
     isHead2headLoading: Boolean = false,
-    onTeamClick: (Int) -> Unit
+    onTeamClick: (Int) -> Unit,
+    onReloadStandingsClick: () -> Unit,
+    onReloadScorersClick: () -> Unit,
+    onReloadMatchesClick: () -> Unit
 ) {
 
     val configuration = LocalConfiguration.current
@@ -265,7 +270,8 @@ fun CompetitionStandingsContent(
                                 currentSeason = currentSeasonStandings,
                                 onSeasonUpdate = onSeasonStandingsUpdate,
                                 isLoading = isLoadingStandings,
-                                onTeamClick = onTeamClick
+                                onTeamClick = onTeamClick,
+                                onReloadClick = onReloadStandingsClick
                             )
                         }
 
@@ -275,7 +281,8 @@ fun CompetitionStandingsContent(
                                 seasons = seasons,
                                 currentSeasonScorers = currentSeasonScorers,
                                 onSeasonScorersUpdate = onSeasonScorersUpdate,
-                                isLoadingScorers = isLoadingScorers
+                                isLoadingScorers = isLoadingScorers,
+                                onReloadClick = onReloadScorersClick
                             )
                         }
 
@@ -290,7 +297,8 @@ fun CompetitionStandingsContent(
                                 expandedItemId = expandedItemId,
                                 onMatchItemClick = onMatchItemClick,
                                 head2head = head2head,
-                                isHead2headLoading = isHead2headLoading
+                                isHead2headLoading = isHead2headLoading,
+                                onReloadClick = onReloadMatchesClick
                             )
                         }
                     }

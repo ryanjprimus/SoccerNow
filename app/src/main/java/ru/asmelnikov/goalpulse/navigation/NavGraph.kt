@@ -1,5 +1,7 @@
 package ru.asmelnikov.goalpulse.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarDuration
@@ -42,7 +44,29 @@ fun NavGraph(
                     type = NavType.StringType
                     defaultValue = ""
                 }
-            )) {
+            ),
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "${Routes.Team_Info}/{teamId}" ->
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "${Routes.Team_Info}/{teamId}" ->
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            }) {
             CompetitionStandingsScreen(
                 appState = appState,
                 showSnackbar = showSnackbar
@@ -55,7 +79,29 @@ fun NavGraph(
                     type = NavType.StringType
                     defaultValue = ""
                 }
-            )) {
+            ),
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "${Routes.Competition_Standings}/{compId}" ->
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "${Routes.Competition_Standings}/{compId}" ->
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            }) {
             TeamInfoScreen(
                 appState = appState,
                 showSnackbar = showSnackbar

@@ -9,12 +9,14 @@ import ru.asmelnikov.domain.models.TeamInfo
 data class TeamInfoState(
     val teamId: String = "",
     val teamInfo: TeamInfo = TeamInfo(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val colorPalette: Map<String, String> = mapOf()
 ) : Parcelable
 
 sealed class TeamInfoSideEffects {
     data class Snackbar(val text: String, val duration: SnackbarDuration = SnackbarDuration.Short) :
         TeamInfoSideEffects()
+
     object BackClick : TeamInfoSideEffects()
 
 }

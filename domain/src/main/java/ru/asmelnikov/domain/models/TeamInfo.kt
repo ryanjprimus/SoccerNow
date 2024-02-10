@@ -40,7 +40,7 @@ data class SquadByPosition(
 
 @Parcelize
 data class Squad(
-    val dateOfBirth: String = "",
+    val age: String = "",
     val id: Int = -1,
     val name: String = "",
     val nationality: String = ""

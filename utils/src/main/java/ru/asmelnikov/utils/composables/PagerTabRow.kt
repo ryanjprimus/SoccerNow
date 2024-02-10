@@ -1,4 +1,4 @@
-package ru.asmelnikov.competition_standings.components
+package ru.asmelnikov.utils.composables
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -39,7 +39,7 @@ fun PagerTabRow(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.background,
     onTabSelected: (Int) -> Unit,
-    pagerState: PagerState
+    pagerState: PagerState,
 ) {
     val density = LocalDensity.current
     val tabWidths = remember {
@@ -117,5 +117,3 @@ private fun Modifier.myTabIndicatorOffset(
         .offset(x = indicatorOffset)
         .width(currentTabWidth)
 }
-
-

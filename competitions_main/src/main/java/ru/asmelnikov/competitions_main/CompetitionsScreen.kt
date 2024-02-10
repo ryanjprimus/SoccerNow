@@ -2,11 +2,6 @@
 
 package ru.asmelnikov.competitions_main
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Color.parseColor
-import android.graphics.drawable.BitmapDrawable
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,26 +16,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.red
-import androidx.palette.graphics.Palette
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -50,12 +34,12 @@ import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
 import ru.asmelnikov.competitions_main.components.CompetitionItem
-import ru.asmelnikov.competitions_main.components.EmptyContent
 import ru.asmelnikov.competitions_main.components.GifImage
 import ru.asmelnikov.competitions_main.components.ShimmerListItem
 import ru.asmelnikov.competitions_main.view_model.CompetitionsScreenSideEffects
 import ru.asmelnikov.competitions_main.view_model.CompetitionsScreenViewModel
 import ru.asmelnikov.domain.models.Competition
+import ru.asmelnikov.utils.composables.EmptyContent
 import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.navigation.Routes
 import ru.asmelnikov.utils.navigation.navigateWithArgs
@@ -214,69 +198,6 @@ fun CompetitionsScreenContent(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Test() {
-    val context = LocalContext.current
-
-    var launchedEffectTriggered by remember { mutableStateOf(false) }
-    var bitmapState by remember { mutableStateOf<Bitmap?>(null) }
-    var palette by remember { mutableStateOf<Palette?>(null) }
-
-    LaunchedEffect(key1 = true) {
-        try {
-            val bitmap = convertImageUrlToBitmap(
-                imageUrl = "https://crests.football-data.org/563.png",
-                context = context
-            )
-            if (bitmap != null) {
-                bitmapState = bitmap
-                palette = Palette.from(bitmap).generate()
-                launchedEffectTriggered = true
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    if (palette != null && launchedEffectTriggered) {
-        val color = parseColorSwatch(palette!!.dominantSwatch)
-        if (color != null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .background(color = Color(parseColor(color)))
-            )
-        }
-    }
-}
-
-suspend fun convertImageUrlToBitmap(
-    imageUrl: String,
-    context: Context
-): Bitmap? {
-    val loader = ImageLoader(context = context)
-    val request = ImageRequest.Builder(context = context)
-        .data(imageUrl)
-        .allowHardware(false)
-        .build()
-    val imageResult = loader.execute(request = request)
-    return if (imageResult is SuccessResult) {
-        (imageResult.drawable as BitmapDrawable).bitmap
-    } else {
-        null
-    }
-}
-
-private fun parseColorSwatch(color: Palette.Swatch?): String? {
-    return if (color != null) {
-        val parsedColor = Integer.toHexString(color.rgb)
-        return "#$parsedColor"
-    } else {
-        null
     }
 }
 

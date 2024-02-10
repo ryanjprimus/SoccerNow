@@ -2,6 +2,7 @@ package ru.asmelnikov.team_info.view_model
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -30,6 +31,10 @@ class TeamInfoViewModel(
         reduce { state.copy(teamId = teamId ?: "") }
         collectTeamInfoFlowFromLocal()
         getTeamInfoFromRemoteToLocal()
+    }
+
+    fun setColorPalette(colors: Map<String, String>) = intent {
+        reduce { state.copy(colorPalette = colors) }
     }
 
     fun getTeamInfoFromRemoteToLocal() = intent {

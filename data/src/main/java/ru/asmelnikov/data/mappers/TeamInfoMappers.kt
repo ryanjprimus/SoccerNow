@@ -15,6 +15,9 @@ import ru.asmelnikov.domain.models.Contract
 import ru.asmelnikov.domain.models.Squad
 import ru.asmelnikov.domain.models.SquadByPosition
 import ru.asmelnikov.domain.models.TeamInfo
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
 fun TeamInfoDTO.toTeamInfoEntity(): TeamInfoEntity {
     return TeamInfoEntity(
@@ -101,7 +104,7 @@ fun SquadByPositionEntity.toSquadByPosition(): SquadByPosition {
 
 fun SquadEntity.toSquad(): Squad {
     return Squad(
-        dateOfBirth = dateOfBirth,
+        age = dateOfBirth.calculateAge(),
         id = id,
         name = name,
         nationality = nationality
@@ -125,4 +128,17 @@ fun convertToRealmList(squadDTOList: List<SquadDTO>?): RealmList<SquadByPosition
         squadByPositionList.add(squadByPositionEntity)
     }
     return squadByPositionList
+}
+
+fun String.calculateAge(): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    return try {
+        val dob = LocalDate.parse(this, formatter)
+        val currentDate = LocalDate.now()
+        val age = Period.between(dob, currentDate).years
+        age.toString()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
 }
