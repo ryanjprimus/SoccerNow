@@ -14,6 +14,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ru.asmelnikov.domain.models.Scorer
+import ru.asmelnikov.utils.composables.EmptyContent
+import ru.asmelnikov.utils.composables.LoadingGif
 import ru.asmelnikov.utils.ui.theme.dimens
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -23,7 +25,8 @@ fun SecondPagerScreenScorers(
     seasons: List<String>,
     currentSeasonScorers: String,
     onSeasonScorersUpdate: (String) -> Unit,
-    isLoadingScorers: Boolean
+    isLoadingScorers: Boolean,
+    onReloadClick: () -> Unit
 ) {
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -44,27 +47,32 @@ fun SecondPagerScreenScorers(
                 color = MaterialTheme.colorScheme.primary
             )
         }
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            item {
-                Divider(color = MaterialTheme.colorScheme.primary)
-                ScorerItemEmpty()
-                Divider(color = MaterialTheme.colorScheme.primary)
-            }
-            itemsIndexed(
-                items = scorers,
-                key = { _, scorer -> scorer.player.id }) { index, scorer ->
-                ScorerItem(
-                    modifier = Modifier.animateItemPlacement(),
-                    scorer = scorer,
-                    index = index + 1
-                )
-                Divider(color = MaterialTheme.colorScheme.primary)
-            }
-            item {
-                BottomScorerItem()
+        when {
+            isLoadingScorers && scorers.isEmpty() -> LoadingGif()
+            !isLoadingScorers && scorers.isEmpty() -> EmptyContent(onReloadClick = onReloadClick)
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    item {
+                        Divider(color = MaterialTheme.colorScheme.primary)
+                        ScorerItemEmpty()
+                        Divider(color = MaterialTheme.colorScheme.primary)
+                    }
+                    itemsIndexed(
+                        items = scorers,
+                        key = { _, scorer -> scorer.player.id }) { index, scorer ->
+                        ScorerItem(
+                            modifier = Modifier.animateItemPlacement(),
+                            scorer = scorer,
+                            index = index + 1
+                        )
+                        Divider(color = MaterialTheme.colorScheme.primary)
+                    }
+                    item {
+                        BottomScorerItem()
+                    }
+                }
             }
         }
     }

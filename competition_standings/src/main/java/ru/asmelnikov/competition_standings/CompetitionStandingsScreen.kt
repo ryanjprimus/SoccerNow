@@ -43,15 +43,19 @@ import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
 import ru.asmelnikov.competition_standings.components.FirstPagerScreenStandings
-import ru.asmelnikov.competition_standings.components.PagerTabRow
 import ru.asmelnikov.competition_standings.components.SecondPagerScreenScorers
+import ru.asmelnikov.competition_standings.components.ThirdPagerScreenMatches
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingSideEffects
 import ru.asmelnikov.competition_standings.view_model.CompetitionStandingsViewModel
 import ru.asmelnikov.domain.models.CompetitionStandings
+import ru.asmelnikov.domain.models.Head2head
+import ru.asmelnikov.domain.models.MatchesByTour
 import ru.asmelnikov.domain.models.Scorer
 import ru.asmelnikov.utils.composables.MainAppState
+import ru.asmelnikov.utils.composables.PagerTabRow
 import ru.asmelnikov.utils.composables.SubComposeAsyncImageCommon
 import ru.asmelnikov.utils.navigation.Routes
+import ru.asmelnikov.utils.navigation.navigateWithArgs
 import ru.asmelnikov.utils.navigation.popUp
 import ru.asmelnikov.utils.ui.theme.dimens
 
@@ -79,6 +83,9 @@ fun CompetitionStandingsScreen(
 
             is CompetitionStandingSideEffects.BackClick -> appState.popUp()
 
+            is CompetitionStandingSideEffects.OnTeamInfoNavigate -> {
+                appState.navigateWithArgs(route = Routes.Team_Info, args = it.teamId)
+            }
         }
     }
 
@@ -92,9 +99,21 @@ fun CompetitionStandingsScreen(
         currentSeasonScorers = state.currentSeasonScorers,
         onSeasonScorersUpdate = viewModel::updateScorersFromRemoteToLocal,
         isLoadingScorers = state.isLoadingScorers,
-        scorers = state.scorers
+        scorers = state.scorers,
+        matchesCompleted = state.matchesCompleted,
+        matchesAhead = state.matchesAhead,
+        currentSeasonMatches = state.currentSeasonMatches,
+        onSeasonMatchesUpdate = viewModel::updateMatchesFromRemoteToLocal,
+        isLoadingMatches = state.isLoadingMatches,
+        expandedItemId = state.expandedItem,
+        onMatchItemClick = viewModel::matchItemClick,
+        head2head = state.head2head,
+        isHead2headLoading = state.isHead2headLoading,
+        onTeamClick = viewModel::onTeamClick,
+        onReloadStandingsClick = viewModel::updateStandingsFromRemoteToLocal,
+        onReloadMatchesClick = viewModel::updateMatchesFromRemoteToLocal,
+        onReloadScorersClick = viewModel::updateScorersFromRemoteToLocal
     )
-
 }
 
 @OptIn(ExperimentalToolbarApi::class, ExperimentalFoundationApi::class)
@@ -109,7 +128,20 @@ fun CompetitionStandingsContent(
     scorers: List<Scorer>,
     currentSeasonScorers: String,
     onSeasonScorersUpdate: (String) -> Unit,
-    isLoadingScorers: Boolean
+    isLoadingScorers: Boolean,
+    matchesCompleted: List<MatchesByTour>,
+    matchesAhead: List<MatchesByTour>,
+    currentSeasonMatches: String,
+    onSeasonMatchesUpdate: (String) -> Unit,
+    isLoadingMatches: Boolean,
+    expandedItemId: Int,
+    onMatchItemClick: (Int) -> Unit,
+    head2head: Head2head = Head2head(),
+    isHead2headLoading: Boolean = false,
+    onTeamClick: (Int) -> Unit,
+    onReloadStandingsClick: () -> Unit,
+    onReloadScorersClick: () -> Unit,
+    onReloadMatchesClick: () -> Unit
 ) {
 
     val configuration = LocalConfiguration.current
@@ -119,7 +151,7 @@ fun CompetitionStandingsContent(
     val pagerState = rememberPagerState(
         initialPage = 0,
     ) {
-        2
+        3
     }
     val orientation =
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "LANDSCAPE" else "PORTRAIT"
@@ -216,10 +248,11 @@ fun CompetitionStandingsContent(
             Column(modifier = Modifier.fillMaxSize()) {
 
                 PagerTabRow(
-                    tabTitles = listOf("Standings", "Scorers"),
+                    tabTitles = listOf("Standings", "Scorers", "Matches"),
                     selectedIndex = pagerState.currentPage,
                     modifier = Modifier.fillMaxWidth(),
-                    onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } }
+                    onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
+                    pagerState = pagerState
                 )
 
                 HorizontalPager(
@@ -236,7 +269,9 @@ fun CompetitionStandingsContent(
                                 seasons = seasons,
                                 currentSeason = currentSeasonStandings,
                                 onSeasonUpdate = onSeasonStandingsUpdate,
-                                isLoading = isLoadingStandings
+                                isLoading = isLoadingStandings,
+                                onTeamClick = onTeamClick,
+                                onReloadClick = onReloadStandingsClick
                             )
                         }
 
@@ -246,7 +281,24 @@ fun CompetitionStandingsContent(
                                 seasons = seasons,
                                 currentSeasonScorers = currentSeasonScorers,
                                 onSeasonScorersUpdate = onSeasonScorersUpdate,
-                                isLoadingScorers = isLoadingScorers
+                                isLoadingScorers = isLoadingScorers,
+                                onReloadClick = onReloadScorersClick
+                            )
+                        }
+
+                        2 -> {
+                            ThirdPagerScreenMatches(
+                                matchesCompleted = matchesCompleted,
+                                matchesAhead = matchesAhead,
+                                seasons = seasons,
+                                currentSeasonMatches = currentSeasonMatches,
+                                onSeasonMatchesUpdate = onSeasonMatchesUpdate,
+                                isLoadingMatches = isLoadingMatches,
+                                expandedItemId = expandedItemId,
+                                onMatchItemClick = onMatchItemClick,
+                                head2head = head2head,
+                                isHead2headLoading = isHead2headLoading,
+                                onReloadClick = onReloadMatchesClick
                             )
                         }
                     }

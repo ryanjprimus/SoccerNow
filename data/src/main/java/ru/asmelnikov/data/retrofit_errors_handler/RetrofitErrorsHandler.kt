@@ -15,7 +15,7 @@ interface RetrofitErrorsHandler {
 
     fun <T, R> responseFailureHandler(response: Response<T>): Resource.Error<R>
 
-    class RetrofitErrorsHandlerImpl() : RetrofitErrorsHandler {
+    class RetrofitErrorsHandlerImpl : RetrofitErrorsHandler {
         override suspend fun <T> executeSafely(block: suspend () -> Resource<T>): Resource<T> {
             return try {
                 block()

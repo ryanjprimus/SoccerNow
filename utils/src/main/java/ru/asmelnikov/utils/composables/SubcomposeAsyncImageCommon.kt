@@ -1,5 +1,7 @@
 package ru.asmelnikov.utils.composables
 
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +43,7 @@ fun SubComposeAsyncImageCommon(
             .build(),
         loading = loading,
         error = {
-            painterResource(errorPlaceHolder)
+            Image(painter = painterResource(errorPlaceHolder), contentDescription = null)
         },
         alpha = alpha,
         contentDescription = contentDescription,

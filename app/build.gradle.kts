@@ -91,4 +91,5 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":utils"))
     implementation(project(":competition_standings"))
+    implementation(project(":team_info"))
 }

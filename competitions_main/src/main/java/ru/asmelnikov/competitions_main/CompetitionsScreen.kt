@@ -34,12 +34,12 @@ import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
 import ru.asmelnikov.competitions_main.components.CompetitionItem
-import ru.asmelnikov.competitions_main.components.EmptyContent
 import ru.asmelnikov.competitions_main.components.GifImage
 import ru.asmelnikov.competitions_main.components.ShimmerListItem
 import ru.asmelnikov.competitions_main.view_model.CompetitionsScreenSideEffects
 import ru.asmelnikov.competitions_main.view_model.CompetitionsScreenViewModel
 import ru.asmelnikov.domain.models.Competition
+import ru.asmelnikov.utils.composables.EmptyContent
 import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.navigation.Routes
 import ru.asmelnikov.utils.navigation.navigateWithArgs
@@ -178,6 +178,7 @@ fun CompetitionsScreenContent(
                             ShimmerListItem()
                         }
                     }
+
                     comps.isEmpty() -> {
                         item {
                             EmptyContent(
@@ -185,6 +186,7 @@ fun CompetitionsScreenContent(
                             )
                         }
                     }
+
                     else -> {
                         items(items = comps, key = { it.id }) { comp ->
                             CompetitionItem(competition = comp, onCompClick = onCompClick)
@@ -198,3 +200,5 @@ fun CompetitionsScreenContent(
         }
     }
 }
+
+
