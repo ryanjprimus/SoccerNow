@@ -27,7 +27,8 @@ fun SquadPagerList(
     itemColor: Color,
     isMaterialColors: Boolean,
     isLoading: Boolean,
-    onReloadClick: () -> Unit
+    onReloadClick: () -> Unit,
+    onPersonClick: (Int) -> Unit
 ) {
 
     val brushColor: List<Color> = if (isMaterialColors)
@@ -78,7 +79,7 @@ fun SquadPagerList(
                                 ),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            SquadItem(squad = squadItem)
+                            SquadItem(squad = squadItem, onPersonClick = onPersonClick)
                             Divider(
                                 color = MaterialTheme.colorScheme.primary
                             )

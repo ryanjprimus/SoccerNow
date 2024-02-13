@@ -57,6 +57,8 @@ import ru.asmelnikov.team_info.view_model.TeamInfoViewModel
 import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.composables.PagerTabRow
 import ru.asmelnikov.utils.composables.SubComposeAsyncImageCommon
+import ru.asmelnikov.utils.navigation.Routes
+import ru.asmelnikov.utils.navigation.navigateWithArgs
 import ru.asmelnikov.utils.navigation.popUp
 import ru.asmelnikov.utils.ui.theme.dimens
 
@@ -84,6 +86,10 @@ fun TeamInfoScreen(
 
             is TeamInfoSideEffects.BackClick -> appState.popUp()
 
+            is TeamInfoSideEffects.OnPersonInfoNavigate -> {
+                appState.navigateWithArgs(route = Routes.Person_Info, args = it.personId)
+            }
+
         }
     }
 
@@ -102,7 +108,8 @@ fun TeamInfoScreen(
         teamId = state.teamId,
         matchesComplete = state.matchesComplete,
         matchesAhead = state.matchesAhead,
-        onMatchesReload = viewModel::getTeamMatchesFromRemoteToLocal
+        onMatchesReload = viewModel::getTeamMatchesFromRemoteToLocal,
+        onPersonClick = viewModel::onPersonClick
     )
 
 }
@@ -124,7 +131,8 @@ fun TeamInfoScreenContent(
     onMatchItemClick: (Int) -> Unit,
     head2head: Head2head,
     isHead2headLoading: Boolean,
-    onMatchesReload: () -> Unit
+    onMatchesReload: () -> Unit,
+    onPersonClick: (Int) -> Unit
 ) {
 
     val isMaterialColors = teamInfo.crest.endsWith(".svg")
@@ -293,7 +301,8 @@ fun TeamInfoScreenContent(
                                 itemColor = Color(parseColor(vibrant)),
                                 isMaterialColors = isMaterialColors,
                                 isLoading = isLoading,
-                                onReloadClick = onTeamInfoReload
+                                onReloadClick = onTeamInfoReload,
+                                onPersonClick = onPersonClick
                             )
                         }
 
@@ -321,8 +330,7 @@ fun TeamInfoScreenContent(
                                 onMatchItemClick = onMatchItemClick,
                                 teamId = teamId,
                                 head2head = head2head,
-                                isHead2headLoading = isHead2headLoading,
-                                vibrant = vibrant
+                                isHead2headLoading = isHead2headLoading
                             )
                         }
                     }

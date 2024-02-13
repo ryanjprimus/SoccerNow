@@ -11,6 +11,7 @@ import ru.asmelnikov.data.models.CompetitionModelDTO
 import ru.asmelnikov.data.models.CompetitionScorersModelDTO
 import ru.asmelnikov.data.models.CompetitionStandingsModelDTO
 import ru.asmelnikov.data.models.Head2headDTO
+import ru.asmelnikov.data.models.PersonDTO
 import ru.asmelnikov.data.models.TeamInfoDTO
 import ru.asmelnikov.utils.Constants.API_KEY
 
@@ -64,4 +65,10 @@ interface FootballApi {
     suspend fun getTeamInfoById(
         @Path("teamId") teamId: String
     ): Response<TeamInfoDTO>
+
+    @GET("persons/{personId}")
+    @Headers("X-Auth-Token: $API_KEY")
+    suspend fun getPersonInfo(
+        @Path("personId") personId: String
+    ): Response<PersonDTO>
 }

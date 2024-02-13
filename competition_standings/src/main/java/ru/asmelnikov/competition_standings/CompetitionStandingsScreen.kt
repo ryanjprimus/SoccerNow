@@ -86,6 +86,9 @@ fun CompetitionStandingsScreen(
             is CompetitionStandingSideEffects.OnTeamInfoNavigate -> {
                 appState.navigateWithArgs(route = Routes.Team_Info, args = it.teamId)
             }
+            is CompetitionStandingSideEffects.OnPersonInfoNavigate -> {
+                appState.navigateWithArgs(route = Routes.Person_Info, args = it.personId)
+            }
         }
     }
 
@@ -112,7 +115,8 @@ fun CompetitionStandingsScreen(
         onTeamClick = viewModel::onTeamClick,
         onReloadStandingsClick = viewModel::updateStandingsFromRemoteToLocal,
         onReloadMatchesClick = viewModel::updateMatchesFromRemoteToLocal,
-        onReloadScorersClick = viewModel::updateScorersFromRemoteToLocal
+        onReloadScorersClick = viewModel::updateScorersFromRemoteToLocal,
+        onPersonClick = viewModel::onPersonClick
     )
 }
 
@@ -141,7 +145,8 @@ fun CompetitionStandingsContent(
     onTeamClick: (Int) -> Unit,
     onReloadStandingsClick: () -> Unit,
     onReloadScorersClick: () -> Unit,
-    onReloadMatchesClick: () -> Unit
+    onReloadMatchesClick: () -> Unit,
+    onPersonClick: (Int) -> Unit
 ) {
 
     val configuration = LocalConfiguration.current
@@ -282,7 +287,8 @@ fun CompetitionStandingsContent(
                                 currentSeasonScorers = currentSeasonScorers,
                                 onSeasonScorersUpdate = onSeasonScorersUpdate,
                                 isLoadingScorers = isLoadingScorers,
-                                onReloadClick = onReloadScorersClick
+                                onReloadClick = onReloadScorersClick,
+                                onPersonClick = onPersonClick
                             )
                         }
 

@@ -67,6 +67,10 @@ class CompetitionStandingsViewModel(
         }
     }
 
+    fun onPersonClick(personId: Int) = intent {
+        postSideEffect(CompetitionStandingSideEffects.OnPersonInfoNavigate(personId = personId.toString()))
+    }
+
     fun onBackClick() = intent {
         postSideEffect(CompetitionStandingSideEffects.BackClick)
     }

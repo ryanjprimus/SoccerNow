@@ -26,7 +26,8 @@ fun ScorerItem(
     modifier: Modifier = Modifier,
     scorer: Scorer,
     dataWeight: Float = 0.1f,
-    index: Int
+    index: Int,
+    onPersonClick: (Int) -> Unit
 ) {
 
     val itemsRow = listOf(
@@ -40,7 +41,9 @@ fun ScorerItem(
         modifier = modifier
             .fillMaxWidth()
             .height(MaterialTheme.dimens.medium4)
-            .clickable { },
+            .clickable {
+                onPersonClick(scorer.player.id)
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
