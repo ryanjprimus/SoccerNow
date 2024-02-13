@@ -44,11 +44,14 @@ import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
+import ru.asmelnikov.domain.models.Head2head
+import ru.asmelnikov.domain.models.Match
 import ru.asmelnikov.domain.models.TeamInfo
 import ru.asmelnikov.team_info.components.PaletteGenerator.convertImageUrlToBitmap
 import ru.asmelnikov.team_info.components.PaletteGenerator.extractColorsFromBitmap
 import ru.asmelnikov.team_info.components.SquadPagerList
 import ru.asmelnikov.team_info.components.TeamInfoPage
+import ru.asmelnikov.team_info.components.TeamMatchesList
 import ru.asmelnikov.team_info.view_model.TeamInfoSideEffects
 import ru.asmelnikov.team_info.view_model.TeamInfoViewModel
 import ru.asmelnikov.utils.composables.MainAppState
@@ -86,11 +89,20 @@ fun TeamInfoScreen(
 
     TeamInfoScreenContent(
         teamInfo = state.teamInfo,
-        isLoading = state.isLoading,
+        isLoading = state.isInfoLoading,
         onBackClick = viewModel::onBackClick,
         colors = state.colorPalette,
         setColorPalette = viewModel::setColorPalette,
-        onTeamInfoReload = viewModel::getTeamInfoFromRemoteToLocal
+        onTeamInfoReload = viewModel::getTeamInfoFromRemoteToLocal,
+        isMatchesLoading = state.isMatchesLoading,
+        expandedItemId = state.expandedItem,
+        onMatchItemClick = viewModel::matchItemClick,
+        head2head = state.head2head,
+        isHead2headLoading = state.isHead2headLoading,
+        teamId = state.teamId,
+        matchesComplete = state.matchesComplete,
+        matchesAhead = state.matchesAhead,
+        onMatchesReload = viewModel::getTeamMatchesFromRemoteToLocal
     )
 
 }
@@ -103,7 +115,16 @@ fun TeamInfoScreenContent(
     onBackClick: () -> Unit,
     colors: Map<String, String>,
     setColorPalette: (Map<String, String>) -> Unit,
-    onTeamInfoReload: () -> Unit
+    onTeamInfoReload: () -> Unit,
+    isMatchesLoading: Boolean,
+    matchesComplete: List<Match>,
+    matchesAhead: List<Match>,
+    teamId: String,
+    expandedItemId: Int,
+    onMatchItemClick: (Int) -> Unit,
+    head2head: Head2head,
+    isHead2headLoading: Boolean,
+    onMatchesReload: () -> Unit
 ) {
 
     val isMaterialColors = teamInfo.crest.endsWith(".svg")
@@ -150,7 +171,7 @@ fun TeamInfoScreenContent(
     val pagerState = rememberPagerState(
         initialPage = 0,
     ) {
-        2
+        3
     }
     val orientation =
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "LANDSCAPE" else "PORTRAIT"
@@ -247,7 +268,7 @@ fun TeamInfoScreenContent(
                 }
 
                 PagerTabRow(
-                    tabTitles = listOf("Squad", "Info"),
+                    tabTitles = listOf("Squad", "Info", "Matches"),
                     selectedIndex = pagerState.currentPage,
                     modifier = Modifier.fillMaxWidth(),
                     onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
@@ -280,7 +301,28 @@ fun TeamInfoScreenContent(
                             TeamInfoPage(
                                 teamInfo = teamInfo,
                                 isLoading = isLoading,
-                                onReloadClick = onTeamInfoReload
+                                onReloadClick = onTeamInfoReload,
+                                stickyHeaderColor = Color(parseColor(lightMutedSwatch)),
+                                itemColor = Color(parseColor(vibrant)),
+                                isMaterialColors = isMaterialColors
+                            )
+                        }
+
+                        2 -> {
+                            TeamMatchesList(
+                                matchesCompleted = matchesComplete,
+                                matchesAhead = matchesAhead,
+                                isLoading = isMatchesLoading,
+                                onReloadClick = onMatchesReload,
+                                isMaterialColors = isMaterialColors,
+                                stickyHeaderColor = Color(parseColor(lightMutedSwatch)),
+                                itemColor = Color(parseColor(vibrant)),
+                                expandedItemId = expandedItemId,
+                                onMatchItemClick = onMatchItemClick,
+                                teamId = teamId,
+                                head2head = head2head,
+                                isHead2headLoading = isHead2headLoading,
+                                vibrant = vibrant
                             )
                         }
                     }

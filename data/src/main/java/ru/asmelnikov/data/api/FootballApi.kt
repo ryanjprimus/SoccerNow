@@ -46,6 +46,13 @@ interface FootballApi {
         @Query("season") season: String?
     ): Response<CompetitionMatchesDTO>
 
+    @GET("teams/{teamId}/matches/")
+    @Headers("X-Auth-Token: $API_KEY")
+    suspend fun getTeamMatchesBySeason(
+        @Path("teamId") teamId: String,
+        @Query("season") season: String?
+    ): Response<CompetitionMatchesDTO>
+
     @GET("matches/{matchId}/head2head")
     @Headers("X-Auth-Token: $API_KEY")
     suspend fun getHead2headById(

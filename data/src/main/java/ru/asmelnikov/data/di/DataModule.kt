@@ -61,7 +61,8 @@ val dataModule = module {
                 CoachDbModule(),
                 SquadByPositionDbModule(),
                 SquadDbModule(),
-                ContractDbModule()
+                ContractDbModule(),
+                TeamMatchesDbModule()
             )
             .build()
     }

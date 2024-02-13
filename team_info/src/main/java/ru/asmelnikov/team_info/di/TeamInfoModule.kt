@@ -11,7 +11,8 @@ val teamInfoModule = module {
         TeamInfoViewModel(
             teamRepository = get(),
             stringResourceProvider = get(),
-            savedStateHandle = savedStateHandle
+            savedStateHandle = savedStateHandle,
+            standingsRepository = get()
         )
     }
 }

@@ -2,6 +2,7 @@ package ru.asmelnikov.team_info.components
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -31,8 +34,19 @@ import ru.asmelnikov.utils.ui.theme.dimens
 fun TeamInfoPage(
     teamInfo: TeamInfo,
     isLoading: Boolean,
-    onReloadClick: () -> Unit
+    onReloadClick: () -> Unit,
+    isMaterialColors: Boolean,
+    stickyHeaderColor: Color,
+    itemColor: Color
 ) {
+
+    val brushColor: List<Color> = if (isMaterialColors)
+        listOf(
+            MaterialTheme.colorScheme.background,
+            MaterialTheme.colorScheme.background
+        )
+    else
+        listOf(stickyHeaderColor.copy(alpha = 0.5f), itemColor.copy(alpha = 0.5f))
 
     val context = LocalContext.current
 
@@ -47,6 +61,12 @@ fun TeamInfoPage(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = brushColor,
+                            startY = 0f
+                        )
+                    )
                     .verticalScroll(rememberScrollState())
             ) {
                 Row(
@@ -140,15 +160,11 @@ fun TeamInfoPage(
                     modifier = Modifier
                         .padding(MaterialTheme.dimens.small1)
                         .clickable {
-                            try {
-                                Intent(Intent.ACTION_VIEW).also {
-                                    it.data = Uri.parse(teamInfo.website)
-                                    if (it.resolveActivity(context.packageManager) != null) {
-                                        context.startActivity(it)
-                                    }
+                            Intent(Intent.ACTION_VIEW).also {
+                                it.data = Uri.parse(teamInfo.website)
+                                if (it.resolveActivity(context.packageManager) != null) {
+                                    context.startActivity(it)
                                 }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
                             }
                         },
                     text = teamInfo.website,

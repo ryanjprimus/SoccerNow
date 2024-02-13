@@ -23,6 +23,8 @@ open class MatchesByTourEntity(
 
 @RealmClass(embedded = true)
 open class MatchEntity(
+    var area: AreaEntity? = null,
+    var competition: CompetitionEntity? = null,
     var awayTeam: AwayTeamEntity? = null,
     var group: String? = "",
     var homeTeam: HomeTeamEntity? = null,

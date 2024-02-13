@@ -28,6 +28,7 @@ import ru.asmelnikov.data.local.models.StandingEntity
 import ru.asmelnikov.data.local.models.TableEntity
 import ru.asmelnikov.data.local.models.TeamEntity
 import ru.asmelnikov.data.local.models.TeamInfoEntity
+import ru.asmelnikov.data.local.models.TeamMatchesEntity
 import ru.asmelnikov.data.local.models.WinnerEntity
 
 @RealmModule(library = false, classes = [CompetitionScorersEntity::class])
@@ -167,5 +168,10 @@ data class SquadDbModule(val placeholder: String) {
 
 @RealmModule(library = false, classes = [ContractEntity::class])
 data class ContractDbModule(val placeholder: String) {
+    constructor() : this("")
+}
+
+@RealmModule(library = false, classes = [TeamMatchesEntity::class])
+data class TeamMatchesDbModule(val placeholder: String) {
     constructor() : this("")
 }

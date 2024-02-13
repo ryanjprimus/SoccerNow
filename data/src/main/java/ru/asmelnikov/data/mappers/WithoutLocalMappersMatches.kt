@@ -101,7 +101,9 @@ fun MatchDTO.toMatch(): Match {
         stage = stage ?: "",
         status = status ?: "",
         utcDate = outputDateTime ?: "",
-        bigDate = bigOutputDateTime ?: ""
+        bigDate = bigOutputDateTime ?: "",
+        area = area.toArea(),
+        competition = competition.toCompetition()
     )
 }
 

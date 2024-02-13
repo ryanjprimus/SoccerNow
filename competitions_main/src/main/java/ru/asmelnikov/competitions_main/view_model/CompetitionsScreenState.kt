@@ -2,9 +2,11 @@ package ru.asmelnikov.competitions_main.view_model
 
 import android.os.Parcelable
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.runtime.Immutable
 import kotlinx.parcelize.Parcelize
 import ru.asmelnikov.domain.models.Competition
 
+@Immutable
 @Parcelize
 data class CompetitionsScreenState(
     val comps: List<Competition> = emptyList(),

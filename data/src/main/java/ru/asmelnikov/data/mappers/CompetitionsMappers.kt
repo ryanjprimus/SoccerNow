@@ -70,19 +70,19 @@ fun WinnerDTO?.toWinnerEntity(): WinnerEntity {
     )
 }
 
-fun CompetitionEntity.toCompetition(): Competition {
+fun CompetitionEntity?.toCompetition(): Competition {
     return Competition(
-        area = area.toArea(),
-        code = code,
-        currentSeason = currentSeason.toCurrentSeason(),
-        emblem = emblem,
-        id = id,
-        lastUpdated = lastUpdated,
-        name = name,
-        numberOfAvailableSeasons = numberOfAvailableSeasons,
-        plan = plan,
-        type = type,
-        seasons = this.seasons?.map { it.toSeason() } ?: emptyList()
+        area = this?.area.toArea(),
+        code = this?.code ?: "",
+        currentSeason = this?.currentSeason.toCurrentSeason(),
+        emblem = this?.emblem ?: "",
+        id = this?.id ?: -1,
+        lastUpdated = this?.lastUpdated ?: "",
+        name = this?.name ?: "",
+        numberOfAvailableSeasons = this?.numberOfAvailableSeasons ?: -1,
+        plan = this?.plan ?: "",
+        type = this?.type ?: "",
+        seasons = this?.seasons?.map { it.toSeason() } ?: emptyList()
     )
 }
 

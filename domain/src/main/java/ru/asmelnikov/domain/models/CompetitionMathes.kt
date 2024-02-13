@@ -21,6 +21,8 @@ data class MatchesByTour(
 
 @Parcelize
 data class Match(
+    val area: Area,
+    val competition: Competition,
     val awayTeam: AwayTeam,
     val group: String,
     val homeTeam: HomeTeam,

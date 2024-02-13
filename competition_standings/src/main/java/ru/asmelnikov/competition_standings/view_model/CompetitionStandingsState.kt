@@ -2,6 +2,7 @@ package ru.asmelnikov.competition_standings.view_model
 
 import android.os.Parcelable
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.runtime.Immutable
 import kotlinx.parcelize.Parcelize
 import ru.asmelnikov.domain.models.CompetitionStandings
 import ru.asmelnikov.domain.models.Head2head
@@ -9,7 +10,7 @@ import ru.asmelnikov.domain.models.MatchesByTour
 import ru.asmelnikov.domain.models.Scorer
 import ru.asmelnikov.domain.models.Season
 
-
+@Immutable
 @Parcelize
 data class CompetitionStandingsState(
     val compId: String = "",
