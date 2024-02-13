@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -13,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.asmelnikov.competition_standings.CompetitionStandingsScreen
 import ru.asmelnikov.competitions_main.CompetitionsScreen
+import ru.asmelnikov.person_info.PersonInfoScreen
 import ru.asmelnikov.team_info.TeamInfoScreen
 import ru.asmelnikov.utils.composables.MainAppState
 import ru.asmelnikov.utils.navigation.Routes
@@ -103,6 +105,42 @@ fun NavGraph(
                 }
             }) {
             TeamInfoScreen(
+                appState = appState,
+                showSnackbar = showSnackbar
+            )
+        }
+
+        composable(
+            route = "${Routes.Person_Info}/{personId}",
+            arguments = listOf(
+                navArgument("personId") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            ),
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "${Routes.Competition_Standings}/{compId}", "${Routes.Team_Info}/{teamId}" ->
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "${Routes.Competition_Standings}/{compId}", "${Routes.Team_Info}/{teamId}" ->
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(300)
+                        )
+
+                    else -> null
+                }
+            }) {
+            PersonInfoScreen(
                 appState = appState,
                 showSnackbar = showSnackbar
             )

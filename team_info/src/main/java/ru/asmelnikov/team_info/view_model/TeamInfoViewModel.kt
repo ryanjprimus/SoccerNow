@@ -1,6 +1,5 @@
 package ru.asmelnikov.team_info.view_model
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import org.orbitmvi.orbit.ContainerHost
@@ -65,6 +64,10 @@ class TeamInfoViewModel(
                 handleError(head2head.httpErrors ?: ErrorsTypesHttp.UnknownError())
             }
         }
+    }
+
+    fun onPersonClick(personId: Int) = intent {
+        postSideEffect(TeamInfoSideEffects.OnPersonInfoNavigate(personId.toString()))
     }
 
     fun setColorPalette(colors: Map<String, String>) = intent {

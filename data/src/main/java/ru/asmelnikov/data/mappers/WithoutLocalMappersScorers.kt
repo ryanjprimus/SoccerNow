@@ -166,3 +166,4 @@ fun WinnerDTO?.toWinner(): Winner {
         venue = this?.venue ?: ""
     )
 }
+

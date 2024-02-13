@@ -39,4 +39,7 @@ sealed class CompetitionStandingSideEffects {
     data class OnTeamInfoNavigate(val teamId: String) :
         CompetitionStandingSideEffects()
 
+    data class OnPersonInfoNavigate(val personId: String) :
+        CompetitionStandingSideEffects()
+
 }

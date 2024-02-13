@@ -40,8 +40,7 @@ fun TeamMatchesList(
     onMatchItemClick: (Int) -> Unit,
     head2head: Head2head,
     isHead2headLoading: Boolean,
-    teamId: String,
-    vibrant: String
+    teamId: String
 ) {
 
     val scope = rememberCoroutineScope()
@@ -72,12 +71,16 @@ fun TeamMatchesList(
     ) {
         Box(
             modifier = Modifier
+                .background(
+                    if (isMaterialColors) MaterialTheme.colorScheme.primaryContainer else stickyHeaderColor
+                )
                 .fillMaxWidth()
                 .height(MaterialTheme.dimens.extraSmall1)
         ) {
             if (isLoading) LinearProgressIndicator(
                 modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = if (isMaterialColors) MaterialTheme.colorScheme.primaryContainer else stickyHeaderColor
             )
         }
 
@@ -127,9 +130,8 @@ fun TeamMatchesList(
                             selectedIndex = pagerState.currentPage,
                             onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
                             pagerState = pagerState,
-                            containerColor = if (isMaterialColors) MaterialTheme.colorScheme.background else Color(
-                                android.graphics.Color.parseColor(vibrant)
-                            )
+                            containerColor = if (isMaterialColors) MaterialTheme.colorScheme.background else itemColor
+
                         )
 
                         HorizontalPager(

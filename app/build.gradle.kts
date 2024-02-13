@@ -92,4 +92,5 @@ dependencies {
     implementation(project(":utils"))
     implementation(project(":competition_standings"))
     implementation(project(":team_info"))
+    implementation(project(":person_info"))
 }

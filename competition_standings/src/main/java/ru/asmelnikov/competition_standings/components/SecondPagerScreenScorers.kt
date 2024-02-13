@@ -26,7 +26,8 @@ fun SecondPagerScreenScorers(
     currentSeasonScorers: String,
     onSeasonScorersUpdate: (String) -> Unit,
     isLoadingScorers: Boolean,
-    onReloadClick: () -> Unit
+    onReloadClick: () -> Unit,
+    onPersonClick: (Int) -> Unit
 ) {
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -65,7 +66,8 @@ fun SecondPagerScreenScorers(
                         ScorerItem(
                             modifier = Modifier.animateItemPlacement(),
                             scorer = scorer,
-                            index = index + 1
+                            index = index + 1,
+                            onPersonClick = onPersonClick
                         )
                         Divider(color = MaterialTheme.colorScheme.primary)
                     }

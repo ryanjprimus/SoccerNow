@@ -8,4 +8,6 @@ object Routes {
 
     const val Team_Info = "team_info?teamId={teamId}"
 
+    const val Person_Info = "person_info?personId={personId}"
+
 }

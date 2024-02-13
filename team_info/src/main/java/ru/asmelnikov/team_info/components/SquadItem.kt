@@ -20,13 +20,16 @@ import ru.asmelnikov.utils.ui.theme.dimens
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SquadItem(
-    squad: Squad
+    squad: Squad,
+    onPersonClick: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Transparent)
-            .clickable { }
+            .clickable {
+                onPersonClick(squad.id)
+            }
     ) {
         Text(
             modifier = Modifier

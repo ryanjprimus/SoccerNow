@@ -18,10 +18,12 @@ import ru.asmelnikov.data.local.models.*
 import ru.asmelnikov.data.local.models.WinnerEntity
 import ru.asmelnikov.data.repository.CompetitionStandingsRepositoryImpl
 import ru.asmelnikov.data.repository.CompetitionsRepositoryImpl
+import ru.asmelnikov.data.repository.PersonRepositoryImpl
 import ru.asmelnikov.data.repository.TeamInfoRepositoryImpl
 import ru.asmelnikov.data.retrofit_errors_handler.RetrofitErrorsHandler
 import ru.asmelnikov.domain.repository.CompetitionStandingsRepository
 import ru.asmelnikov.domain.repository.CompetitionsRepository
+import ru.asmelnikov.domain.repository.PersonRepository
 import ru.asmelnikov.domain.repository.TeamInfoRepository
 
 private const val FOOTBALL_API_URL = "https://api.football-data.org/v4/"
@@ -103,6 +105,13 @@ val dataModule = module {
         TeamInfoRepositoryImpl(
             footballApi = get(),
             realmOptions = get(),
+            retrofitErrorsHandler = get()
+        )
+    }
+
+    single<PersonRepository> {
+        PersonRepositoryImpl(
+            footballApi = get(),
             retrofitErrorsHandler = get()
         )
     }

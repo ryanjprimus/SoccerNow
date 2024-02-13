@@ -30,4 +30,6 @@ sealed class TeamInfoSideEffects {
 
     object BackClick : TeamInfoSideEffects()
 
+    data class OnPersonInfoNavigate(val personId: String) :
+        TeamInfoSideEffects()
 }
