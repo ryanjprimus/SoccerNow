@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import ru.asmelnikov.domain.models.Coach
-import ru.asmelnikov.domain.models.TeamInfo
 import ru.asmelnikov.utils.ui.theme.dimens
 
 @Composable

@@ -108,6 +108,8 @@ fun MatchDTO.toMatchEntity(): MatchEntity {
     this@toMatchEntity.referees?.map { it.toRefereeEntity() }
         ?.let { referees.addAll(it) }
     return MatchEntity(
+        area = area.toAreaEntity(),
+        competition = competition?.toCompetitionEntity(),
         awayTeam = awayTeam?.toAwayTeamEntity(),
         group = group,
         homeTeam = homeTeam?.toHomeTeamEntity(),
@@ -196,6 +198,8 @@ fun MatchesByTourEntity.toMatchByTour(seasonType: String): MatchesByTour {
 
 fun MatchEntity.toMatches(): Match {
     return Match(
+        area = area.toArea(),
+        competition = competition.toCompetition(),
         awayTeam = awayTeam.toAwayTeam(),
         group = group ?: "",
         homeTeam = homeTeam.toHomeTeam(),

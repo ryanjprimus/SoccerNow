@@ -1,9 +1,12 @@
 package ru.asmelnikov.utils.navigation
 
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavHostController
 import ru.asmelnikov.utils.composables.MainAppState
 
 fun MainAppState.popUp() {
-    navController.popBackStack()
+    if (navController.canGoBack)
+        navController.popBackStack()
 }
 
 fun MainAppState.navigate(route: String) {
@@ -13,8 +16,10 @@ fun MainAppState.navigate(route: String) {
 }
 
 fun MainAppState.navigateWithArgs(route: String, args: String) {
-    navController.navigate("$route/$args") {
-        launchSingleTop = true
+    if (navController.canGoBack) {
+        navController.navigate("$route/$args") {
+            launchSingleTop = true
+        }
     }
 }
 
@@ -51,3 +56,6 @@ fun MainAppState.navigateToTab(route: String) {
         }
     }
 }
+
+val NavHostController.canGoBack: Boolean
+    get() = this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED
