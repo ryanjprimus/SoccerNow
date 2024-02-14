@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -78,6 +80,8 @@ fun PersonInfoContent(
     onReload: () -> Unit
 ) {
 
+    val shape = if (person.currentTeam.crest.endsWith(".svg")) CircleShape else RoundedCornerShape(0.dp)
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -110,7 +114,7 @@ fun PersonInfoContent(
 
                 SubComposeAsyncImageCommon(
                     imageUri = person.currentTeam.crest,
-                    shape = CircleShape,
+                    shape = shape,
                     size = MaterialTheme.dimens.medium4,
                     modifier = Modifier
                         .align(Alignment.Center)

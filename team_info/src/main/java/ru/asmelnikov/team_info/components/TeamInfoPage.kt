@@ -2,18 +2,14 @@ package ru.asmelnikov.team_info.components
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import ru.asmelnikov.domain.models.News
 import ru.asmelnikov.domain.models.TeamInfo
 import ru.asmelnikov.utils.R
 import ru.asmelnikov.utils.composables.EmptyContent
@@ -38,7 +35,10 @@ fun TeamInfoPage(
     onReloadClick: () -> Unit,
     isMaterialColors: Boolean,
     stickyHeaderColor: Color,
-    itemColor: Color
+    itemColor: Color,
+    news: News,
+    isLoadingNews: Boolean,
+    onReloadNewsClick: () -> Unit
 ) {
 
     val brushColor: List<Color> = if (isMaterialColors)
@@ -61,14 +61,13 @@ fun TeamInfoPage(
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .background(
                         Brush.verticalGradient(
                             colors = brushColor,
                             startY = 0f
                         )
                     )
-                    .verticalScroll(rememberScrollState())
             ) {
                 Row(
                     modifier = Modifier
@@ -176,6 +175,7 @@ fun TeamInfoPage(
                     textDecoration = TextDecoration.Underline,
                     color = MaterialTheme.colorScheme.primary
                 )
+                NewsList(news = news, isLoading = isLoadingNews, onReloadClick = onReloadNewsClick)
             }
         }
     }

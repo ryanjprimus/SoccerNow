@@ -31,7 +31,8 @@ fun SubComposeAsyncImageCommon(
     errorPlaceHolder: Int = R.drawable.placeholder_photo,
     loading: @Composable (SubcomposeAsyncImageScope.(AsyncImagePainter.State.Loading) -> Unit)? = {
         CircularProgressIndicator()
-    }
+    },
+    contentScale: ContentScale = ContentScale.Crop
 ) {
     SubcomposeAsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -45,7 +46,7 @@ fun SubComposeAsyncImageCommon(
         },
         alpha = alpha,
         contentDescription = contentDescription,
-        contentScale = ContentScale.Crop,
+        contentScale = contentScale,
         modifier = modifier
             .size(size)
             .clip(shape)

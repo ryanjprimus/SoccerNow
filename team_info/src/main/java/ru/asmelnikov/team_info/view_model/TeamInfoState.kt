@@ -6,6 +6,7 @@ import androidx.compose.runtime.Immutable
 import kotlinx.parcelize.Parcelize
 import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.models.Match
+import ru.asmelnikov.domain.models.News
 import ru.asmelnikov.domain.models.TeamInfo
 import ru.asmelnikov.domain.models.TeamMatches
 
@@ -21,7 +22,9 @@ data class TeamInfoState(
     val matchesAhead: List<Match> = emptyList(),
     val expandedItem: Int = -1,
     val head2head: Head2head = Head2head(),
-    val isHead2headLoading: Boolean = false
+    val isHead2headLoading: Boolean = false,
+    val isNewsLoading: Boolean = false,
+    val news: News = News()
 ) : Parcelable
 
 sealed class TeamInfoSideEffects {

@@ -12,7 +12,8 @@ val teamInfoModule = module {
             teamRepository = get(),
             stringResourceProvider = get(),
             savedStateHandle = savedStateHandle,
-            standingsRepository = get()
+            standingsRepository = get(),
+            newsRepository = get(),
         )
     }
 }

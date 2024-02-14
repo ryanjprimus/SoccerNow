@@ -158,4 +158,3 @@ fun HalfTimeDTO?.toHalfTime(): HalfTime {
         home = this?.away ?: -1
     )
 }
-

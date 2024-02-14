@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -68,9 +68,9 @@ fun SquadPagerList(
                             isMaterialColors = isMaterialColors
                         )
                     }
-                    items(
+                    itemsIndexed(
                         items = squadByPosition.squad,
-                        key = { squadItem -> squadItem.id }) { squadItem ->
+                        key = { _, squadItem -> squadItem.id }) { index, squadItem ->
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -80,9 +80,9 @@ fun SquadPagerList(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             SquadItem(squad = squadItem, onPersonClick = onPersonClick)
-                            Divider(
-                                color = MaterialTheme.colorScheme.primary
-                            )
+                            if (index < squadByPosition.squad.size - 1) {
+                                Divider(color = MaterialTheme.colorScheme.primary)
+                            }
                         }
                     }
                 }
