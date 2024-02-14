@@ -46,6 +46,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
 import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.models.Match
+import ru.asmelnikov.domain.models.News
 import ru.asmelnikov.domain.models.TeamInfo
 import ru.asmelnikov.team_info.components.PaletteGenerator.convertImageUrlToBitmap
 import ru.asmelnikov.team_info.components.PaletteGenerator.extractColorsFromBitmap
@@ -109,7 +110,10 @@ fun TeamInfoScreen(
         matchesComplete = state.matchesComplete,
         matchesAhead = state.matchesAhead,
         onMatchesReload = viewModel::getTeamMatchesFromRemoteToLocal,
-        onPersonClick = viewModel::onPersonClick
+        onPersonClick = viewModel::onPersonClick,
+        news = state.news,
+        isLoadingNews = state.isNewsLoading,
+        onReloadNewsClick = viewModel::getNews
     )
 
 }
@@ -132,7 +136,10 @@ fun TeamInfoScreenContent(
     head2head: Head2head,
     isHead2headLoading: Boolean,
     onMatchesReload: () -> Unit,
-    onPersonClick: (Int) -> Unit
+    onPersonClick: (Int) -> Unit,
+    news: News,
+    isLoadingNews: Boolean,
+    onReloadNewsClick: () -> Unit
 ) {
 
     val isMaterialColors = teamInfo.crest.endsWith(".svg")
@@ -276,7 +283,7 @@ fun TeamInfoScreenContent(
                 }
 
                 PagerTabRow(
-                    tabTitles = listOf("Squad", "Info", "Matches"),
+                    tabTitles = listOf("Squad", "Info/News", "Matches"),
                     selectedIndex = pagerState.currentPage,
                     modifier = Modifier.fillMaxWidth(),
                     onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
@@ -313,7 +320,10 @@ fun TeamInfoScreenContent(
                                 onReloadClick = onTeamInfoReload,
                                 stickyHeaderColor = Color(parseColor(lightMutedSwatch)),
                                 itemColor = Color(parseColor(vibrant)),
-                                isMaterialColors = isMaterialColors
+                                isMaterialColors = isMaterialColors,
+                                news = news,
+                                isLoadingNews = isLoadingNews,
+                                onReloadNewsClick = onReloadNewsClick
                             )
                         }
 

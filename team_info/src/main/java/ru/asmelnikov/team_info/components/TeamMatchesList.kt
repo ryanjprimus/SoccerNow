@@ -72,7 +72,7 @@ fun TeamMatchesList(
         Box(
             modifier = Modifier
                 .background(
-                    if (isMaterialColors) MaterialTheme.colorScheme.primaryContainer else stickyHeaderColor
+                    if (isMaterialColors) MaterialTheme.colorScheme.background else itemColor
                 )
                 .fillMaxWidth()
                 .height(MaterialTheme.dimens.extraSmall1)
@@ -80,7 +80,7 @@ fun TeamMatchesList(
             if (isLoading) LinearProgressIndicator(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.primary,
-                trackColor = if (isMaterialColors) MaterialTheme.colorScheme.primaryContainer else stickyHeaderColor
+                trackColor = if (isMaterialColors) MaterialTheme.colorScheme.background else itemColor
             )
         }
 

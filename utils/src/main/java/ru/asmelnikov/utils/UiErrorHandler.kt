@@ -1,7 +1,6 @@
 package ru.asmelnikov.utils
 
 fun ErrorsTypesHttp.getErrorMessage(stringResourceProvider: StringResourceProvider): String {
-
     return when (this) {
         is ErrorsTypesHttp.Https400Errors -> {
             when (this.errorCode) {

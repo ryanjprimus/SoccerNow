@@ -4,10 +4,12 @@ import io.realm.RealmConfiguration
 import io.realm.annotations.RealmModule
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.asmelnikov.data.api.FootballApi
+import ru.asmelnikov.data.api.NewsApi
 import ru.asmelnikov.data.local.CompetitionsRealmOptions
 import ru.asmelnikov.data.local.StandingsRealmOptions
 import ru.asmelnikov.data.local.TeamInfoRealmOptions
@@ -18,15 +20,19 @@ import ru.asmelnikov.data.local.models.*
 import ru.asmelnikov.data.local.models.WinnerEntity
 import ru.asmelnikov.data.repository.CompetitionStandingsRepositoryImpl
 import ru.asmelnikov.data.repository.CompetitionsRepositoryImpl
+import ru.asmelnikov.data.repository.NewsRepositoryImpl
 import ru.asmelnikov.data.repository.PersonRepositoryImpl
 import ru.asmelnikov.data.repository.TeamInfoRepositoryImpl
 import ru.asmelnikov.data.retrofit_errors_handler.RetrofitErrorsHandler
 import ru.asmelnikov.domain.repository.CompetitionStandingsRepository
 import ru.asmelnikov.domain.repository.CompetitionsRepository
+import ru.asmelnikov.domain.repository.NewsRepository
 import ru.asmelnikov.domain.repository.PersonRepository
 import ru.asmelnikov.domain.repository.TeamInfoRepository
 
 private const val FOOTBALL_API_URL = "https://api.football-data.org/v4/"
+
+private const val NEWS_API_URL = "https://newsapi.org/v2/"
 
 val dataModule = module {
 
@@ -81,9 +87,15 @@ val dataModule = module {
 
     single<MoshiConverterFactory> { moshiConverterFactory() }
 
-    single<Retrofit> { retrofit(get(), get()) }
+    single<Retrofit>(named(FOOTBALL_API_URL)) { retrofit(get(), get(), FOOTBALL_API_URL) }
 
-    single<FootballApi> { get<Retrofit>().create(FootballApi::class.java) }
+    single<Retrofit>(named(NEWS_API_URL)) { retrofit(get(), get(), NEWS_API_URL) }
+
+    single<FootballApi> { get<Retrofit>(named(FOOTBALL_API_URL)).create(FootballApi::class.java) }
+
+    single<NewsApi> { get<Retrofit>(named(NEWS_API_URL)).create(NewsApi::class.java) }
+
+    single<NewsRepository> { NewsRepositoryImpl(newsApi = get(), retrofitErrorsHandler = get()) }
 
     single<CompetitionsRepository> {
         CompetitionsRepositoryImpl(
@@ -129,8 +141,9 @@ private fun okHttp(): OkHttpClient =
 private fun retrofit(
     moshiConverterFactory: MoshiConverterFactory,
     okHttpClient: OkHttpClient,
+    url: String
 ) = Retrofit.Builder()
-    .baseUrl(FOOTBALL_API_URL)
+    .baseUrl(url)
     .addConverterFactory(moshiConverterFactory)
     .client(okHttpClient)
     .build()

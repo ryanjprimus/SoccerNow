@@ -1,6 +1,5 @@
 package ru.asmelnikov.utils
 
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import ru.asmelnikov.utils.CompetitionType.*
 import ru.asmelnikov.utils.ui.theme.lastRed
@@ -9,7 +8,8 @@ import ru.asmelnikov.utils.ui.theme.topGreen
 
 object Constants {
 
-    const val API_KEY = "8c02a856ac284753b67eacd7ab31d010"
+    const val FOOTBALL_API_KEY = "8c02a856ac284753b67eacd7ab31d010"
+    const val NEW_API_KEY = "30902f38d91440588b9c1a0b43035e83"
 }
 
 enum class CompetitionType(

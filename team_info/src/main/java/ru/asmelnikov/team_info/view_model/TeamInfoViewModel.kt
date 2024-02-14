@@ -9,8 +9,10 @@ import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.syntax.simple.repeatOnSubscription
 import org.orbitmvi.orbit.viewmodel.container
 import ru.asmelnikov.domain.models.Head2head
+import ru.asmelnikov.domain.models.News
 import ru.asmelnikov.domain.models.TeamInfo
 import ru.asmelnikov.domain.repository.CompetitionStandingsRepository
+import ru.asmelnikov.domain.repository.NewsRepository
 import ru.asmelnikov.domain.repository.TeamInfoRepository
 import ru.asmelnikov.utils.ErrorsTypesHttp
 import ru.asmelnikov.utils.Resource
@@ -21,6 +23,7 @@ class TeamInfoViewModel(
     private val teamRepository: TeamInfoRepository,
     private val stringResourceProvider: StringResourceProvider,
     private val standingsRepository: CompetitionStandingsRepository,
+    private val newsRepository: NewsRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(),
     ContainerHost<TeamInfoState, TeamInfoSideEffects> {
@@ -35,6 +38,27 @@ class TeamInfoViewModel(
         getTeamInfoFromRemoteToLocal()
         collectTeamMatchesFlowFromLocal()
         getTeamMatchesFromRemoteToLocal()
+    }
+
+    fun getNews() = intent {
+        reduce { state.copy(isNewsLoading = true) }
+        when (val news =
+            newsRepository.getNews(
+                state.teamInfo.name
+            )) {
+            is Resource.Success -> {
+                reduce {
+                    state.copy(
+                        isNewsLoading = false,
+                        news = news.data ?: News(),
+                    )
+                }
+            }
+
+            is Resource.Error -> {
+                handleError(news.httpErrors ?: ErrorsTypesHttp.UnknownError())
+            }
+        }
     }
 
     fun matchItemClick(itemId: Int) = intent {
@@ -87,6 +111,7 @@ class TeamInfoViewModel(
                         teamInfo = team.data ?: TeamInfo()
                     )
                 }
+                getNews()
             }
 
             is Resource.Error -> {
@@ -151,7 +176,8 @@ class TeamInfoViewModel(
             state.copy(
                 isInfoLoading = false,
                 isMatchesLoading = false,
-                isHead2headLoading = false
+                isHead2headLoading = false,
+                isNewsLoading = false
             )
         }
 
