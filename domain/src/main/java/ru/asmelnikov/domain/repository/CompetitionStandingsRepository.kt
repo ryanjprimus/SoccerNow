@@ -17,14 +17,14 @@ interface CompetitionStandingsRepository {
 
     suspend fun getCompetitionSeasonsById(compId: String): Resource<List<Season>>
 
-    suspend fun getStandingsFlowFromLocalById(compId: String): Flow<CompetitionStandings>
+    suspend fun getStandingsFlowFromLocalById(compId: String): Flow<CompetitionStandings?>
 
     suspend fun getCompetitionTopScorersBySeason(
         compId: String,
         season: String?
     ): Resource<CompetitionScorers?>
 
-    suspend fun getScorersFlowFromLocal(compId: String): Flow<CompetitionScorers>
+    suspend fun getScorersFlowFromLocal(compId: String): Flow<CompetitionScorers?>
 
     suspend fun getAllMatchesFromRemoteToLocal(
         compId: String,
@@ -33,7 +33,7 @@ interface CompetitionStandingsRepository {
 
     suspend fun getAllMatchesFlowFromLocal(
         compId: String,
-    ): Flow<CompetitionMatches>
+    ): Flow<CompetitionMatches?>
 
     suspend fun getHead2headById(
         matchId:Int

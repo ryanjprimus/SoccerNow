@@ -45,11 +45,11 @@ class TeamInfoRepositoryImpl(
         }
     }
 
-    override suspend fun getTeamInfoByIdFlowFromLocal(teamId: String): Flow<TeamInfo> {
+    override suspend fun getTeamInfoByIdFlowFromLocal(teamId: String): Flow<TeamInfo?> {
         return realmOptions.getTeamInfoFlowById(
             teamId = teamId
         ).map {
-            it.toTeamInfo()
+            it.map { it.toTeamInfo() }.firstOrNull()
         }
     }
 
@@ -72,7 +72,8 @@ class TeamInfoRepositoryImpl(
         }
     }
 
-    override suspend fun getTeamMatchesFlowFromLocal(teamId: String): Flow<TeamMatches> {
-        return realmOptions.getMatchesFlowById(teamId).map { it.toTeamMatches() }
+    override suspend fun getTeamMatchesFlowFromLocal(teamId: String): Flow<TeamMatches?> {
+        return realmOptions.getMatchesFlowById(teamId)
+            .map { it.map { it.toTeamMatches() }.firstOrNull() }
     }
 }

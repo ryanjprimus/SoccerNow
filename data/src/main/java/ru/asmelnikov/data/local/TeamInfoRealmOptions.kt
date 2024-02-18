@@ -1,8 +1,10 @@
 package ru.asmelnikov.data.local
 
 import io.realm.Realm
+import io.realm.RealmChangeListener
 import io.realm.RealmConfiguration
 import io.realm.RealmObjectChangeListener
+import io.realm.RealmResults
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -17,11 +19,11 @@ interface TeamInfoRealmOptions {
 
     suspend fun upsertTeamInfoFromRemoteToLocal(teamInfo: TeamInfoEntity)
 
-    suspend fun getTeamInfoFlowById(teamId: String): Flow<TeamInfoEntity>
+    suspend fun getTeamInfoFlowById(teamId: String): Flow<List<TeamInfoEntity>>
 
     suspend fun upsertMatchesFromRemoteToLocal(matches: TeamMatchesEntity)
 
-    suspend fun getMatchesFlowById(teamId: String): Flow<TeamMatchesEntity>
+    suspend fun getMatchesFlowById(teamId: String): Flow<List<TeamMatchesEntity>>
 
     class RealmOptionsImpl(private val realmConfig: RealmConfiguration) : TeamInfoRealmOptions {
         override suspend fun upsertTeamInfoFromRemoteToLocal(teamInfo: TeamInfoEntity) {
@@ -34,39 +36,29 @@ interface TeamInfoRealmOptions {
             }
         }
 
-        override suspend fun getTeamInfoFlowById(teamId: String): Flow<TeamInfoEntity> {
+        override suspend fun getTeamInfoFlowById(teamId: String): Flow<List<TeamInfoEntity>> {
             return callbackFlow {
                 val realm = Realm.getInstance(realmConfig)
-                val teamInfo: TeamInfoEntity? =
+                val teamInfo =
                     realm.where(TeamInfoEntity::class.java)
                         .equalTo("id", teamId)
-                        .findFirst()
-
-                if (teamInfo != null) {
-                    val teamEntity: TeamInfoEntity =
-                        realm.copyFromRealm(teamInfo)
-
-                    trySend(teamEntity)
-
-                    val listener =
-                        RealmObjectChangeListener<TeamInfoEntity> { updatedEntity, _ ->
-                            val updateTeam = realm.copyFromRealm(updatedEntity)
-                            trySend(updateTeam)
-                        }
-
-                    teamInfo.addChangeListener(listener)
-
-                    awaitClose {
-                        teamInfo.removeChangeListener(listener)
-                        realm.close()
+                        .findAll()
+                val teamEntity =
+                    realm.copyFromRealm(teamInfo)
+                trySend(teamEntity)
+                val listener =
+                    RealmChangeListener<RealmResults<TeamInfoEntity>> { updatedEntity ->
+                        val updateTeam = realm.copyFromRealm(updatedEntity)
+                        trySend(updateTeam)
                     }
-                } else {
-                    send(TeamInfoEntity())
-                    close()
+                teamInfo.addChangeListener(listener)
+                awaitClose {
+                    teamInfo.removeChangeListener(listener)
                     realm.close()
                 }
             }.flowOn(Dispatchers.Main)
         }
+
 
         override suspend fun upsertMatchesFromRemoteToLocal(matches: TeamMatchesEntity) {
             withContext(Dispatchers.IO) {
@@ -78,35 +70,24 @@ interface TeamInfoRealmOptions {
             }
         }
 
-        override suspend fun getMatchesFlowById(teamId: String): Flow<TeamMatchesEntity> {
+        override suspend fun getMatchesFlowById(teamId: String): Flow<List<TeamMatchesEntity>> {
             return callbackFlow {
                 val realm = Realm.getInstance(realmConfig)
-                val matches: TeamMatchesEntity? =
+                val matches =
                     realm.where(TeamMatchesEntity::class.java)
                         .equalTo("id", teamId)
-                        .findFirst()
-
-                if (matches != null) {
-                    val matchEntity: TeamMatchesEntity =
-                        realm.copyFromRealm(matches)
-
-                    trySend(matchEntity)
-
-                    val listener =
-                        RealmObjectChangeListener<TeamMatchesEntity> { updatedEntity, _ ->
-                            val updateMatch = realm.copyFromRealm(updatedEntity)
-                            trySend(updateMatch)
-                        }
-
-                    matches.addChangeListener(listener)
-
-                    awaitClose {
-                        matches.removeChangeListener(listener)
-                        realm.close()
+                        .findAll()
+                val matchEntity =
+                    realm.copyFromRealm(matches)
+                trySend(matchEntity)
+                val listener =
+                    RealmChangeListener<RealmResults<TeamMatchesEntity>> { updatedEntity ->
+                        val updateMatch = realm.copyFromRealm(updatedEntity)
+                        trySend(updateMatch)
                     }
-                } else {
-                    send(TeamMatchesEntity())
-                    close()
+                matches.addChangeListener(listener)
+                awaitClose {
+                    matches.removeChangeListener(listener)
                     realm.close()
                 }
             }.flowOn(Dispatchers.Main)

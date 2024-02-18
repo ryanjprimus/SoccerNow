@@ -14,7 +14,7 @@ interface TeamInfoRepository {
 
     suspend fun getTeamInfoByIdFlowFromLocal(
         teamId: String
-    ): Flow<TeamInfo>
+    ): Flow<TeamInfo?>
 
     suspend fun getTeamMatchesFromRemoteToLocal(
         teamId: String,
@@ -23,5 +23,5 @@ interface TeamInfoRepository {
 
     suspend fun getTeamMatchesFlowFromLocal(
         teamId: String,
-    ): Flow<TeamMatches>
+    ): Flow<TeamMatches?>
 }
