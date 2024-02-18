@@ -2,7 +2,6 @@ package ru.asmelnikov.competition_standings.view_model
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -85,10 +84,7 @@ class CompetitionStandingsViewModel(
             is Resource.Success -> {
                 reduce {
                     state.copy(
-                        isLoadingScorers = false,
-                        scorers = compsFromRemote.data?.scorers ?: emptyList(),
-                        currentSeasonScorers = compsFromRemote.data?.season?.startDateEndDate
-                            ?: ""
+                        isLoadingScorers = false
                     )
                 }
             }
@@ -109,10 +105,7 @@ class CompetitionStandingsViewModel(
             is Resource.Success -> {
                 reduce {
                     state.copy(
-                        isLoadingStandings = false,
-                        competitionStandings = compsFromRemote.data,
-                        currentSeasonStandings = compsFromRemote.data?.season?.startDateEndDate
-                            ?: ""
+                        isLoadingStandings = false
                     )
                 }
             }
@@ -133,11 +126,7 @@ class CompetitionStandingsViewModel(
             is Resource.Success -> {
                 reduce {
                     state.copy(
-                        isLoadingMatches = false,
-                        matchesCompleted = matchesFromRemote.data?.matchesByTourCompleted
-                            ?: emptyList(),
-                        matchesAhead = matchesFromRemote.data?.matchesByTourAhead ?: emptyList(),
-                        currentSeasonMatches = matchesFromRemote.data?.season ?: ""
+                        isLoadingMatches = false
                     )
                 }
             }
@@ -174,7 +163,7 @@ class CompetitionStandingsViewModel(
                 reduce {
                     state.copy(
                         competitionStandings = standings,
-                        currentSeasonStandings = standings.season.startDateEndDate
+                        currentSeasonStandings = standings?.season?.startDateEndDate ?: ""
                     )
                 }
             }
@@ -186,8 +175,8 @@ class CompetitionStandingsViewModel(
             standingsRepository.getScorersFlowFromLocal(state.compId).collect { scorers ->
                 reduce {
                     state.copy(
-                        scorers = scorers.scorers,
-                        currentSeasonScorers = scorers.season.startDateEndDate
+                        scorers = scorers?.scorers ?: emptyList(),
+                        currentSeasonScorers = scorers?.season?.startDateEndDate ?: ""
                     )
                 }
             }
@@ -199,9 +188,9 @@ class CompetitionStandingsViewModel(
             standingsRepository.getAllMatchesFlowFromLocal(state.compId).collect { matches ->
                 reduce {
                     state.copy(
-                        matchesCompleted = matches.matchesByTourCompleted,
-                        matchesAhead = matches.matchesByTourAhead,
-                        currentSeasonMatches = matches.season
+                        matchesCompleted = matches?.matchesByTourCompleted ?: emptyList(),
+                        matchesAhead = matches?.matchesByTourAhead ?: emptyList(),
+                        currentSeasonMatches = matches?.season ?: ""
                     )
                 }
             }

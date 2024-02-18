@@ -107,8 +107,7 @@ class TeamInfoViewModel(
             is Resource.Success -> {
                 reduce {
                     state.copy(
-                        isInfoLoading = false,
-                        teamInfo = team.data ?: TeamInfo()
+                        isInfoLoading = false
                     )
                 }
                 getNews()
@@ -129,9 +128,7 @@ class TeamInfoViewModel(
             is Resource.Success -> {
                 reduce {
                     state.copy(
-                        isMatchesLoading = false,
-                        matchesComplete = matches.data?.matchesCompleted ?: emptyList(),
-                        matchesAhead = matches.data?.matchesAhead ?: emptyList()
+                        isMatchesLoading = false
                     )
                 }
             }
@@ -151,7 +148,7 @@ class TeamInfoViewModel(
             teamRepository.getTeamInfoByIdFlowFromLocal(state.teamId).collect { teamInfo ->
                 reduce {
                     state.copy(
-                        teamInfo = teamInfo
+                        teamInfo = teamInfo ?: TeamInfo()
                     )
                 }
             }
@@ -163,8 +160,8 @@ class TeamInfoViewModel(
             teamRepository.getTeamMatchesFlowFromLocal(state.teamId).collect { matches ->
                 reduce {
                     state.copy(
-                        matchesComplete = matches.matchesCompleted,
-                        matchesAhead = matches.matchesAhead
+                        matchesComplete = matches?.matchesCompleted ?: emptyList(),
+                        matchesAhead = matches?.matchesAhead ?: emptyList()
                     )
                 }
             }

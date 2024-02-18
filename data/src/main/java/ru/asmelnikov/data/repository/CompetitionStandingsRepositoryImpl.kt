@@ -61,9 +61,9 @@ class CompetitionStandingsRepositoryImpl(
         }
     }
 
-    override suspend fun getStandingsFlowFromLocalById(compId: String): Flow<CompetitionStandings> {
+    override suspend fun getStandingsFlowFromLocalById(compId: String): Flow<CompetitionStandings?> {
         return realmOptions.getStandingsFlowById(compId).map {
-            it.toCompetitionStandings()
+            it.map { it.toCompetitionStandings() }.firstOrNull()
         }
     }
 
@@ -86,9 +86,9 @@ class CompetitionStandingsRepositoryImpl(
         }
     }
 
-    override suspend fun getScorersFlowFromLocal(compId: String): Flow<CompetitionScorers> {
+    override suspend fun getScorersFlowFromLocal(compId: String): Flow<CompetitionScorers?> {
         return realmOptions.getScorersFlowById(compId).map {
-            it.toCompetitionScorers()
+            it.map { it.toCompetitionScorers() }.firstOrNull()
         }
     }
 
@@ -111,8 +111,9 @@ class CompetitionStandingsRepositoryImpl(
         }
     }
 
-    override suspend fun getAllMatchesFlowFromLocal(compId: String): Flow<CompetitionMatches> {
-        return realmOptions.getMatchesFlowById(compId).map { it.toCompetitionMatches() }
+    override suspend fun getAllMatchesFlowFromLocal(compId: String): Flow<CompetitionMatches?> {
+        return realmOptions.getMatchesFlowById(compId)
+            .map { it.map { it.toCompetitionMatches() }.firstOrNull() }
     }
 
     override suspend fun getHead2headById(matchId: Int): Resource<Head2head> {

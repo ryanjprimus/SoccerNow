@@ -14,7 +14,8 @@ interface NewsApi {
     suspend fun getAllArticlesByQuery(
         @Query("q") query: String,
         @Query("language") language: String = "en",
-        @Query("sortBy") sortBy: String = "relevancy"
+        @Query("sortBy") sortBy: String = "relevancy",
+        @Query("pageSize") pageSize: Int = 10
     ): Response<NewsDTO>
 
 }
