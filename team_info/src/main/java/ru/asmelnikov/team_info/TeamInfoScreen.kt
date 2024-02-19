@@ -33,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,8 +47,6 @@ import ru.asmelnikov.domain.models.Head2head
 import ru.asmelnikov.domain.models.Match
 import ru.asmelnikov.domain.models.News
 import ru.asmelnikov.domain.models.TeamInfo
-import ru.asmelnikov.team_info.components.PaletteGenerator.convertImageUrlToBitmap
-import ru.asmelnikov.team_info.components.PaletteGenerator.extractColorsFromBitmap
 import ru.asmelnikov.team_info.components.SquadPagerList
 import ru.asmelnikov.team_info.components.TeamInfoPage
 import ru.asmelnikov.team_info.components.TeamMatchesList
@@ -99,7 +96,6 @@ fun TeamInfoScreen(
         isLoading = state.isInfoLoading,
         onBackClick = viewModel::onBackClick,
         colors = state.colorPalette,
-        setColorPalette = viewModel::setColorPalette,
         onTeamInfoReload = viewModel::getTeamInfoFromRemoteToLocal,
         isMatchesLoading = state.isMatchesLoading,
         expandedItemId = state.expandedItem,
@@ -125,7 +121,6 @@ fun TeamInfoScreenContent(
     isLoading: Boolean,
     onBackClick: () -> Unit,
     colors: Map<String, String>,
-    setColorPalette: (Map<String, String>) -> Unit,
     onTeamInfoReload: () -> Unit,
     isMatchesLoading: Boolean,
     matchesComplete: List<Match>,
@@ -144,35 +139,11 @@ fun TeamInfoScreenContent(
 
     val isMaterialColors = teamInfo.crest.endsWith(".svg")
 
-    val context = LocalContext.current
-
-    var launchedEffectTriggered by remember { mutableStateOf(false) }
-
-    if (teamInfo.crest.isNotEmpty())
-        LaunchedEffect(key1 = true) {
-            try {
-                val bitmap = convertImageUrlToBitmap(
-                    imageUrl = teamInfo.crest,
-                    context = context
-                )
-                if (bitmap != null) {
-                    launchedEffectTriggered = true
-                    setColorPalette(
-                        extractColorsFromBitmap(
-                            bitmap = bitmap
-                        )
-                    )
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
     var vibrant by remember { mutableStateOf("#ffffff") }
     var lightMutedSwatch by remember { mutableStateOf("#ffffff") }
     var onDarkVibrant by remember { mutableStateOf("#ffffff") }
 
-    if (colors.isNotEmpty() && launchedEffectTriggered)
+    if (colors.isNotEmpty())
         LaunchedEffect(key1 = true) {
             vibrant = colors["vibrant"] ?: ""
             lightMutedSwatch = colors["lightMuted"] ?: ""

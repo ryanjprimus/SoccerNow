@@ -14,6 +14,7 @@ val teamInfoModule = module {
             savedStateHandle = savedStateHandle,
             standingsRepository = get(),
             newsRepository = get(),
+            colorGenerator = get()
         )
     }
 }
