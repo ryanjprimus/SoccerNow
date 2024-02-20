@@ -12,10 +12,10 @@ A simple Android application for displaying statistics of major football competi
 - [Compose](https://developer.android.com/jetpack/compose)
 
 ## Usage
-To use the application, obtain keys from the resources and replace them in the file:
+To use the application, obtain keys from the resources and replace them in the file ru.asmelnikov.utils.Constants:
 - [Football API](https://www.football-data.org/client/register)
 - [News API](https://newsapi.org/register)
-Replace them in the file: ru.asmelnikov.utils.Constants
+
 ```typescript
 object Constants {
 
