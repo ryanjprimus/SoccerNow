@@ -25,6 +25,6 @@ object Constants {
 ```
 
 ## Structure
-<img src=" [https://i.imgur.com/k4ZYqy7.png](https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/77459ff5-764e-482d-b4da-a7cc0bb136ad) " width="300">
+<img src="https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/254a1b2e-67d8-4033-a1ff-b6992933b9ba.png" width="200"> 
 
 
