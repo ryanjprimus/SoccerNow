@@ -11,6 +11,8 @@ A simple Android application for displaying statistics of major football competi
 - [Koin](https://insert-koin.io/)
 - [Orbit MVI](https://orbit-mvi.org/)
 - [Compose](https://developer.android.com/jetpack/compose)
+- [Shared Elements](https://github.com/mxalbert1996/compose-shared-elements?tab=readme-ov-file)
+- [Collapsing Toolbar](https://github.com/onebone/compose-collapsing-toolbar)
 
 ## Usage
 To use the application, obtain keys from the resources and replace them in the file ru.asmelnikov.utils.Constants:
