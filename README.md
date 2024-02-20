@@ -3,12 +3,7 @@ A simple Android application for displaying statistics of major football competi
 
 ## Content
 - [Technologies](#technologies)
-- [Начало работы](#начало-работы)
-- [Тестирование](#тестирование)
-- [Deploy и CI/CD](#deploy-и-ci/cd)
-- [Contributing](#contributing)
-- [To do](#to-do)
-- [Команда проекта](#команда-проекта)
+- [Usage](#usage)
 
 ## Technologies
 - [Realm](https://realm.io/)
