@@ -4,7 +4,8 @@ A simple Android application for displaying statistics of major football competi
 ## Content
 - [Technologies](#technologies)
 - [Usage](#usage)
-
+- [Structure](#structure)
+  
 ## Technologies
 - [Realm](https://realm.io/)
 - [Koin](https://insert-koin.io/)
