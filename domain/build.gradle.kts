@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.asmelnikov.domain"
+    namespace = "com.primus.domain"
     compileSdk = 34
 
     defaultConfig {

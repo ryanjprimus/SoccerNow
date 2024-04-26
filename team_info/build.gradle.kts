@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.asmelnikov.team_info"
+    namespace = "com.primus.team_info"
     compileSdk = 34
 
     defaultConfig {

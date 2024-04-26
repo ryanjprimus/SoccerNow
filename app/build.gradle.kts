@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "ru.asmelnikov.goalpulse"
+    namespace = "com.primus.soccernow"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "ru.asmelnikov.goalpulse"
+        applicationId = "com.primus.soccernow"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

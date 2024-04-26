@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.asmelnikov.data"
+    namespace = "com.primus.data"
     compileSdk = 34
 
     defaultConfig {

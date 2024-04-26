@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GoalPulse</string>
+    <string name="app_name">SoccerNow</string>
 
     <string name="http_400_errors">Incorrect request.</string>
     <string name="http_403_errors">"Oops! You don't have access to the requested resource. Please check your permissions."</string>

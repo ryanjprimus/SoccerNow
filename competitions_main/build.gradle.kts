@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.asmelnikov.competitions_main"
+    namespace = "com.primus.competitions_main"
     compileSdk = 34
 
     defaultConfig {

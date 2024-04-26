@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.asmelnikov.person_info"
+    namespace = "com.primus.person_info"
     compileSdk = 34
 
     defaultConfig {
