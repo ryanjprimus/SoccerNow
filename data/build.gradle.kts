@@ -49,6 +49,10 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-moshi:$retrofitVersion")
     implementation("com.squareup.okhttp3:logging-interceptor:$okhttpVersion")
+    implementation("androidx.test:monitor:1.6.1")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
+    testImplementation("junit:junit:4.12")
+    androidTestImplementation("junit:junit:4.12")
 
     // Moshi
     //noinspection KaptUsageInsteadOfKsp

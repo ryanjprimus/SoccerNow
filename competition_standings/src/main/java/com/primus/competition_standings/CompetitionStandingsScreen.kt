@@ -253,7 +253,7 @@ fun CompetitionStandingsContent(
             Column(modifier = Modifier.fillMaxSize()) {
 
                 PagerTabRow(
-                    tabTitles = listOf("Standings", "Scorers", "Matches"),
+                    tabTitles = listOf("Table", "Top Scorers", "Matches"),
                     selectedIndex = pagerState.currentPage,
                     modifier = Modifier.fillMaxWidth(),
                     onTabSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
