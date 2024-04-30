@@ -1,23 +1,29 @@
-A simple Android application for displaying statistics of major football competitions.
+SoccerNow is an Android app written in Kotlin and Compose that brings data from 13 different competitions!
 
-## Content
-- [Technologies](#technologies)
-- [Usage](#usage)
-- [Structure](#structure)
-- [Video](#video)
+## Table of Contents
+- [Dependencies/Libraries](#Dependencies/Libraries)
+- [APIs](#APIs)
+- [Framework](#Framework)
+- [App](#App)
   
-## Technologies
-- [Realm](https://realm.io/)
-- [Koin](https://insert-koin.io/)
-- [Orbit MVI](https://orbit-mvi.org/)
+## Dependencies/Libraries
 - [Compose](https://developer.android.com/jetpack/compose)
+- [Realm](https://realm.io/)
+- [Orbit MVI](https://orbit-mvi.org/)
 - [Shared Elements](https://github.com/mxalbert1996/compose-shared-elements?tab=readme-ov-file)
 - [Collapsing Toolbar](https://github.com/onebone/compose-collapsing-toolbar)
+- [Koin](https://insert-koin.io/)
+- [Retrofit](https://square.github.io/retrofit/)
+- [Okhttp](https://square.github.io/okhttp/)
+- [Moshi](https://github.com/square/moshi)
+- [Coil](https://github.com/coil-kt/coil)
 
-## Usage
-To use the application, obtain keys from the resources and replace them in the file ru.asmelnikov.utils.Constants:
+## APIs
+Get API keys from these websites to run the app. 
 - [Football API](https://www.football-data.org/client/register)
 - [News API](https://newsapi.org/register)
+
+Replace them in the _Constants_ file in _utils_:
 
 ```typescript
 object Constants {
@@ -27,12 +33,13 @@ object Constants {
 }
 ```
 
-## Structure
-<img src="https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/254a1b2e-67d8-4033-a1ff-b6992933b9ba.png" width="600"> 
+## Framework
+<img>
 
-## Video
+## App
 
-<table>
+
+
   <tr>
     <td><video src="https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/721cfb11-cfa2-4f22-97ea-1344ecea6460" width="250"></video></td>
     <td><video src="https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/f7b75462-3be9-4ed3-b845-c0a072cdd745" width="250"></video></td>
