@@ -15,7 +15,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "GoalPulse"
+rootProject.name = "SoccerNow"
 include(":app")
 include(":data")
 include(":domain")

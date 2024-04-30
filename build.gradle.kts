@@ -8,7 +8,7 @@ buildscript {
 allprojects {
 
     extra.apply {
-        // Koin for Android
+        // Koin
         set("koinVersion", "3.5.3")
         // Retrofit
         set("retrofitVersion", "2.9.0")
