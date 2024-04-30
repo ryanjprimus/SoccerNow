@@ -1,60 +1,57 @@
-A simple Android application for displaying statistics of major football competitions.
+SoccerNow is an Android app written in Kotlin and Compose that brings data from 13 different competitions!
 
-## Content
-- [Technologies](#technologies)
-- [Usage](#usage)
-- [Structure](#structure)
-- [Video](#video)
+## Table of Contents
+- [Dependencies/Libraries](#Dependencies/Libraries)
+- [APIs](#APIs)
+- [Framework](#Framework)
+- [App](#App)
   
-## Technologies
-- [Realm](https://realm.io/)
-- [Koin](https://insert-koin.io/)
-- [Orbit MVI](https://orbit-mvi.org/)
+## Dependencies/Libraries
 - [Compose](https://developer.android.com/jetpack/compose)
+- [Realm](https://realm.io/)
+- [Orbit MVI](https://orbit-mvi.org/)
 - [Shared Elements](https://github.com/mxalbert1996/compose-shared-elements?tab=readme-ov-file)
 - [Collapsing Toolbar](https://github.com/onebone/compose-collapsing-toolbar)
+- [Koin](https://insert-koin.io/)
+- [Retrofit](https://square.github.io/retrofit/)
+- [Okhttp](https://square.github.io/okhttp/)
+- [Moshi](https://github.com/square/moshi)
+- [Coil](https://github.com/coil-kt/coil)
 
-## Usage
-To use the application, obtain keys from the resources and replace them in the file ru.asmelnikov.utils.Constants:
+## APIs
+Get API keys from these websites to run the app. 
 - [Football API](https://www.football-data.org/client/register)
 - [News API](https://newsapi.org/register)
 
+Replace them in the _Constants_ file in _utils_:
+
 ```typescript
 object Constants {
-
-    const val FOOTBALL_API_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-    const val NEW_API_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    const val FOOTBALL_API_KEY = "insert key"
+    const val NEW_API_KEY = "insert key"
 }
 ```
 
-## Structure
-<img src="https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/254a1b2e-67d8-4033-a1ff-b6992933b9ba.png" width="600"> 
+## Framework
 
-## Video
+<img src="https://github.com/ryanjprimus/SoccerNow/assets/144263661/4acd085c-9908-4a85-bb4e-a6c139d2c992">
+
+## App
+
+<img src="https://github.com/ryanjprimus/SoccerNow/assets/144263661/3415a1bf-ade1-4ee4-ade8-9207fee74781" width="250">
 
 <table>
   <tr>
-    <td><video src="https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/721cfb11-cfa2-4f22-97ea-1344ecea6460" width="250"></video></td>
-    <td><video src="https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/f7b75462-3be9-4ed3-b845-c0a072cdd745" width="250"></video></td>
-    <td><video src="https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/f1c1f9d6-d246-4914-a0fd-3e6db22e326d" width="250"></video></td>
+    <td><img src="https://github.com/ryanjprimus/SoccerNow/assets/144263661/d6c96f9d-b165-4b63-84be-f19cdb6a3d27" width="250"></img></td>
+    <td><img src="https://github.com/ryanjprimus/SoccerNow/assets/144263661/b8106faa-de80-4368-ab7f-47ea11f97e82" width="250"></img></td>
+    <td><img src="https://github.com/ryanjprimus/SoccerNow/assets/144263661/a998738d-3724-4844-87f7-e5b042e464ea" width="250"></img></td>
   </tr>
 </table>
 
 <table>
   <tr>
-    <td><video src="https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/cbdcfb83-a3ae-451b-93f4-5305bc23a114" width="250"></video></td>
-    <td><video src="https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/239ead9a-84ba-41c5-98bd-4f5a3a80a67c" width="250"></video></td>
-    <td><video src="https://github.com/MelnikovAleksandr/GoalPulse/assets/83123472/ff56df9c-d60b-46ce-9d7f-8efe6980067a" width="250"></video></td>
+    <td><img src="https://github.com/ryanjprimus/SoccerNow/assets/144263661/0af0f647-b30b-473a-8ac4-91ac93340335" width="250"></img></td>
+    <td><img src="https://github.com/ryanjprimus/SoccerNow/assets/144263661/dfdc11f4-87fe-47c8-ba61-52f029d037ae" width="250"></img></td>
+    <td><img src="https://github.com/ryanjprimus/SoccerNow/assets/144263661/c346f5e1-9d3b-4ffc-9cb2-13a0cf57df79" width="250"></img></td>
   </tr>
 </table>
-
-  
-
-  
-
-  
-
-  
-
-
-
