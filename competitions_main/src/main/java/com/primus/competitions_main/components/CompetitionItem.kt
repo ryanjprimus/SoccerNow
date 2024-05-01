@@ -88,15 +88,15 @@ fun CompetitionItem(
                 }
 
                 Text(
-                    text = "current match day - ${competition.currentSeason.currentMatchDay}",
+                    text = "Current Gameweek - ${competition.currentSeason.currentMatchDay}",
                     style = MaterialTheme.typography.labelSmall
                 )
                 Text(
-                    text = "start date - ${competition.currentSeason.startDate}",
+                    text = "Start Date - ${competition.currentSeason.startDate}",
                     style = MaterialTheme.typography.labelSmall
                 )
                 Text(
-                    text = "end date - ${competition.currentSeason.endDate}",
+                    text = "End Date - ${competition.currentSeason.endDate}",
                     style = MaterialTheme.typography.labelSmall
                 )
             }

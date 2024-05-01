@@ -24,8 +24,8 @@ fun StickyHeader(
 
     val text = when {
         matchesByTour.matchday == -1 -> matchesByTour.matches.firstOrNull()?.stage.toString()
-        matchesByTour.seasonType == "CUP" -> "${matchesByTour.matchday} tour ${matchesByTour.stage}"
-        else -> "${matchesByTour.matchday} tour"
+        matchesByTour.seasonType == "CUP" -> "Match ${matchesByTour.matchday} ${matchesByTour.stage}"
+        else -> "Gameweek ${matchesByTour.matchday}"
     }
 
     Row(

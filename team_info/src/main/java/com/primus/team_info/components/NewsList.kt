@@ -59,7 +59,7 @@ fun NewsList(
             ) {
                 item {
                     Text(
-                        text = "Team news",
+                        text = "Team News",
                         textAlign = TextAlign.Start,
                         style = MaterialTheme.typography.titleLarge,
                         maxLines = 1,

@@ -56,7 +56,7 @@ fun SquadItem(
             modifier = Modifier
                 .weight(0.5f)
                 .padding(MaterialTheme.dimens.small1),
-            text = "${squad.age} y.o.",
+            text = squad.age,
             textAlign = TextAlign.Start,
             style = MaterialTheme.typography.titleSmall,
             maxLines = 1,
