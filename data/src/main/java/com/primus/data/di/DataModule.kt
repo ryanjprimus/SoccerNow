@@ -33,7 +33,7 @@ val dataModule = module {
     single<RealmConfiguration> {
         RealmConfiguration.Builder()
             .deleteRealmIfMigrationNeeded()
-            .name("goal_pulse.realm")
+            .name("soccer_now.realm")
             .schemaVersion(1L)
             .modules(
                 CompetitionScorersDbModule(),
